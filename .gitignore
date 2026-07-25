@@ -1,0 +1,39 @@
+# ── Node ──
+node_modules/
+frontend/node_modules/
+
+# ── Python ──
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+backend/.venv/
+
+# ── Build output ──
+frontend/dist/
+*.db
+*.sqlite3
+
+# ── Environment ──
+.env
+.env.local
+.env.production
+backend/.env
+
+# ── OS ──
+.DS_Store
+Thumbs.db
+
+# ── IDE ──
+.vscode/
+.idea/
+
+# ── Docker (reference only, keep compose for docs) ──
+docker-compose.override.yml
+
+# ── Vercel ──
+.vercel/
+
+# ── Misc ──
+*.log

@@ -1,0 +1,128 @@
+import type { Booking, BookingCreatePayload, Service, TokenResponse } from "./types";
+
+const BASE = import.meta.env.VITE_API_BASE || "";
+
+/** Thrown when an admin API call gets a 401. Components catch and redirect via React Router. */
+export class UnauthorizedError extends Error {
+  constructor() {
+    super("Unauthorized");
+    this.name = "UnauthorizedError";
+  }
+}
+
+let _onUnauthorized: (() => void) | null = null;
+
+/** Register a callback that navigates to /admin/login on 401. Call from a React effect. */
+export function setOnUnauthorized(cb: () => void) {
+  _onUnauthorized = cb;
+}
+
+export function clearOnUnauthorized() {
+  _onUnauthorized = null;
+}
+
+async function api<T>(path: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(`${BASE}${path}`, {
+    headers: { "Content-Type": "application/json" },
+    ...options,
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({ detail: res.statusText }));
+    // 401 on admin endpoints → invoke callback instead of window.location.href
+    if (res.status === 401 && _onUnauthorized) {
+      localStorage.removeItem("admin_token");
+      _onUnauthorized();
+      throw new UnauthorizedError();
+    }
+    throw new Error(body.detail || `HTTP ${res.status}`);
+  }
+  if (res.status === 204) return undefined as T;
+  return res.json();
+}
+
+function authHeader(): Record<string, string> {
+  const token = localStorage.getItem("admin_token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+// Public
+export function getServices() {
+  return api<Service[]>("/api/services");
+}
+
+export function getAvailability(service_id: number, date: string) {
+  return api<string[]>(
+    `/api/bookings/availability?service_id=${service_id}&date_str=${encodeURIComponent(date)}`
+  );
+}
+
+export function createBooking(data: BookingCreatePayload) {
+  return api<Booking>("/api/bookings", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+// Auth
+export function adminLogin(username: string, password: string) {
+  return api<TokenResponse>("/api/admin/login", {
+    method: "POST",
+    body: JSON.stringify({ username, password }),
+  });
+}
+
+// Admin bookings (401 handled by api() via _onUnauthorized callback)
+export function getAdminBookings(status?: string, date?: string) {
+  const params = new URLSearchParams();
+  if (status) params.set("status", status);
+  if (date) params.set("date", date);
+  const qs = params.toString();
+  return api<Booking[]>(`/api/admin/bookings${qs ? "?" + qs : ""}`, {
+    headers: authHeader(),
+  });
+}
+
+export function updateBookingStatus(id: number, status: string) {
+  return api<Booking>(`/api/admin/bookings/${id}`, {
+    method: "PATCH",
+    headers: authHeader(),
+    body: JSON.stringify({ status }),
+  });
+}
+
+export function deleteBooking(id: number) {
+  return api<void>(`/api/admin/bookings/${id}`, {
+    method: "DELETE",
+    headers: authHeader(),
+  });
+}
+
+// Admin services
+export function getAdminServices() {
+  return api<Service[]>("/api/admin/services", {
+    headers: authHeader(),
+  });
+}
+
+export function createAdminService(data: Partial<Service>) {
+  return api<Service>("/api/admin/services", {
+    method: "POST",
+    headers: authHeader(),
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateAdminService(id: number, data: Partial<Service>) {
+  return api<Service>(`/api/admin/services/${id}`, {
+    method: "PUT",
+    headers: authHeader(),
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteAdminService(id: number) {
+  return api<void>(`/api/admin/services/${id}`, {
+    method: "DELETE",
+    headers: authHeader(),
+  });
+}

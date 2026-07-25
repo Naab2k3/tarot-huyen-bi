@@ -1,0 +1,43 @@
+from datetime import datetime, timedelta, timezone
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+
+from app.config import ADMIN_PASSWORD_HASH, ADMIN_USERNAME, SECRET_KEY
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+bearer_scheme = HTTPBearer()
+
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 480  # 8 hours
+
+
+def verify_password(plain: str) -> bool:
+    if not ADMIN_PASSWORD_HASH:
+        raise RuntimeError(
+            "ADMIN_PASSWORD_HASH is not configured. "
+            "Generate a bcrypt hash and set it in backend/.env"
+        )
+    return pwd_context.verify(plain, ADMIN_PASSWORD_HASH)
+
+
+def create_access_token() -> str:
+    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    payload = {"sub": ADMIN_USERNAME, "exp": expire}
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+
+
+def verify_token(
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+) -> str:
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub", "")
+        if username != ADMIN_USERNAME:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        return username
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
