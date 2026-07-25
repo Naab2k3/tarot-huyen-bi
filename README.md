@@ -1,182 +1,169 @@
-# Tarot Huyền Bí — Website đặt lịch bói Tarot
+# Tarot Huyền Bí 🔮 — Website đặt lịch Tarot
 
-Full-stack, self-hosted website đặt lịch hẹn bói Tarot. Xây dựng bằng FastAPI + React + PostgreSQL, đóng gói Docker Compose.
+Full-stack website đặt lịch hẹn bói Tarot với **Rider-Waite-Smith** 78 lá bài gốc, hiệu ứng 3D flip và floating animation.
 
-## 🚀 Chạy ngay
+- **Backend:** FastAPI + SQLAlchemy + PostgreSQL (NeonDB)
+- **Frontend:** React 18 + TypeScript + Vite + Tailwind v4 + animejs
+- **CI/CD:** GitHub Actions (build check + security scan)
+
+## ✨ Highlights
+
+| Tính năng | |
+|---|---|
+| 🃏 **78 lá RWS gốc** | 22 Major Arcana + 56 Minor Arcana, ảnh JPG 350×600 |
+| 🔄 **Card flip 3D** | Click lật ngửa/úp, double-click đổi bài, auto-flip mỗi 10s |
+| 🎨 **Dark theme** | Bảng màu: void, velvet, arcane, lilac, candle-gold |
+| 🧭 **Multi-page** | Home, About, Services, Booking, Contact, Admin |
+| 🔐 **Admin panel** | JWT auth, CRUD bookings + services |
+| 📱 **Responsive** | Mobile-first, floating CTA bar |
+
+## 🚀 Quick start
 
 ### Yêu cầu
 
-- Docker & Docker Compose
+- Python 3.12+
+- Node 20+
+- UV (`pip install uv`)
 
-### Bước 1: Clone & vào thư mục
+### 1. Clone & cài đặt
 
 ```bash
-cd tarot-booking
+git clone https://github.com/Naab2k3/tarot-huyen-bi.git
+cd tarot-huyen-bi
+
+# Backend
+cd backend
+python -m uv venv .venv
+.venv/Scripts/python -m uv pip install -r requirements.txt
+
+# Frontend
+cd ../frontend
+npm install
 ```
 
-### Bước 2: Cấu hình mật khẩu admin
+### 2. Cấu hình
 
 ```bash
-# Tạo bcrypt hash cho mật khẩu admin
-python -c "from passlib.context import CryptContext; p=CryptContext(schemes=['bcrypt']); print(p.hash('mat-khau-cua-ban'))"
-
-# Copy file env và sửa
 cp backend/.env.example backend/.env
 ```
 
-Sửa file `backend/.env`:
+Sửa `backend/.env`:
 
 | Biến | Mô tả |
 |---|---|
-| `ADMIN_USERNAME` | Tên đăng nhập admin (mặc định: `admin`) |
-| `ADMIN_PASSWORD_HASH` | **Bắt buộc.** Copy hash từ lệnh Python ở trên vào đây |
-| `SECRET_KEY` | Khóa bí mật cho JWT — đổi thành chuỗi ngẫu nhiên trong production |
-| `CORS_ORIGINS` | Origin được phép CORS (mặc định đã include cổng dev và production) |
+| `DATABASE_URL` | **Bắt buộc.** PostgreSQL URL (VD: NeonDB) |
+| `ADMIN_USERNAME` | Tên đăng nhập admin (default: `admin`) |
+| `ADMIN_PASSWORD_HASH` | **Bắt buộc.** bcrypt hash của mật khẩu admin |
+| `SECRET_KEY` | Khóa JWT — đổi thành chuỗi ngẫu nhiên |
+| `CORS_ORIGINS` | Origin được phép CORS |
 
-> ⚠️ Nếu để `ADMIN_PASSWORD_HASH` rỗng, hệ thống dùng fallback dev: username và password phải giống nhau (không an toàn — chỉ dùng cho dev).
+> Tạo hash: `python -c "from passlib.context import CryptContext; print(CryptContext(schemes=['bcrypt']).hash('mat-khau-cua-ban'))"`
 
-### Bước 3: Khởi động
+### 3. Database
 
 ```bash
-docker compose up --build
+cd backend
+.venv/Scripts/python -m alembic upgrade head
+.venv/Scripts/python -c "from app.seed import seed_services; from app.database import SessionLocal; seed_services(SessionLocal())"
 ```
 
-Sau khi build và khởi động (lần đầu có thể mất vài phút):
+### 4. Build frontend + chạy
 
-| Service | URL |
-|---|---|
-| **Frontend** | [http://localhost:80](http://localhost:80) |
-| **Backend API** | [http://localhost:8000](http://localhost:8000) |
-| **Admin dashboard** | [http://localhost:80/admin](http://localhost:80/admin) |
+```bash
+cd frontend
+npm run build
 
-### Bước 4: Seed dữ liệu mẫu
-
-Lần đầu chạy, backend tự động seed 4 dịch vụ mẫu vào database. Bạn có thể:
-
-- Xem danh sách dịch vụ qua API: `GET http://localhost:8000/api/services`
-- Vào Admin → tab "Dịch vụ" để thêm/sửa/xóa
-
-## 🧭 Hướng dẫn sử dụng
-
-### Trang đặt lịch (public)
-
-1. Mở `http://localhost:80`
-2. **Bước 1:** Chọn dịch vụ Tarot
-3. **Bước 2:** Chọn ngày và khung giờ trống
-4. **Bước 3:** Điền thông tin liên hệ → Xác nhận
-5. Nhận mã xác nhận đặt lịch
-
-### Trang quản trị (admin)
-
-1. Vào `http://localhost:80/admin`
-2. Đăng nhập với `ADMIN_USERNAME` và mật khẩu đã cấu hình
-3. **Tab Lịch hẹn:** Xem, lọc, xác nhận/hủy lịch
-4. **Tab Dịch vụ:** Thêm, sửa, ẩn/hiện dịch vụ
-
-## 🔧 Cấu trúc thư mục
-
-```
-tarot-booking/
-├── docker-compose.yml          # 3 service: postgres + backend + frontend
-├── backend/
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   ├── .env.example
-│   └── app/
-│       ├── main.py             # FastAPI app & lifespan
-│       ├── config.py           # Biến môi trường
-│       ├── database.py         # SQLAlchemy engine & session
-│       ├── models.py           # ORM models: Service, Booking
-│       ├── schemas.py          # Pydantic v2 schemas
-│       ├── auth.py             # JWT + bcrypt
-│       ├── crud.py             # Business logic & slot availability
-│       ├── seed.py             # Seed 4 dịch vụ mẫu
-│       └── routers/
-│           ├── services.py     # GET /api/services
-│           ├── bookings.py     # GET /api/bookings/availability, POST /api/bookings
-│           └── admin.py        # Admin endpoints
-└── frontend/
-    ├── Dockerfile
-    ├── nginx.conf              # Serve SPA + proxy /api
-    ├── package.json
-    ├── vite.config.ts
-    ├── index.html
-    ├── .env.example
-    └── src/
-        ├── main.tsx
-        ├── App.tsx
-        ├── styles/index.css    # Tailwind v4 + theme tokens
-        ├── api/
-        │   ├── client.ts      # API client functions
-        │   └── types.ts       # TypeScript interfaces
-        ├── components/
-        │   ├── StarField.tsx       # Canvas starfield background
-        │   ├── MoonStepper.tsx     # 3-step moon phase stepper
-        │   ├── ServiceCard.tsx     # Service card with flip animation
-        │   ├── Calendar.tsx        # Date picker
-        │   ├── TimeSlots.tsx       # Available time slots
-        │   ├── BookingForm.tsx     # Customer info form
-        │   └── ConfirmationScreen.tsx  # Booking confirmation + sparkles
-        └── pages/
-            ├── BookingPage.tsx    # Main 3-step booking flow
-            ├── AdminLogin.tsx     # Admin login form
-            └── AdminDashboard.tsx # Admin dashboard (bookings + services CRUD)
+cd ../backend
+.venv/Scripts/python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
-## 🔌 API Endpoints
+Mở **http://localhost:8000**
+
+> FastAPI serve cả API lẫn frontend static — không cần 2 server.
+
+## 🃏 Tarot Cards
+
+78 lá **Rider-Waite-Smith** trong `frontend/public/images/cards/`:
+
+| Bộ | Số lượng | File |
+|---|---|---|
+| Major Arcana | 22 | `m00.jpg`–`m21.jpg` |
+| Cups (Cốc) | 14 | `c01.jpg`–`c14.jpg` |
+| Pentacles (Tiền) | 14 | `p01.jpg`–`p14.jpg` |
+| Swords (Kiếm) | 14 | `s01.jpg`–`s14.jpg` |
+| Wands (Gậy) | 14 | `w01.jpg`–`w14.jpg` |
+
+Dữ liệu (tên, ý nghĩa tiếng Việt): `frontend/public/data/tarot-cards.json` — load dynamic, không hardcode.
+
+## 🔌 API
 
 ### Public
 
 | Method | Path | Mô tả |
 |---|---|---|
-| GET | `/api/services` | Danh sách dịch vụ đang active |
+| GET | `/api/services` | Dịch vụ đang active |
 | GET | `/api/bookings/availability?service_id=&date_str=YYYY-MM-DD` | Khung giờ trống |
-| POST | `/api/bookings` | Tạo booking mới |
+| POST | `/api/bookings` | Tạo booking (race-condition guard → 409) |
 
 ### Admin (Bearer JWT)
 
 | Method | Path | Mô tả |
 |---|---|---|
-| POST | `/api/admin/login` | Đăng nhập → nhận token |
-| GET | `/api/admin/bookings?status=&date=` | Danh sách booking |
+| POST | `/api/admin/login` | Đăng nhập → token |
+| GET | `/api/admin/bookings` | Danh sách booking |
 | PATCH | `/api/admin/bookings/{id}` | Cập nhật trạng thái |
 | DELETE | `/api/admin/bookings/{id}` | Xóa booking |
-| GET | `/api/admin/services` | Danh sách dịch vụ (all) |
+| GET | `/api/admin/services` | Tất cả dịch vụ |
 | POST | `/api/admin/services` | Thêm dịch vụ |
 | PUT | `/api/admin/services/{id}` | Sửa dịch vụ |
 | DELETE | `/api/admin/services/{id}` | Xóa dịch vụ |
 
 ## 🎨 Design System
 
-- **Màu sắc:** Tím huyền bí (`#0B0712` → `#6E2FD9` → `#C9B6ED`) với điểm nhấn vàng nến (`#CBA135`)
-- **Font:** Cinzel Decorative (heading) + Cormorant Garamond (body) — không dùng sans-serif
-- **Animation:** Starfield nền canvas, moon-phase stepper, card flip, sparkle khi đặt thành công
-- **Responsive:** Tối ưu mobile, tôn trọng `prefers-reduced-motion`
+- **Colors:** `#0d0812` (void), `#2a1830` (velvet), `#a07392` (arcane), `#cfa4ba` (lilac), `#d4a843` (candle-gold), `#f0e8ed` (mist)
+- **Fonts:** Playfair Display (headings), Cormorant Garamond (body)
+- **Animations:** StarField canvas, FloatingTarotCards (float + flip + swap), CountUp, SparkleButton, HeroTextReveal
 
-## 🧪 Phát triển local (không Docker)
+## 📁 Project structure
 
-### Backend
-
-```bash
-cd backend
-python -m venv venv
-venv\Scripts\activate   # Windows
-pip install -r requirements.txt
-# Cần PostgreSQL chạy local, sửa DATABASE_URL trong .env
-uvicorn app.main:app --reload
+```
+tarot-huyen-bi/
+├── .github/workflows/ci.yml   # CI: build + sec scan
+├── frontend/
+│   ├── public/
+│   │   ├── data/tarot-cards.json   # 78 cards data
+│   │   └── images/cards/           # 78 RWS JPGs
+│   ├── src/
+│   │   ├── components/             # StarField, FloatingTarotCards, Navbar, …
+│   │   ├── pages/                  # Home, About, Services, Booking, Contact, Admin
+│   │   └── styles/index.css        # Tailwind v4 + tokens
+│   ├── package.json
+│   └── vite.config.ts
+├── backend/
+│   ├── app/
+│   │   ├── main.py                 # FastAPI + static serving
+│   │   ├── models.py               # Service, Booking ORM
+│   │   ├── schemas.py              # Pydantic v2
+│   │   ├── auth.py                 # JWT + bcrypt
+│   │   ├── crud.py                 # Booking logic
+│   │   └── seed.py                 # Seed data
+│   ├── alembic/                    # Migrations
+│   └── requirements.txt
+└── scripts/download-cards.py       # Tải 78 RWS cards
 ```
 
-### Frontend
+## 🔒 CI/CD
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+GitHub Actions chạy khi push/PR vào `main`:
+
+| Job | Check |
+|---|---|
+| **Frontend build** | `tsc` + `vite build` + `npm audit` |
+| **Backend import** | `pip install` + `bandit` scan + app load verify |
+| **Tarot JSON** | Validate 78 cards, no dupes, fields complete |
 
 ## 📝 Ghi chú
 
-- Không cần thanh toán online — thanh toán trực tiếp khi gặp mặt
-- Không gửi email/SMS nhắc lịch (để sẵn hook nếu cần mở rộng)
-- Slot availability được kiểm tra 2 lần: lúc load danh sách và lúc submit (race condition guard → HTTP 409)
-- Dữ liệu booking và service lưu trong volume Docker `pgdata`
+- Admin mặc định: `admin` / hash từ `ADMIN_PASSWORD_HASH`
+- Booking có race-condition guard (HTTP 409 nếu slot vừa bị đặt)
+- Chạy local không cần Docker — FastAPI serve luôn frontend static
