@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  frontend:
+    name: Frontend build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+      - run: npm run build
+
+  backend:
+    name: Backend import
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - run: pip install -r requirements.txt
+      - name: Verify imports
+        run: python -c "
+          from app import main;
+          print('App loaded OK, routes:', len(main.app.routes), 'routes');
+        "
+        env:
+          DATABASE_URL: sqlite:///ci-check.db
+          SECRET_KEY: ci-secret-key
+          ADMIN_USERNAME: test
+          ADMIN_PASSWORD_HASH: test-hash
+          CORS_ORIGINS: "*"
+
+
+  data-json:
+    name: Tarot data JSON
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate tarot-cards.json
+        run: node -e "
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync('frontend/public/data/tarot-cards.json','utf8'));
+          if (!Array.isArray(data) || data.length !== 78)
+            throw new Error('Expected 78 cards, got ' + data.length);
+          const ids = data.map(c => c.id);
+          const unique = new Set(ids);
+          if (unique.size !== 78)
+            throw new Error('Duplicate ids: ' + (ids.length - unique.size));
+          data.forEach((c, i) => {
+            if (!c.id || !c.name || !c.img || !c.arcana || !c.meaning)
+              throw new Error('Card ' + i + ' missing required fields: ' + JSON.stringify(c));
+            if (!['Major','Minor'].includes(c.arcana))
+              throw new Error('Card ' + c.id + ' invalid arcana: ' + c.arcana);
+          });
+          console.log('78 cards valid, no duplicates, all fields present');
+        "
