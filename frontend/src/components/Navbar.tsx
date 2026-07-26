@@ -20,11 +20,12 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-void/80 backdrop-blur-md border-b border-velvet/50">
       <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link
-          to="/"
-          className="font-logo text-mist tracking-widest uppercase text-sm hover:text-arcane transition-colors"
-        >
-          Healing With My
+        <Link to="/" className="flex items-center gap-2">
+          <img
+            src="/images/logo-sm.png"
+            alt="Healing With My"
+            className="h-10 w-auto drop-shadow-[0_0_6px_rgba(212,168,67,0.25)]"
+          />
         </Link>
 
         {/* Desktop nav */}

@@ -8,9 +8,9 @@ export default function ContactPage() {
           <p className="font-body text-candle-gold text-sm tracking-widest uppercase mb-2">
             ✦ Liên hệ ✦
           </p>
-          <h1 className="font-display text-3xl md:text-5xl text-mist mb-4">Liên hệ với chúng tôi</h1>
+          <h1 className="font-display text-3xl md:text-5xl text-mist mb-4">Liên hệ với tôi</h1>
           <p className="font-body text-lilac italic">
-            Bạn có câu hỏi? Chúng tôi luôn sẵn sàng lắng nghe.
+            Bạn có câu hỏi? Tôi luôn sẵn sàng lắng nghe.
           </p>
         </div>
 
@@ -58,7 +58,7 @@ export default function ContactPage() {
         {/* Contact form */}
         <div className="bg-velvet/40 border border-velvet rounded-xl p-6 md:p-8">
           <h2 className="font-display text-lg tracking-wider uppercase text-mist text-center mb-6">
-            Gửi tin nhắn cho chúng tôi
+            Gửi tin nhắn cho tôi
           </h2>
           <form
             onSubmit={(e) => e.preventDefault()}

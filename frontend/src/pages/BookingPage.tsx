@@ -12,12 +12,12 @@ const BRAND = {
   name: "Healing With My",
   tagline: "Kết nối con người với năng lượng vũ trụ",
   story:
-    "Healing With My ra đời từ niềm đam mê sâu sắc với huyền học và mong muốn kết nối con người với năng lượng vũ trụ. Chúng tôi tin rằng mỗi người đều mang trong mình một hành trình độc đáo, và các lá bài chỉ là chiếc gương phản chiếu con đường đó.",
+    "Healing With My ra đời từ niềm đam mê sâu sắc với huyền học và mong muốn kết nối con người với năng lượng vũ trụ. Tôi tin rằng mỗi người đều mang trong mình một hành trình độc đáo, và các lá bài chỉ là chiếc gương phản chiếu con đường đó.",
   years: "3+ năm kinh nghiệm",
   clients: "500+ khách hàng",
   values: [
     { icon: "🌙", title: "Chân thực", desc: "Đọc bài với trái tim thành thật, không phóng đại, không che giấu." },
-    { icon: "💜", title: "Đồng cảm", desc: "Mỗi buổi xem là một cuộc trò chuyện. Chúng tôi lắng nghe và thấu hiểu." },
+    { icon: "💜", title: "Đồng cảm", desc: "Mỗi buổi xem là một cuộc trò chuyện. Tôi lắng nghe và thấu hiểu." },
     { icon: "✨", title: "Trao quyền", desc: "Bài đọc giúp bạn tự tin hơn với lựa chọn của mình, không phụ thuộc." },
   ],
 };
