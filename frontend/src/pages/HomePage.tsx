@@ -110,7 +110,13 @@ export default function HomePage() {
         <FloatingTarotCards count={6} />
 
         <div className="relative z-10 text-center px-4 max-w-2xl mx-auto">
-          {/* Logo */}
+          {/* Brand logo */}
+          <img
+            src="/images/logo-lg.png"
+            alt="Healing With My"
+            className="w-28 md:w-36 h-auto mx-auto mb-6"
+          />
+
           <p className="font-logo text-mist tracking-widest uppercase text-sm md:text-base mb-4 opacity-70">
             Huyền học · Tâm linh · Kết nối
           </p>
@@ -189,10 +195,10 @@ export default function HomePage() {
       >
         <div className="max-w-4xl mx-auto px-4">
           <p className="font-body text-candle-gold text-sm tracking-widest uppercase text-center mb-2">
-            ✦ Những gì chúng tôi cung cấp ✦
+            ✦ Những gì tôi cung cấp ✦
           </p>
           <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-12">
-            Dịch vụ của chúng tôi
+            Dịch vụ của tôi
           </h2>
 
           <div
@@ -238,7 +244,7 @@ export default function HomePage() {
       >
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-12">
-            Tại sao chọn chúng tôi?
+            Tại sao chọn tôi?
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {WHY_US.map((w) => (

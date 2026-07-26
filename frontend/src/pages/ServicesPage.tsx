@@ -74,11 +74,11 @@ export default function ServicesPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <p className="font-body text-candle-gold text-sm tracking-widest uppercase mb-2">
-            ✦ Những gì chúng tôi cung cấp ✦
+            ✦ Những gì tôi cung cấp ✦
           </p>
           <h1 className="font-display text-3xl md:text-5xl text-mist mb-4">Dịch vụ</h1>
           <p className="font-body text-lilac italic max-w-xl mx-auto">
-            Chúng tôi cung cấp đa dạng dịch vụ huyền học, từ Tarot cổ điển đến các phương pháp độc đáo. Mỗi buổi xem là một hành trình khám phá riêng tư.
+            Tôi cung cấp đa dạng dịch vụ huyền học, từ Tarot cổ điển đến các phương pháp độc đáo. Mỗi buổi xem là một hành trình khám phá riêng tư.
           </p>
         </div>
 
@@ -115,7 +115,7 @@ export default function ServicesPage() {
             Không biết chọn dịch vụ nào?
           </h2>
           <p className="font-body text-lilac italic mb-6">
-            Liên hệ với chúng tôi. Chúng tôi sẽ tư vấn dịch vụ phù hợp nhất với câu hỏi của bạn.
+            Liên hệ với tôi. Tôi sẽ tư vấn dịch vụ phù hợp nhất với câu hỏi của bạn.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <SparkleButton
