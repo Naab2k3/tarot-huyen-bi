@@ -54,10 +54,8 @@ app.include_router(services.router)
 app.include_router(bookings.router)
 app.include_router(admin.router)
 
-# ── Serve frontend static files (skip on Vercel — handled by CDN) ──
-ON_VERCEL = os.environ.get("VERCEL", "") == "1"
-
-if FRONTEND_DIST.exists() and not ON_VERCEL:
+# ── Serve frontend static files ──
+if FRONTEND_DIST.exists():
     app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIST / "assets")), name="assets")
 
     @app.get("/{full_path:path}", include_in_schema=False)
