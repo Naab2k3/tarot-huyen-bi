@@ -1,3 +1,4 @@
+import asyncio
 from datetime import date, datetime, time
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -7,6 +8,8 @@ from app.crud import create_booking, get_available_slots
 from app.database import get_db
 from app.models import Booking, BookingStatus, Service
 from app.schemas import BookingCreate, BookingOut
+from app.services.zalo_notification import notify_admin_new_booking
+from app.zalo.client import get_zalo_client
 
 router = APIRouter(prefix="/api/bookings", tags=["bookings"])
 
@@ -71,4 +74,19 @@ def create_new_booking(body: BookingCreate, db: Session = Depends(get_db)):
             "status": BookingStatus.pending,
         },
     )
+
+    # Gửi thông báo Zalo bất đồng bộ (fire & forget)
+    client = get_zalo_client()
+    if client.enabled:
+        from app.database import SessionLocal
+        notif_db = SessionLocal()
+
+        async def _notify_and_close():
+            try:
+                await notify_admin_new_booking(client, notif_db, booking)
+            finally:
+                notif_db.close()
+
+        asyncio.get_event_loop().create_task(_notify_and_close())
+
     return booking

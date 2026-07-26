@@ -8,10 +8,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-from app.config import ADMIN_PASSWORD_HASH, CORS_ORIGINS, SECRET_KEY
+from app.config import ADMIN_PASSWORD_HASH, CORS_ORIGINS, SECRET_KEY, ZALO_OA_ACCESS_TOKEN
 from app.database import Base, SessionLocal, engine
 from app.routers import admin, bookings, services
+from app.routers.zalo_webhook import router as zalo_router
+from app.scheduler import start_scheduler, stop_scheduler
 from app.seed import seed_services
+from app.zalo.client import get_zalo_client, close_zalo_client
+from app.zalo.models import ZaloMessageLog  # noqa: F401 — ensure table created
 
 FRONTEND_DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
 
@@ -36,7 +40,14 @@ async def lifespan(app: FastAPI):
         seed_services(db)
     finally:
         db.close()
+    # Khởi động scheduler cho reminder
+    start_scheduler()
+
     yield
+
+    # Cleanup
+    stop_scheduler()
+    await close_zalo_client()
 
 
 app = FastAPI(title="Tarot Booking API", lifespan=lifespan)
@@ -52,6 +63,15 @@ app.add_middleware(
 app.include_router(services.router)
 app.include_router(bookings.router)
 app.include_router(admin.router)
+app.include_router(zalo_router)
+
+# ── Zalo OA status ──
+if ZALO_OA_ACCESS_TOKEN:
+    get_zalo_client()
+    logger.info("Zalo OA client enabled (token configured)")
+else:
+    logger.info("Zalo OA not configured — skip (set ZALO_OA_ACCESS_TOKEN in .env)")
+
 
 # ── Serve frontend static files ──
 if FRONTEND_DIST.exists():
