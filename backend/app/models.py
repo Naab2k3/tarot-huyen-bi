@@ -13,6 +13,13 @@ class BookingStatus(str, enum.Enum):
     cancelled = "cancelled"
 
 
+class ApplicationStatus(str, enum.Enum):
+    pending = "pending"
+    contacted = "contacted"
+    accepted = "accepted"
+    rejected = "rejected"
+
+
 class Service(Base):
     __tablename__ = "services"
 
@@ -45,3 +52,22 @@ class Booking(Base):
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
 
     service: Mapped["Service"] = relationship(back_populates="bookings")
+
+
+class IdolApplication(Base):
+    __tablename__ = "idol_applications"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    full_name: Mapped[str] = mapped_column(String(200), nullable=False)
+    phone: Mapped[str] = mapped_column(String(20), nullable=False)
+    email: Mapped[str] = mapped_column(String(200), nullable=True)
+    social_link: Mapped[str] = mapped_column(String(500), nullable=True)
+    reason: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    experience: Mapped[str] = mapped_column(Text, nullable=True)
+    status: Mapped[ApplicationStatus] = mapped_column(
+        Enum(ApplicationStatus, name="application_status"),
+        default=ApplicationStatus.pending,
+        nullable=False,
+    )
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=datetime.now)

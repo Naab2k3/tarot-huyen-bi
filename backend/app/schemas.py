@@ -67,6 +67,41 @@ class BookingStatusUpdate(BaseModel):
     status: str = Field(..., pattern=r"^(confirmed|cancelled)$")
 
 
+# ---------- Idol applications ----------
+class IdolApplicationCreate(BaseModel):
+    full_name: str = Field(..., min_length=1, max_length=200)
+    phone: str = Field(
+        ...,
+        min_length=10,
+        max_length=15,
+        pattern=r"^\+?\d{10,15}$",
+        description="Phone number: 10-15 digits, optional leading +",
+    )
+    email: str | None = None
+    social_link: str | None = None
+    reason: str = Field(..., min_length=1, max_length=4000)
+    experience: str | None = None
+
+
+class IdolApplicationOut(BaseModel):
+    id: int
+    full_name: str
+    phone: str
+    email: str | None
+    social_link: str | None
+    reason: str
+    experience: str | None
+    status: str
+    note: str | None
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class IdolApplicationStatusUpdate(BaseModel):
+    status: str = Field(..., pattern=r"^(contacted|accepted|rejected)$")
+
+
 # ---------- Admin auth ----------
 class AdminLogin(BaseModel):
     username: str

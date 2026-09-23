@@ -8,11 +8,14 @@ from app.config import ADMIN_USERNAME
 from app.crud import (
     create_service,
     delete_booking,
+    delete_idol_application,
     delete_service,
     get_all_services,
     get_bookings,
+    get_idol_applications,
     get_service,
     update_booking_status,
+    update_idol_application_status,
     update_service,
 )
 from app.database import get_db
@@ -20,6 +23,8 @@ from app.schemas import (
     AdminLogin,
     BookingOut,
     BookingStatusUpdate,
+    IdolApplicationOut,
+    IdolApplicationStatusUpdate,
     ServiceCreate,
     ServiceOut,
     ServiceUpdate,
@@ -129,4 +134,39 @@ def delete_admin_service(
         )
     if not ok:
         raise HTTPException(status_code=404, detail="Service not found")
+    return None
+
+
+# ---------- Idol applications ----------
+@router.get("/applications", response_model=list[IdolApplicationOut])
+def list_idol_applications(
+    status: str | None = Query(None),
+    db: Session = Depends(get_db),
+    _=Depends(verify_token),
+):
+    return get_idol_applications(db, status_filter=status)
+
+
+@router.patch("/applications/{application_id}", response_model=IdolApplicationOut)
+def update_application_status(
+    application_id: int,
+    body: IdolApplicationStatusUpdate,
+    db: Session = Depends(get_db),
+    _=Depends(verify_token),
+):
+    app = update_idol_application_status(db, application_id, body.status)
+    if not app:
+        raise HTTPException(status_code=404, detail="Application not found")
+    return app
+
+
+@router.delete("/applications/{application_id}", status_code=204)
+def remove_application(
+    application_id: int,
+    db: Session = Depends(get_db),
+    _=Depends(verify_token),
+):
+    ok = delete_idol_application(db, application_id)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Application not found")
     return None

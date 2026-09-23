@@ -3,10 +3,7 @@ import { useEffect, useCallback } from "react";
 interface FeedbackItem {
   type: "image" | "video";
   src: string;
-  videoSrc?: string;
-  platform: string;
-  author: string;
-  text: string;
+  stars: number;
 }
 
 interface Props {
@@ -48,30 +45,11 @@ export default function FeedbackLightbox({ item, onClose }: Props) {
         </button>
 
         <div className="bg-void border border-velvet rounded-2xl overflow-hidden">
-          {item.type === "video" && item.videoSrc ? (
-            <video
-              src={item.videoSrc}
-              controls
-              autoPlay
-              className="w-full max-h-[75vh] object-contain"
-              playsInline
-            />
-          ) : (
-            <img
-              src={item.src}
-              alt={`Feedback from ${item.author}`}
-              className="w-full max-h-[75vh] object-contain"
-            />
-          )}
-
-          <div className="p-4 border-t border-velvet/60">
-            <div className="flex items-center justify-between">
-              <p className="font-body text-mist text-sm">{item.author}</p>
-              <span className="font-body text-lilac/40 text-xs uppercase tracking-wider">
-                {item.platform}
-              </span>
-            </div>
-          </div>
+          <img
+            src={item.src}
+            alt="Feedback"
+            className="w-full max-h-[75vh] object-contain"
+          />
         </div>
       </div>
     </div>

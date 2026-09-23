@@ -3,17 +3,20 @@ import { useNavigate } from "react-router-dom";
 import {
   clearOnUnauthorized,
   deleteAdminService,
+  deleteApplication,
+  getAdminApplications,
   getAdminBookings,
   getAdminServices,
   setOnUnauthorized,
   updateAdminService,
+  updateApplicationStatus,
   updateBookingStatus,
   createAdminService,
   deleteBooking,
 } from "../api/client";
-import type { Booking, Service } from "../api/types";
+import type { Booking, IdolApplication, Service } from "../api/types";
 
-type Tab = "bookings" | "services";
+type Tab = "bookings" | "services" | "applications";
 
 function statusBtn(token: string, label: string, active?: boolean) {
   const colors: Record<string, string> = {
@@ -29,8 +32,10 @@ export default function AdminDashboard() {
   const [tab, setTab] = useState<Tab>("bookings");
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [services, setServices] = useState<Service[]>([]);
+  const [applications, setApplications] = useState<IdolApplication[]>([]);
   const [statusFilter, setStatusFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
+  const [appFilter, setAppFilter] = useState("");
   const [error, setError] = useState("");
 
   // Service form state
@@ -54,6 +59,12 @@ export default function AdminDashboard() {
       .catch((e) => setError(e.message));
   }, []);
 
+  const loadApplications = useCallback(() => {
+    getAdminApplications(appFilter || undefined)
+      .then(setApplications)
+      .catch((e) => setError(e.message));
+  }, [appFilter]);
+
   useEffect(() => {
     const token = localStorage.getItem("admin_token");
     if (!token) {
@@ -63,12 +74,14 @@ export default function AdminDashboard() {
     setOnUnauthorized(() => navigate("/admin/login"));
     loadBookings();
     loadServices();
+    loadApplications();
     return () => clearOnUnauthorized();
-  }, [loadBookings, loadServices, navigate]);
+  }, [loadBookings, loadServices, loadApplications, navigate]);
 
   useEffect(() => {
     if (tab === "services") loadServices();
-  }, [tab, loadServices]);
+    if (tab === "applications") loadApplications();
+  }, [tab, loadServices, loadApplications]);
 
   async function handleStatus(id: number, status: string) {
     try {
@@ -140,6 +153,51 @@ export default function AdminDashboard() {
     }
   }
 
+  async function handleAppStatus(id: number, status: string) {
+    try {
+      await updateApplicationStatus(id, status);
+      loadApplications();
+    } catch (e: any) {
+      setError(e.message);
+    }
+  }
+
+  async function handleDeleteApplication(id: number) {
+    if (!confirm("Xóa đơn ứng tuyển này?")) return;
+    try {
+      await deleteApplication(id);
+      loadApplications();
+    } catch (e: any) {
+      setError(e.message);
+    }
+  }
+
+  function getAppStatusBadge(status: string) {
+    switch (status) {
+      case "accepted":
+        return "bg-arcane/20 text-arcane border-arcane/30";
+      case "contacted":
+        return "bg-candle-gold/20 text-candle-gold border-candle-gold/30";
+      case "rejected":
+        return "bg-arcane/10 text-lilac/50 border-arcane/20";
+      default:
+        return "bg-candle-gold/20 text-candle-gold border-candle-gold/30";
+    }
+  }
+
+  function getAppStatusLabel(status: string) {
+    switch (status) {
+      case "accepted":
+        return "Đã nhận";
+      case "contacted":
+        return "Đã liên hệ";
+      case "rejected":
+        return "Đã từ chối";
+      default:
+        return "Chờ xử lý";
+    }
+  }
+
   function getStatusBadge(status: string) {
     switch (status) {
       case "confirmed":
@@ -198,6 +256,16 @@ export default function AdminDashboard() {
             }`}
           >
             Dịch vụ
+          </button>
+          <button
+            onClick={() => setTab("applications")}
+            className={`px-5 py-2.5 font-body text-sm tracking-wide uppercase transition-all ${
+              tab === "applications"
+                ? "text-mist border-b-2 border-arcane"
+                : "text-lilac/60 hover:text-lilac"
+            }`}
+          >
+            Tuyển dụng
           </button>
         </div>
 
@@ -444,6 +512,116 @@ export default function AdminDashboard() {
                 </p>
               )}
             </div>
+          </section>
+        )}
+
+        {/* ──── Tuyển dụng tab ──── */}
+        {tab === "applications" && (
+          <section>
+            <div className="flex flex-wrap gap-3 mb-4">
+              <select
+                value={appFilter}
+                onChange={(e) => setAppFilter(e.target.value)}
+                className="bg-velvet/60 border border-velvet rounded-lg px-3 py-1.5 font-body text-mist text-sm focus:outline-none focus:border-arcane"
+              >
+                <option value="">Tất cả trạng thái</option>
+                <option value="pending">Chờ xử lý</option>
+                <option value="contacted">Đã liên hệ</option>
+                <option value="accepted">Đã nhận</option>
+                <option value="rejected">Đã từ chối</option>
+              </select>
+              <button
+                onClick={loadApplications}
+                className="px-3 py-1.5 rounded-lg font-body text-lilac border border-velvet hover:border-lilac/30 text-sm transition-all"
+              >
+                Lọc
+              </button>
+            </div>
+
+            {applications.length === 0 ? (
+              <p className="text-center font-body text-lilac/50 italic py-8">
+                Chưa có đơn ứng tuyển nào
+              </p>
+            ) : (
+              <div className="grid gap-4">
+                {applications.map((a) => (
+                  <div key={a.id} className="bg-velvet/60 border border-velvet rounded-xl p-4">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="min-w-[220px]">
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-display text-sm tracking-wider uppercase text-mist">
+                            {a.full_name}
+                          </h4>
+                          <span
+                            className={`px-2 py-0.5 rounded text-xs font-body font-semibold border ${getAppStatusBadge(a.status)}`}
+                          >
+                            {getAppStatusLabel(a.status)}
+                          </span>
+                        </div>
+                        <p className="font-body text-lilac text-sm mt-1">
+                          {a.phone}
+                          {a.email ? ` · ${a.email}` : ""}
+                          {a.social_link ? ` · ${a.social_link}` : ""}
+                        </p>
+                        <p className="font-body text-lilac/60 text-xs mt-0.5">
+                          {new Date(a.created_at).toLocaleString("vi-VN")}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 shrink-0">
+                        {a.status === "pending" && (
+                          <button
+                            onClick={() => handleAppStatus(a.id, "contacted")}
+                            className={statusBtn("confirm", "Đã liên hệ")}
+                          >
+                            ✓ Đã liên hệ
+                          </button>
+                        )}
+                        {a.status !== "accepted" && a.status !== "rejected" && (
+                          <>
+                            <button
+                              onClick={() => handleAppStatus(a.id, "accepted")}
+                              className={statusBtn("confirm", "Nhận")}
+                            >
+                              Nhận
+                            </button>
+                            <button
+                              onClick={() => handleAppStatus(a.id, "rejected")}
+                              className={statusBtn("cancel", "Từ chối")}
+                            >
+                              Từ chối
+                            </button>
+                          </>
+                        )}
+                        <button
+                          onClick={() => handleDeleteApplication(a.id)}
+                          className={statusBtn("delete", "Xóa")}
+                        >
+                          Xóa
+                        </button>
+                      </div>
+                    </div>
+                    <div className="mt-3 space-y-2 border-t border-velvet/50 pt-3">
+                      <div>
+                        <p className="font-body text-lilac/50 text-xs uppercase tracking-wide mb-0.5">
+                          Lý do ứng tuyển
+                        </p>
+                        <p className="font-body text-mist text-sm whitespace-pre-line">{a.reason}</p>
+                      </div>
+                      {a.experience && (
+                        <div>
+                          <p className="font-body text-lilac/50 text-xs uppercase tracking-wide mb-0.5">
+                            Kinh nghiệm
+                          </p>
+                          <p className="font-body text-lilac text-sm whitespace-pre-line">
+                            {a.experience}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </section>
         )}
       </div>

@@ -9,6 +9,7 @@ import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import ServicesPage from "./pages/ServicesPage";
 import ContactPage from "./pages/ContactPage";
+import RecruitPage from "./pages/RecruitPage";
 
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
@@ -57,6 +58,7 @@ export default function App() {
           <Route path="/booking" element={<BookingPage />} />
           <Route path="/phone" element={<PhoneFrame><BookingPage /></PhoneFrame>} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/recruit" element={<RecruitPage />} />
           <Route path="/admin/login" element={
             <Suspense fallback={<AdminFallback />}>
               <AdminLogin />

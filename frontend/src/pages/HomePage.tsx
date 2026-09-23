@@ -11,74 +11,11 @@ import FeedbackLightbox from "../components/FeedbackLightbox";
 import { getServices } from "../api/client";
 import type { Service } from "../api/types";
 
-const PLATFORM_COLORS: Record<string, string> = {
-  Messenger: "from-blue-500 to-blue-700",
-  Zalo: "from-sky-500 to-cyan-600",
-  Instagram: "from-fuchsia-500 to-rose-600",
-  TikTok: "from-gray-900 to-gray-700",
-  Facebook: "from-blue-600 to-blue-800",
-};
-
-const PLATFORM_ICONS: Record<string, string> = {
-  Messenger: "💬",
-  Zalo: "💙",
-  Instagram: "📸",
-  TikTok: "🎵",
-  Facebook: "👍",
-};
-
-const FEEDBACKS = [
-  {
-    type: "image" as const,
-    src: "",
-    stars: 5,
-    text: "My đọc bài rất chính xác, giúp tôi hiểu rõ hơn về mối quan hệ hiện tại. Cảm ơn nhiều!",
-    author: "Nguyễn Thị Lan",
-    platform: "Messenger",
-  },
-  {
-    type: "image" as const,
-    src: "",
-    stars: 5,
-    text: "Lần đầu thử Tea Leaf mà bị cuốn hoàn toàn. My giải thích rất chi tiết và tận tâm.",
-    author: "Trần Minh Hoàng",
-    platform: "Zalo",
-  },
-  {
-    type: "video" as const,
-    src: "",
-    videoSrc: "",
-    stars: 5,
-    text: "Combo Tarot + Tea Leaf cực kỳ đáng tiền. Sẽ quay lại lần sau chắc chắn!",
-    author: "Phạm Thu Hà",
-    platform: "TikTok",
-  },
-  {
-    type: "image" as const,
-    src: "",
-    stars: 5,
-    text: "Bài Tarot của My cực kỳ chính xác, đã giúp mình có quyết định đúng đắn trong công việc.",
-    author: "Lê Thanh Tùng",
-    platform: "Instagram",
-  },
-  {
-    type: "image" as const,
-    src: "",
-    stars: 5,
-    text: "Rất may mắn khi biết đến My. Tea Leaf reading thực sự thay đổi góc nhìn của mình.",
-    author: "Hoàng Thảo Vy",
-    platform: "Facebook",
-  },
-  {
-    type: "video" as const,
-    src: "",
-    videoSrc: "",
-    stars: 5,
-    text: "Mình đã xem nhiều nơi nhưng đây là lần đầu cảm thấy được kết nối thực sự. Cảm ơn My rất nhiều!",
-    author: "Đặng Minh Quân",
-    platform: "TikTok",
-  },
-];
+const FEEDBACKS = Array.from({ length: 17 }, (_, i) => ({
+  type: "image" as const,
+  src: `/images/feedbacks/fb_${i + 1}.jpg`,
+  stars: 5,
+}));
 
 const WHY_US = [
   { icon: "🔮", title: "Chính xác", desc: "Phán đoán sâu sắc, chính xác từ kinh nghiệm thực tiễn" },
@@ -239,6 +176,82 @@ export default function HomePage() {
         </div>
       </motion.section>
 
+      {/* ─── Tuyển dụng idol ─── */}
+      <motion.section
+        className="py-16 md:py-24"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <div className="max-w-6xl mx-auto px-4">
+          {/* Prominent banner */}
+          <div className="relative overflow-hidden rounded-3xl border border-arcane/30 bg-gradient-to-br from-velvet/80 via-void to-arcane/20 shadow-2xl shadow-arcane/20">
+            {/* Decorative glows */}
+            <div className="pointer-events-none absolute -top-24 -right-24 w-80 h-80 rounded-full bg-arcane/25 blur-3xl animate-glow-pulse" />
+            <div className="pointer-events-none absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-candle-gold/10 blur-3xl" />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(184,132,159,0.15),transparent_60%)]" />
+
+            <div className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr_3fr] min-h-[560px]">
+              {/* Image — full-height rectangular */}
+              <div className="relative min-h-[320px] md:min-h-full">
+                <img
+                  src="/idols/healingidol.jpg"
+                  alt="Tuyển dụng Idol xem bài"
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover object-top"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:via-void/20 md:to-void/60" />
+                {/* Badge */}
+                <span className="absolute top-5 left-5 bg-candle-gold text-void font-display text-xs tracking-widest uppercase px-4 py-1.5 rounded-full shadow-lg">
+                  Đang tuyển
+                </span>
+              </div>
+
+              {/* Content */}
+              <div className="flex items-center px-6 py-12 md:px-12 md:py-16">
+                <div className="text-center md:text-left">
+                  <p className="font-body text-candle-gold text-sm tracking-widest uppercase mb-3">
+                    ✦ Tuyển dụng ✦
+                  </p>
+                  <h2 className="font-display text-3xl md:text-5xl lg:text-6xl text-mist mb-5 leading-tight">
+                    Trở thành Idol<br /> xem bài
+                  </h2>
+                  <p className="font-body text-lilac italic mb-7 leading-relaxed max-w-md mx-auto md:mx-0">
+                    Bạn đam mê huyền học, yêu thích Tarot và Tea Leaf? Healing With My đang
+                    tìm kiếm những gương mặt mới để cùng lan tỏa năng lượng đến cộng đồng.
+                  </p>
+
+                  <ul className="space-y-3 mb-9 text-left max-w-sm mx-auto md:mx-0">
+                    {[
+                      "Thu nhập hấp dẫn theo từng phiên xem bài",
+                      "Được đào tạo chuyên sâu miễn phí",
+                      "Làm việc tự do, linh hoạt thời gian",
+                    ].map((item) => (
+                      <li key={item} className="flex items-start gap-3 font-body text-lilac/80 text-sm">
+                        <span className="text-candle-gold mt-0.5">✦</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <SparkleButton
+                    as="link"
+                    href="/recruit"
+                    className="px-10 py-4 rounded-xl font-display text-sm tracking-widest uppercase bg-candle-gold text-void hover:bg-candle-gold/85 transition-all shadow-lg shadow-candle-gold/25 btn-glow"
+                  >
+                    Ứng tuyển ngay
+                  </SparkleButton>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* ─── Section divider ─── */}
+      <div className="section-divider my-4" />
+
       {/* ─── Services overview ─── */}
       <motion.section
         className="py-16 md:py-24"
@@ -339,59 +352,20 @@ export default function HomePage() {
                 className="feedback-card opacity-0 text-left w-full group"
               >
                 <div className="relative bg-velvet/30 border border-velvet/60 rounded-2xl overflow-hidden hover:border-arcane/30 hover:bg-velvet/50 transition-all duration-300">
-                  {/* Platform badge */}
-                  <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-sm text-mist text-[11px] font-body tracking-wide">
-                    <span>{PLATFORM_ICONS[fb.platform]}</span>
-                    <span>{fb.platform}</span>
-                  </div>
-
-                  {/* Content */}
-                  {fb.type === "video" && (
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-14 h-14 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center border border-white/20 group-hover:bg-arcane/40 group-hover:scale-110 transition-all duration-300">
-                      <svg className="w-6 h-6 text-mist ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </div>
-                  )}
-
                   <div className="aspect-[4/3] w-full">
-                    {fb.src ? (
-                      <img
-                        src={fb.src}
-                        alt={`Feedback from ${fb.author}`}
-                        className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
-                      />
-                    ) : (
-                      <div
-                        className={`w-full h-full bg-gradient-to-br ${PLATFORM_COLORS[fb.platform] || "from-velvet to-void"} flex flex-col justify-end p-5`}
-                      >
-                        <div className="backdrop-blur-[2px]">
-                          <div className="bg-white/10 backdrop-blur-md rounded-2xl rounded-bl-sm px-4 py-3 mb-2 inline-block max-w-[90%]">
-                            <p className="font-body text-mist text-sm leading-relaxed">
-                              "{fb.text}"
-                            </p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-mist text-xs font-bold">
-                              {fb.author.charAt(0)}
-                            </div>
-                            <p className="font-body text-white/70 text-xs">{fb.author}</p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                    <img
+                      src={fb.src}
+                      alt={`Feedback ${i + 1}`}
+                      loading="lazy"
+                      className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                    />
                   </div>
 
                   {/* Bottom info */}
-                  <div className="p-3 flex items-center justify-between border-t border-velvet/50">
-                    <div className="flex items-center gap-2">
-                      <div className="text-candle-gold text-xs tracking-wider">
-                        {'★'.repeat(fb.stars)}
-                      </div>
+                  <div className="p-3 flex items-center justify-center border-t border-velvet/50">
+                    <div className="text-candle-gold text-xs tracking-wider">
+                      {'★'.repeat(fb.stars)}
                     </div>
-                    <span className="font-body text-lilac/40 text-[11px]">
-                      {fb.type === "video" ? "📹 Video" : "📷 Ảnh"}
-                    </span>
                   </div>
                 </div>
               </button>
@@ -406,9 +380,6 @@ export default function HomePage() {
           onClose={() => setLightboxItem(null)}
         />
       )}
-
-      {/* ─── Section divider ─── */}
-      <div className="section-divider my-4" />
 
       {/* ─── CTA ─── */}
       <motion.section

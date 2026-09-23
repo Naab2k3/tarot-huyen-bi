@@ -34,3 +34,25 @@ export interface TokenResponse {
   access_token: string;
   token_type: string;
 }
+
+export interface IdolApplication {
+  id: number;
+  full_name: string;
+  phone: string;
+  email: string | null;
+  social_link: string | null;
+  reason: string;
+  experience: string | null;
+  status: "pending" | "contacted" | "accepted" | "rejected";
+  note: string | null;
+  created_at: string;
+}
+
+export interface IdolApplicationPayload {
+  full_name: string;
+  phone: string;
+  email?: string | null;
+  social_link?: string | null;
+  reason: string;
+  experience?: string | null;
+}

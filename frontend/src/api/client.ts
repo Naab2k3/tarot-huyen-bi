@@ -1,4 +1,11 @@
-import type { Booking, BookingCreatePayload, Service, TokenResponse } from "./types";
+import type {
+  Booking,
+  BookingCreatePayload,
+  IdolApplication,
+  IdolApplicationPayload,
+  Service,
+  TokenResponse,
+} from "./types";
 
 const BASE = import.meta.env.VITE_API_BASE || "";
 
@@ -63,6 +70,13 @@ export function createBooking(data: BookingCreatePayload) {
   });
 }
 
+export function createIdolApplication(data: IdolApplicationPayload) {
+  return api<IdolApplication>("/api/recruit", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
 // Auth
 export function adminLogin(username: string, password: string) {
   return api<TokenResponse>("/api/admin/login", {
@@ -122,6 +136,29 @@ export function updateAdminService(id: number, data: Partial<Service>) {
 
 export function deleteAdminService(id: number) {
   return api<void>(`/api/admin/services/${id}`, {
+    method: "DELETE",
+    headers: authHeader(),
+  });
+}
+
+// Admin idol applications
+export function getAdminApplications(status?: string) {
+  const qs = status ? `?status=${encodeURIComponent(status)}` : "";
+  return api<IdolApplication[]>(`/api/admin/applications${qs}`, {
+    headers: authHeader(),
+  });
+}
+
+export function updateApplicationStatus(id: number, status: string) {
+  return api<IdolApplication>(`/api/admin/applications/${id}`, {
+    method: "PATCH",
+    headers: authHeader(),
+    body: JSON.stringify({ status }),
+  });
+}
+
+export function deleteApplication(id: number) {
+  return api<void>(`/api/admin/applications/${id}`, {
     method: "DELETE",
     headers: authHeader(),
   });

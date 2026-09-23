@@ -3,7 +3,13 @@ from datetime import date, datetime, time
 from sqlalchemy.orm import Session, joinedload
 
 from app.config import SLOT_INTERVAL, WORK_END, WORK_START
-from app.models import Booking, BookingStatus, Service
+from app.models import (
+    ApplicationStatus,
+    Booking,
+    BookingStatus,
+    IdolApplication,
+    Service,
+)
 
 
 # ---------- Service ----------
@@ -151,5 +157,44 @@ def delete_booking(db: Session, booking_id: int) -> bool:
     if not booking:
         return False
     db.delete(booking)
+    db.commit()
+    return True
+
+
+# ---------- Idol applications ----------
+def create_idol_application(db: Session, data: dict) -> IdolApplication:
+    app = IdolApplication(**data)
+    db.add(app)
+    db.commit()
+    db.refresh(app)
+    return app
+
+
+def get_idol_applications(
+    db: Session, status_filter: str | None = None
+) -> list[IdolApplication]:
+    q = db.query(IdolApplication)
+    if status_filter:
+        q = q.filter(IdolApplication.status == status_filter)
+    return q.order_by(IdolApplication.created_at.desc()).all()
+
+
+def update_idol_application_status(
+    db: Session, application_id: int, status: str
+) -> IdolApplication | None:
+    app = db.query(IdolApplication).filter(IdolApplication.id == application_id).first()
+    if not app:
+        return None
+    app.status = ApplicationStatus(status)
+    db.commit()
+    db.refresh(app)
+    return app
+
+
+def delete_idol_application(db: Session, application_id: int) -> bool:
+    app = db.query(IdolApplication).filter(IdolApplication.id == application_id).first()
+    if not app:
+        return False
+    db.delete(app)
     db.commit()
     return True

@@ -5,6 +5,7 @@ const NAV = [
   { path: "/", label: "Trang chủ" },
   { path: "/about", label: "Giới thiệu" },
   { path: "/services", label: "Dịch vụ" },
+  { path: "/recruit", label: "Tuyển dụng" },
   { path: "/booking", label: "Đặt lịch" },
   { path: "/contact", label: "Liên hệ" },
 ];

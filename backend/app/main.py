@@ -11,7 +11,7 @@ from fastapi.responses import FileResponse
 
 from app.config import ADMIN_PASSWORD_HASH, CORS_ORIGINS, SECRET_KEY
 from app.database import Base, SessionLocal, engine
-from app.routers import admin, bookings, services
+from app.routers import admin, bookings, recruit, services
 from app.seed import seed_services
 
 FRONTEND_DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
@@ -52,6 +52,7 @@ app.add_middleware(
 
 app.include_router(services.router)
 app.include_router(bookings.router)
+app.include_router(recruit.router)
 app.include_router(admin.router)
 
 # ── Serve frontend static files ──
