@@ -51,7 +51,7 @@ export default function ServiceCard({ service, selected, onSelect }: Props) {
       <h3 className="font-display text-lg tracking-wider uppercase text-mist mb-2 relative">
         {service.name}
       </h3>
-      <p className="font-body text-lilac text-sm leading-relaxed mb-4 relative">
+      <p className="font-body text-lilac text-sm leading-relaxed mb-4 relative whitespace-pre-line">
         {service.description}
       </p>
       <div className="flex justify-between items-center relative">

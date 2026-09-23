@@ -415,7 +415,7 @@ export default function AdminDashboard() {
                     <h4 className="font-display text-sm tracking-wider uppercase text-mist">
                       {svc.name}
                     </h4>
-                    <p className="font-body text-lilac text-sm mt-0.5 line-clamp-1">{svc.description}</p>
+                    <p className="font-body text-lilac text-sm mt-0.5 whitespace-pre-line">{svc.description}</p>
                     <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1 font-body text-xs text-lilac/60">
                       <span>{svc.duration_minutes} phút</span>
                       <span>{svc.price.toLocaleString("vi-VN")}₫</span>
