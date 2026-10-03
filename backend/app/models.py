@@ -1,7 +1,7 @@
 import enum
 from datetime import date, datetime, time
 
-from sqlalchemy import Enum, ForeignKey, String, Text
+from sqlalchemy import Enum, ForeignKey, Index, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -28,13 +28,18 @@ class Service(Base):
     description: Mapped[str] = mapped_column(Text, nullable=False, default="")
     duration_minutes: Mapped[int] = mapped_column(nullable=False)
     price: Mapped[int] = mapped_column(nullable=False)
-    is_active: Mapped[bool] = mapped_column(default=True)
+    is_active: Mapped[bool] = mapped_column(default=True, index=True)
 
     bookings: Mapped[list["Booking"]] = relationship(back_populates="service")
 
 
 class Booking(Base):
     __tablename__ = "bookings"
+    # Hot path: availability lookup filters on appointment_date + status, and
+    # runs on every booking page load and again as the create-time race guard.
+    __table_args__ = (
+        Index("ix_bookings_date_status", "appointment_date", "status"),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     service_id: Mapped[int] = mapped_column(ForeignKey("services.id"), nullable=False)
@@ -49,7 +54,7 @@ class Booking(Base):
         nullable=False,
     )
     note: Mapped[str | None] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.now)
+    created_at: Mapped[datetime] = mapped_column(default=datetime.now, index=True)
 
     service: Mapped["Service"] = relationship(back_populates="bookings")
 
@@ -70,7 +75,7 @@ class IdolApplication(Base):
         nullable=False,
     )
     note: Mapped[str | None] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.now)
+    created_at: Mapped[datetime] = mapped_column(default=datetime.now, index=True)
 
 
 class ContactMessage(Base):
@@ -82,4 +87,4 @@ class ContactMessage(Base):
     phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
     message: Mapped[str] = mapped_column(Text, nullable=False)
     is_read: Mapped[bool] = mapped_column(default=False)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.now)
+    created_at: Mapped[datetime] = mapped_column(default=datetime.now, index=True)
