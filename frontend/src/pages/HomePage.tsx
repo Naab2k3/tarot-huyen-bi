@@ -13,7 +13,9 @@ import type { Service } from "../api/types";
 
 const FEEDBACKS = Array.from({ length: 17 }, (_, i) => ({
   type: "image" as const,
-  src: `/images/feedbacks/fb_${i + 1}.jpg`,
+  // Grid loads the 480px thumb; the lightbox opens the full original.
+  src: `/images/feedbacks/thumbs/fb_${i + 1}.jpg`,
+  full: `/images/feedbacks/fb_${i + 1}.jpg`,
   stars: 5,
 }));
 
@@ -324,19 +326,25 @@ export default function HomePage() {
             Khách hàng nói gì?
           </h2>
 
-          <div id="feedback-cards" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div id="feedback-cards" className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
             {FEEDBACKS.map((fb, i) => (
               <button
                 key={i}
                 onClick={() => setLightboxItem(fb)}
                 className="feedback-card opacity-0 text-left w-full group"
+                aria-label={`Xem phản hồi ${i + 1} cỡ lớn`}
               >
                 <div className="relative bg-velvet/30 border border-velvet/60 rounded-2xl overflow-hidden hover:border-arcane/30 hover:bg-velvet/50 transition-all duration-300">
-                  <div className="aspect-[4/3] w-full">
+                  {/* Portrait cells match the screenshot shape: the old
+                      4:3 cover cropped away over half the image height. */}
+                  <div className="aspect-[3/4] w-full">
                     <img
                       src={fb.src}
                       alt={`Feedback ${i + 1}`}
                       loading="lazy"
+                      decoding="async"
+                      width={480}
+                      height={640}
                       className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
                     />
                   </div>
@@ -356,7 +364,7 @@ export default function HomePage() {
 
       {lightboxItem && (
         <FeedbackLightbox
-          item={lightboxItem}
+          item={{ ...lightboxItem, src: lightboxItem.full }}
           onClose={() => setLightboxItem(null)}
         />
       )}

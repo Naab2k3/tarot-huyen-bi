@@ -34,12 +34,12 @@ export default function FeedbackLightbox({ item, onClose }: Props) {
       onClick={onClose}
     >
       <div
-        className="relative max-w-2xl w-full max-h-[90vh] flex flex-col"
+        className="relative max-w-4xl w-full max-h-[92vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute -top-10 right-0 text-mist/60 hover:text-mist transition-colors text-sm font-body tracking-wide z-10"
+          className="absolute -top-10 right-0 min-w-[44px] min-h-[44px] text-mist/60 hover:text-mist transition-colors text-sm font-body tracking-wide z-10"
         >
           ✕ Đóng
         </button>
@@ -48,7 +48,7 @@ export default function FeedbackLightbox({ item, onClose }: Props) {
           <img
             src={item.src}
             alt="Feedback"
-            className="w-full max-h-[75vh] object-contain"
+            className="w-full max-h-[85vh] object-contain"
           />
         </div>
       </div>
