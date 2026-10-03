@@ -1,12 +1,20 @@
 from datetime import date, datetime, time
+from zoneinfo import ZoneInfo
 
 from sqlalchemy.orm import Session, joinedload
 
 from app.config import SLOT_INTERVAL, WORK_END, WORK_START
+
+VN_TZ = ZoneInfo("Asia/Ho_Chi_Minh")
+
+
+def _now_vn() -> datetime:
+    return datetime.now(VN_TZ)
 from app.models import (
     ApplicationStatus,
     Booking,
     BookingStatus,
+    ContactMessage,
     IdolApplication,
     Service,
 )
@@ -98,7 +106,7 @@ def get_available_slots(
     )
 
     result: list[str] = []
-    now = datetime.now()
+    now = _now_vn().replace(tzinfo=None)
     for slot in _generate_slots():
         slot_dt = datetime.combine(target_date, slot)
         # skip past slots
@@ -196,5 +204,44 @@ def delete_idol_application(db: Session, application_id: int) -> bool:
     if not app:
         return False
     db.delete(app)
+    db.commit()
+    return True
+
+
+# ---------- Contact messages ----------
+def create_contact_message(db: Session, data: dict) -> ContactMessage:
+    msg = ContactMessage(**data)
+    db.add(msg)
+    db.commit()
+    db.refresh(msg)
+    return msg
+
+
+def get_contact_messages(
+    db: Session, unread_only: bool = False
+) -> list[ContactMessage]:
+    q = db.query(ContactMessage)
+    if unread_only:
+        q = q.filter(ContactMessage.is_read.is_(False))
+    return q.order_by(ContactMessage.created_at.desc()).all()
+
+
+def mark_contact_message_read(
+    db: Session, message_id: int
+) -> ContactMessage | None:
+    msg = db.query(ContactMessage).filter(ContactMessage.id == message_id).first()
+    if not msg:
+        return None
+    msg.is_read = True
+    db.commit()
+    db.refresh(msg)
+    return msg
+
+
+def delete_contact_message(db: Session, message_id: int) -> bool:
+    msg = db.query(ContactMessage).filter(ContactMessage.id == message_id).first()
+    if not msg:
+        return False
+    db.delete(msg)
     db.commit()
     return True

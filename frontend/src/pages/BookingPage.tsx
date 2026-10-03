@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { createBooking, getServices } from "../api/client";
 import type { Booking, Service } from "../api/types";
 import BookingForm from "../components/BookingForm";
@@ -23,6 +24,7 @@ const BRAND = {
 };
 
 export default function BookingPage() {
+  const [searchParams] = useSearchParams();
   const [step, setStep] = useState(0);
   const [services, setServices] = useState<Service[]>([]);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
@@ -34,8 +36,22 @@ export default function BookingPage() {
 
   useEffect(() => {
     getServices()
-      .then(setServices)
+      .then((list) => {
+        setServices(list);
+        // Preselect khi đi từ trang Services (?service=<tên>)
+        const wanted = searchParams.get("service")?.trim().toLowerCase();
+        if (wanted) {
+          const match = list.find(
+            (s) => s.name.trim().toLowerCase() === wanted
+          );
+          if (match) {
+            setSelectedService(match);
+            setStep(1);
+          }
+        }
+      })
       .catch((e) => setError(e.message));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleSubmit(data: {
@@ -220,6 +236,35 @@ export default function BookingPage() {
             </h2>
             {error && (
               <p className="text-center font-body text-red-400 italic mb-4">{error}</p>
+            )}
+            {selectedService && (
+              <div className="max-w-md mx-auto mb-6 bg-velvet/40 border border-candle-gold/30 rounded-xl p-4">
+                <p className="font-body text-candle-gold/70 text-xs tracking-widest uppercase mb-2">
+                  Dịch vụ đã chọn
+                </p>
+                <div className="flex justify-between items-center gap-3">
+                  <div>
+                    <h3 className="font-display text-base tracking-wider uppercase text-mist">
+                      {selectedService.name}
+                    </h3>
+                    <p className="font-body text-lilac/70 text-sm mt-0.5">
+                      ⏱ {selectedService.duration_minutes} phút
+                      {selectedDate && selectedTime
+                        ? ` · ${selectedDate} lúc ${selectedTime}`
+                        : ""}
+                    </p>
+                  </div>
+                  <span className="font-display text-candle-gold font-semibold text-lg whitespace-nowrap">
+                    {selectedService.price.toLocaleString("vi-VN")}₫
+                  </span>
+                </div>
+                <button
+                  onClick={() => setStep(0)}
+                  className="mt-2 font-body text-lilac/70 hover:text-candle-gold text-sm underline underline-offset-4 decoration-arcane/30 transition-all"
+                >
+                  Đổi dịch vụ
+                </button>
+              </div>
             )}
             <BookingForm onSubmit={handleSubmit} loading={loading} />
             <div className="text-center mt-4">

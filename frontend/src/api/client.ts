@@ -1,6 +1,8 @@
 import type {
   Booking,
   BookingCreatePayload,
+  ContactMessage,
+  ContactMessagePayload,
   IdolApplication,
   IdolApplicationPayload,
   Service,
@@ -72,6 +74,13 @@ export function createBooking(data: BookingCreatePayload) {
 
 export function createIdolApplication(data: IdolApplicationPayload) {
   return api<IdolApplication>("/api/recruit", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function createContactMessage(data: ContactMessagePayload) {
+  return api<ContactMessage>("/api/contact", {
     method: "POST",
     body: JSON.stringify(data),
   });
@@ -159,6 +168,28 @@ export function updateApplicationStatus(id: number, status: string) {
 
 export function deleteApplication(id: number) {
   return api<void>(`/api/admin/applications/${id}`, {
+    method: "DELETE",
+    headers: authHeader(),
+  });
+}
+
+// Admin contact messages
+export function getAdminMessages(unreadOnly?: boolean) {
+  const qs = unreadOnly ? "?unread_only=true" : "";
+  return api<ContactMessage[]>(`/api/admin/messages${qs}`, {
+    headers: authHeader(),
+  });
+}
+
+export function markMessageRead(id: number) {
+  return api<ContactMessage>(`/api/admin/messages/${id}`, {
+    method: "PATCH",
+    headers: authHeader(),
+  });
+}
+
+export function deleteMessage(id: number) {
+  return api<void>(`/api/admin/messages/${id}`, {
     method: "DELETE",
     headers: authHeader(),
   });

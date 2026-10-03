@@ -56,7 +56,7 @@ export default function Footer() {
   );
 
   return (
-    <footer className="border-t border-velvet/60 bg-void/80">
+    <footer className="border-t border-arcane/30 bg-velvet/40">
       {/* Main footer content */}
       <div className="max-w-5xl mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
@@ -64,46 +64,46 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-3 mb-4">
               <img
-                src="/images/logo-sm.png"
+                src="/logo/logo-2-demo.png"
                 alt="Healing With My"
-                className="h-10 w-auto drop-shadow-[0_0_6px_rgba(212,168,67,0.25)]"
+                className="h-16 w-auto rounded-lg bg-void/30 drop-shadow-[0_0_8px_rgba(212,168,67,0.35)]"
               />
               <div>
-                <p className="font-logo text-mist tracking-wider text-lg leading-tight">Healing With My</p>
-                <p className="font-body text-lilac/50 text-xs tracking-widest uppercase">Huyền học · Tâm linh · Kết nối</p>
+                <p className="font-logo text-mist font-semibold tracking-wider text-xl leading-tight">Healing With My</p>
+                <p className="font-body text-lilac/80 text-sm tracking-widest uppercase mt-1">Huyền học · Tâm linh · Kết nối</p>
               </div>
             </div>
-            <p className="font-body text-lilac/60 text-sm leading-relaxed">
+            <p className="font-body text-lilac/85 text-base leading-relaxed">
               Nơi năng lượng vũ trụ gặp gỡ tâm hồn bạn qua Tarot, Tea Leaf và những bí ẩn huyền học.
             </p>
           </div>
 
           {/* Company info */}
           <div>
-            <h3 className="font-display text-mist text-sm tracking-widest uppercase mb-4">Lamy Entertainment</h3>
-            <ul className="space-y-3">
+            <h3 className="font-display font-semibold text-mist text-base tracking-widest uppercase mb-5">Lamy Entertainment</h3>
+            <ul className="space-y-4">
               <li>
-                <span className="font-body text-lilac/50 text-xs tracking-wider block">Địa chỉ</span>
-                <span className="font-body text-lilac/80 text-sm">298 Lý Thường Kiệt, Phù Vân, Ninh Bình</span>
+                <span className="font-body text-candle-gold/90 text-sm font-medium tracking-wider uppercase block mb-0.5">Địa chỉ</span>
+                <span className="font-body text-mist text-base font-medium leading-relaxed">298 Lý Thường Kiệt, Phù Vân, Ninh Bình</span>
               </li>
               <li>
-                <span className="font-body text-lilac/50 text-xs tracking-wider block">Mã số thuế</span>
-                <span className="font-body text-lilac/80 text-sm">0700913728</span>
+                <span className="font-body text-candle-gold/90 text-sm font-medium tracking-wider uppercase block mb-0.5">Mã số thuế</span>
+                <span className="font-body text-mist text-base font-medium">0700913728</span>
               </li>
               <li>
-                <span className="font-body text-lilac/50 text-xs tracking-wider block">Điện thoại</span>
-                <a href="tel:0339967899" className="font-body text-lilac/80 text-sm hover:text-arcane transition-colors">0339967899</a>
+                <span className="font-body text-candle-gold/90 text-sm font-medium tracking-wider uppercase block mb-0.5">Điện thoại</span>
+                <a href="tel:0339967899" className="font-body text-mist text-base font-semibold hover:text-candle-gold transition-colors">0339967899</a>
               </li>
               <li>
-                <span className="font-body text-lilac/50 text-xs tracking-wider block">Email</span>
-                <a href="mailto:LamyEntertainment@gmail.com" className="font-body text-lilac/80 text-sm hover:text-arcane transition-colors break-all">LamyEntertainment@gmail.com</a>
+                <span className="font-body text-candle-gold/90 text-sm font-medium tracking-wider uppercase block mb-0.5">Email</span>
+                <a href="mailto:LamyEntertainment@gmail.com" className="font-body text-mist text-base font-medium hover:text-candle-gold transition-colors break-all">LamyEntertainment@gmail.com</a>
               </li>
             </ul>
           </div>
 
           {/* Social links */}
           <div>
-            <h3 className="font-display text-mist text-sm tracking-widest uppercase mb-4">Kết nối với tôi</h3>
+            <h3 className="font-display font-semibold text-mist text-base tracking-widest uppercase mb-5">Kết nối với tôi</h3>
             <div className="flex flex-wrap gap-3">
               {sorted.map((s) => (
                 <a
@@ -112,13 +112,14 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.name}
-                  className="w-10 h-10 rounded-lg bg-velvet/50 border border-velvet flex items-center justify-center text-lilac/70 hover:text-mist hover:border-arcane/40 hover:bg-velvet/80 transition-all"
+                  title={s.name}
+                  className="w-11 h-11 rounded-lg bg-void/60 border border-arcane/30 flex items-center justify-center text-mist/90 hover:text-void hover:bg-candle-gold hover:border-candle-gold transition-all"
                 >
                   {s.icon}
                 </a>
               ))}
             </div>
-            <p className="font-body text-lilac/40 text-xs mt-4 leading-relaxed">
+            <p className="font-body text-lilac/75 text-sm mt-4 leading-relaxed">
               Theo dõi Lamy Entertainment trên các nền tảng để cập nhật những thông tin mới nhất về huyền học và tâm linh.
             </p>
           </div>
@@ -126,15 +127,15 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-velvet/40">
+      <div className="border-t border-arcane/20 bg-void/60">
         <div className="max-w-5xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="font-body text-lilac/40 text-xs">
-            &copy; {new Date().getFullYear()} <span className="text-lilac/60">Lamy Entertainment</span>. All rights reserved.
+          <p className="font-body text-lilac/70 text-sm">
+            &copy; {new Date().getFullYear()} <span className="text-mist font-medium">Lamy Entertainment</span>. All rights reserved.
           </p>
-          <div className="flex items-center gap-4">
-            <Link to="/about" className="font-body text-lilac/40 text-xs hover:text-lilac/60 transition-colors">Giới thiệu</Link>
-            <Link to="/services" className="font-body text-lilac/40 text-xs hover:text-lilac/60 transition-colors">Dịch vụ</Link>
-            <Link to="/contact" className="font-body text-lilac/40 text-xs hover:text-lilac/60 transition-colors">Liên hệ</Link>
+          <div className="flex items-center gap-5">
+            <Link to="/about" className="font-body text-lilac/70 text-sm font-medium hover:text-mist transition-colors">Giới thiệu</Link>
+            <Link to="/services" className="font-body text-lilac/70 text-sm font-medium hover:text-mist transition-colors">Dịch vụ</Link>
+            <Link to="/contact" className="font-body text-lilac/70 text-sm font-medium hover:text-mist transition-colors">Liên hệ</Link>
           </div>
         </div>
       </div>

@@ -23,7 +23,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: npm audit
-        run: npm audit --audit-level=moderate || true
+        run: npm audit --audit-level=high
 
   backend:
     name: Backend import
@@ -41,7 +41,7 @@ jobs:
       - run: pip install -r requirements.txt
       - run: pip install bandit
       - name: Bandit security scan
-        run: bandit -r app/ -x .venv -ll || true
+        run: bandit -r app/ -x .venv -ll
       - name: Verify imports
         run: |
           python -c "

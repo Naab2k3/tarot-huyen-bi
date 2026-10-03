@@ -23,9 +23,9 @@ export default function Navbar() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img
-            src="/images/logo-sm.png"
+            src="/logo/logo-2-demo.png"
             alt="Healing With My"
-            className="h-10 w-auto drop-shadow-[0_0_6px_rgba(212,168,67,0.25)]"
+            className="h-12 w-auto drop-shadow-[0_0_6px_rgba(212,168,67,0.35)]"
           />
         </Link>
 
@@ -35,7 +35,7 @@ export default function Navbar() {
             <Link
               key={n.path}
               to={n.path}
-              className={`font-body text-sm tracking-wide transition-colors ${
+              className={`font-body text-base tracking-wide transition-colors ${
                 loc.pathname === n.path
                   ? "text-arcane border-b border-arcane pb-0.5"
                   : "text-lilac/70 hover:text-mist"

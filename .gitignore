@@ -37,6 +37,4 @@ docker-compose.override.yml
 
 # ── Misc ──
 *.log
-
-.vercel
-.env*
+PLAN_NOTES.md

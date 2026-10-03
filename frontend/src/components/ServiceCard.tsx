@@ -30,11 +30,11 @@ export default function ServiceCard({ service, selected, onSelect }: Props) {
       ref={cardRef}
       onClick={onSelect}
       className={`
-        relative text-left p-6 rounded-xl border-2 transition-all duration-300 cursor-pointer
-        bg-velvet/60 bg-[radial-gradient(ellipse_at_top_right,_rgba(110,47,217,0.04),transparent_50%)]
+        relative text-left p-6 rounded-2xl border-2 transition-all duration-300 cursor-pointer overflow-hidden
+        bg-gradient-to-br from-velvet/70 via-velvet/50 to-arcane/10
         ${selected
-          ? "border-arcane bg-arcane/15 shadow-lg shadow-arcane/25"
-          : "border-velvet hover:border-candle-gold/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-candle-gold/8"
+          ? "border-candle-gold bg-arcane/15 shadow-xl shadow-candle-gold/20 -translate-y-1"
+          : "border-arcane/30 hover:border-candle-gold/50 hover:-translate-y-1 hover:shadow-xl hover:shadow-candle-gold/15"
         }
         focus-visible:outline-2 focus-visible:outline-candle-gold focus-visible:outline-offset-2
       `}
@@ -48,17 +48,17 @@ export default function ServiceCard({ service, selected, onSelect }: Props) {
           group-hover:opacity-100"
       />
 
-      <h3 className="font-display text-lg tracking-wider uppercase text-mist mb-2 relative">
+      <h3 className="font-display text-xl tracking-wider uppercase text-mist mb-2 relative">
         {service.name}
       </h3>
-      <p className="font-body text-lilac text-sm leading-relaxed mb-4 relative whitespace-pre-line">
+      <p className="font-body text-lilac/85 text-base leading-relaxed mb-4 relative whitespace-pre-line">
         {service.description}
       </p>
       <div className="flex justify-between items-center relative">
-        <span className="font-body text-candle-gold font-semibold tracking-wide">
-          {service.duration_minutes} phút
+        <span className="font-body text-mist/90 font-medium tracking-wide bg-velvet/60 border border-velvet px-3 py-1 rounded-full text-sm">
+          ⏱ {service.duration_minutes} phút
         </span>
-        <span className="font-display text-arcane text-lg">
+        <span className="font-display text-candle-gold font-semibold text-xl">
           {service.price.toLocaleString("vi-VN")}₫
         </span>
       </div>

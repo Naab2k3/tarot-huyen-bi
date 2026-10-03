@@ -1,8 +1,5 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SparkleButton from "../components/SparkleButton";
-import { getServices } from "../api/client";
-import type { Service } from "../api/types";
 
 const CATEGORIES = [
   {
@@ -62,12 +59,6 @@ const CATEGORIES = [
 ];
 
 export default function ServicesPage() {
-  const [services, setServices] = useState<Service[]>([]);
-
-  useEffect(() => {
-    getServices().then(setServices).catch(() => {});
-  }, []);
-
   return (
     <main className="min-h-screen pt-24 pb-16">
       <div className="max-w-4xl mx-auto px-4">
@@ -85,24 +76,27 @@ export default function ServicesPage() {
         {/* Categories */}
         <div className="space-y-10">
           {CATEGORIES.map((cat) => (
-            <section key={cat.name} className="bg-velvet/30 border border-velvet rounded-xl p-6 md:p-8 hover:border-arcane/20 transition-colors group">
+            <section key={cat.name} className="relative overflow-hidden bg-gradient-to-br from-velvet/70 via-velvet/35 to-arcane/10 border border-arcane/30 rounded-2xl p-6 md:p-8 shadow-lg shadow-arcane/10 hover:border-candle-gold/50 hover:shadow-xl hover:shadow-candle-gold/15 transition-all duration-300 group">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-candle-gold/70 to-transparent" />
               <div className="flex items-start gap-4 mb-6">
-                <span className="text-3xl">{cat.icon}</span>
+                <span className="text-4xl w-16 h-16 shrink-0 flex items-center justify-center rounded-2xl bg-candle-gold/15 border border-candle-gold/30 shadow-lg shadow-candle-gold/10">{cat.icon}</span>
                 <div>
-                  <h2 className="font-display text-lg md:text-xl tracking-wider uppercase text-mist">{cat.name}</h2>
-                  <p className="font-body text-lilac/70 text-sm mt-1">{cat.desc}</p>
+                  <h2 className="font-display text-xl md:text-2xl tracking-wider uppercase text-mist">{cat.name}</h2>
+                  <p className="font-body text-lilac/80 text-base mt-1 leading-relaxed">{cat.desc}</p>
                 </div>
               </div>
 
-              <div className="grid gap-2">
+              <div className="grid gap-2.5">
                 {cat.items.map((item) => (
-                  <div
+                  <Link
                     key={item.name}
-                    className="flex justify-between items-center py-2.5 border-b border-velvet/30 last:border-0 hover:bg-velvet/20 hover:px-3 -mx-3 rounded-lg transition-all group/item"
+                    to={`/booking?service=${encodeURIComponent(item.name)}`}
+                    title="Đặt lịch dịch vụ này"
+                    className="flex justify-between items-center gap-3 py-2.5 px-3 -mx-3 border-b border-velvet/40 last:border-0 rounded-lg hover:bg-velvet/30 transition-all group/item"
                   >
-                    <span className="font-body text-mist text-sm group-hover/item:text-mist transition-colors">{item.name}</span>
-                    <span className="font-display text-candle-gold text-sm tracking-wide">{item.price}</span>
-                  </div>
+                    <span className="font-body text-mist text-base font-medium group-hover/item:text-candle-gold transition-colors">{item.name}</span>
+                    <span className="font-display text-candle-gold text-base font-semibold tracking-wide whitespace-nowrap bg-candle-gold/15 border border-candle-gold/40 px-3.5 py-1 rounded-full">{item.price}</span>
+                  </Link>
                 ))}
               </div>
             </section>

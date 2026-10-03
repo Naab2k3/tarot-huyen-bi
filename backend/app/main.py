@@ -11,7 +11,7 @@ from fastapi.responses import FileResponse
 
 from app.config import ADMIN_PASSWORD_HASH, CORS_ORIGINS, SECRET_KEY
 from app.database import Base, SessionLocal, engine
-from app.routers import admin, bookings, recruit, services
+from app.routers import admin, bookings, contact, recruit, services
 from app.seed import seed_services
 
 FRONTEND_DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
@@ -31,10 +31,20 @@ async def lifespan(app: FastAPI):
             "See backend/.env.example"
         )
 
-    Base.metadata.create_all(bind=engine)
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception:
+        # Serverless (Vercel) cold-start: DB (Neon) có thể lag/timeout.
+        # Không crash app — request tiếp theo sẽ thử lại.
+        # Local dev: kiểm tra Postgres đã chạy chưa (docker compose up).
+        logger.exception(
+            "Database create_all failed — check DATABASE_URL and DB availability"
+        )
     db = SessionLocal()
     try:
         seed_services(db)
+    except Exception:
+        logger.exception("seed_services failed — skipping")
     finally:
         db.close()
     yield
@@ -52,6 +62,7 @@ app.add_middleware(
 
 app.include_router(services.router)
 app.include_router(bookings.router)
+app.include_router(contact.router)
 app.include_router(recruit.router)
 app.include_router(admin.router)
 

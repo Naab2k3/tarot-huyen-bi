@@ -1,6 +1,62 @@
+import { useState } from "react";
+import { createContactMessage } from "../api/client";
 import SparkleButton from "../components/SparkleButton";
 
 export default function ContactPage() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  function update<K extends keyof typeof form>(key: K, value: string) {
+    setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      await createContactMessage({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.replace(/[\s.\-()]/g, "") || null,
+        message: form.message,
+      });
+      setSuccess(true);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (success) {
+    return (
+      <main className="min-h-screen flex items-center justify-center px-4 pt-16">
+        <div className="max-w-md w-full text-center animate-fade-in">
+          <span className="text-5xl block mb-6">💌</span>
+          <h1 className="font-display text-3xl text-mist mb-4">Đã gửi tin nhắn!</h1>
+          <p className="font-body text-lilac italic mb-8">
+            Cảm ơn bạn đã liên hệ. Tôi sẽ phản hồi trong thời gian sớm nhất.
+          </p>
+          <SparkleButton
+            as="link"
+            href="/"
+            className="px-8 py-3 rounded-xl font-display text-sm tracking-widest uppercase bg-arcane text-mist hover:bg-arcane/80 transition-all btn-glow"
+          >
+            Về trang chủ
+          </SparkleButton>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen pt-24 pb-16">
       <div className="max-w-2xl mx-auto px-4">
@@ -60,17 +116,23 @@ export default function ContactPage() {
           <h2 className="font-display text-lg tracking-wider uppercase text-mist text-center mb-6">
             Gửi tin nhắn cho tôi
           </h2>
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="space-y-4"
-          >
+
+          {error && (
+            <p className="text-center font-body text-red-400 italic mb-4" role="alert">
+              {error}
+            </p>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block font-body text-lilac text-sm mb-1">Họ và tên <span className="text-candle-gold">*</span></label>
               <input
                 type="text"
                 required
+                value={form.name}
+                onChange={(e) => update("name", e.target.value)}
                 className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane transition-colors"
-                placeholder="Tên của bạn"
+                placeholder="Nhập họ và tên"
               />
             </div>
             <div>
@@ -78,16 +140,20 @@ export default function ContactPage() {
               <input
                 type="email"
                 required
+                value={form.email}
+                onChange={(e) => update("email", e.target.value)}
                 className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane transition-colors"
-                placeholder="email@example.com"
+                placeholder="Nhập địa chỉ email"
               />
             </div>
             <div>
               <label className="block font-body text-lilac text-sm mb-1">Số điện thoại</label>
               <input
                 type="tel"
+                value={form.phone}
+                onChange={(e) => update("phone", e.target.value)}
                 className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane transition-colors"
-                placeholder="0912 345 678"
+                placeholder="Nhập số điện thoại"
               />
             </div>
             <div>
@@ -95,15 +161,18 @@ export default function ContactPage() {
               <textarea
                 required
                 rows={4}
+                value={form.message}
+                onChange={(e) => update("message", e.target.value)}
                 className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane transition-colors resize-none"
-                placeholder="Nội dung tin nhắn..."
+                placeholder="Nhập nội dung tin nhắn"
               />
             </div>
             <SparkleButton
               type="submit"
-              className="w-full py-3 rounded-xl font-display text-sm tracking-widest uppercase bg-arcane text-mist hover:bg-arcane/80 transition-all btn-glow"
+              disabled={loading}
+              className="w-full py-3 rounded-xl font-display text-sm tracking-widest uppercase bg-arcane text-mist hover:bg-arcane/80 transition-all btn-glow disabled:opacity-60"
             >
-              Gửi tin nhắn
+              {loading ? "Đang gửi..." : "Gửi tin nhắn"}
             </SparkleButton>
           </form>
         </div>

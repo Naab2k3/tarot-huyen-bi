@@ -102,8 +102,10 @@ Dữ liệu (tên, ý nghĩa tiếng Việt): `frontend/public/data/tarot-cards.
 | Method | Path | Mô tả |
 |---|---|---|
 | GET | `/api/services` | Dịch vụ đang active |
-| GET | `/api/bookings/availability?service_id=&date_str=YYYY-MM-DD` | Khung giờ trống |
+| GET | `/api/bookings/availability?service_id=&date_str=YYYY-MM-DD` | Khung giờ trống (full-time 0-24, giờ VN) |
 | POST | `/api/bookings` | Tạo booking (race-condition guard → 409) |
+| POST | `/api/contact` | Gửi tin nhắn liên hệ |
+| POST | `/api/recruit` | Gửi đơn ứng tuyển idol |
 
 ### Admin (Bearer JWT)
 
@@ -117,6 +119,12 @@ Dữ liệu (tên, ý nghĩa tiếng Việt): `frontend/public/data/tarot-cards.
 | POST | `/api/admin/services` | Thêm dịch vụ |
 | PUT | `/api/admin/services/{id}` | Sửa dịch vụ |
 | DELETE | `/api/admin/services/{id}` | Xóa dịch vụ |
+| GET | `/api/admin/applications` | Danh sách đơn ứng tuyển |
+| PATCH | `/api/admin/applications/{id}` | Cập nhật trạng thái đơn |
+| DELETE | `/api/admin/applications/{id}` | Xóa đơn |
+| GET | `/api/admin/messages` | Danh sách tin nhắn liên hệ |
+| PATCH | `/api/admin/messages/{id}` | Đánh dấu đã đọc |
+| DELETE | `/api/admin/messages/{id}` | Xóa tin nhắn |
 
 ## 🎨 Design System
 

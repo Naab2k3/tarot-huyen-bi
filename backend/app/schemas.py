@@ -1,6 +1,17 @@
 from datetime import date, datetime, time
+import re
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+
+def _normalize_phone(v: str | None) -> str | None:
+    if v is None:
+        return v
+    cleaned = re.sub(r"[\s.\-()]", "", v)
+    return cleaned
+
+
+EMAIL_PATTERN = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
 
 
 # ---------- Service ----------
@@ -16,18 +27,18 @@ class ServiceOut(BaseModel):
 
 
 class ServiceCreate(BaseModel):
-    name: str
+    name: str = Field(..., min_length=1, max_length=200)
     description: str = ""
-    duration_minutes: int
-    price: int
+    duration_minutes: int = Field(..., gt=0)
+    price: int = Field(..., ge=0)
     is_active: bool = True
 
 
 class ServiceUpdate(BaseModel):
-    name: str | None = None
+    name: str | None = Field(None, min_length=1, max_length=200)
     description: str | None = None
-    duration_minutes: int | None = None
-    price: int | None = None
+    duration_minutes: int | None = Field(None, gt=0)
+    price: int | None = Field(None, ge=0)
     is_active: bool | None = None
 
 
@@ -40,12 +51,27 @@ class BookingCreate(BaseModel):
     customer_phone: str = Field(
         ...,
         min_length=10,
-        max_length=15,
-        pattern=r"^\+?\d{10,15}$",
-        description="Phone number: 10-15 digits, optional leading +",
+        max_length=20,
+        description="Phone number: 10-15 digits, optional leading +, spaces/dashes/dots allowed",
     )
-    customer_email: str | None = None
+    customer_email: str | None = Field(None, pattern=EMAIL_PATTERN)
     note: str | None = None
+
+    @field_validator("customer_phone")
+    @classmethod
+    def normalize_customer_phone(cls, v: str) -> str:
+        cleaned = _normalize_phone(v)
+        assert cleaned is not None
+        if not re.fullmatch(r"^\+?\d{10,15}$", cleaned):
+            raise ValueError("Phone number must be 10-15 digits, optional leading +")
+        return cleaned
+
+    @field_validator("customer_email")
+    @classmethod
+    def normalize_customer_email(cls, v: str | None) -> str | None:
+        if v is None or v == "":
+            return None
+        return v.strip()
 
 
 class BookingOut(BaseModel):
@@ -73,14 +99,29 @@ class IdolApplicationCreate(BaseModel):
     phone: str = Field(
         ...,
         min_length=10,
-        max_length=15,
-        pattern=r"^\+?\d{10,15}$",
-        description="Phone number: 10-15 digits, optional leading +",
+        max_length=20,
+        description="Phone number: 10-15 digits, optional leading +, spaces/dashes/dots allowed",
     )
-    email: str | None = None
+    email: str | None = Field(None, pattern=EMAIL_PATTERN)
     social_link: str | None = None
     reason: str = Field(..., min_length=1, max_length=4000)
     experience: str | None = None
+
+    @field_validator("phone")
+    @classmethod
+    def normalize_phone(cls, v: str) -> str:
+        cleaned = _normalize_phone(v)
+        assert cleaned is not None
+        if not re.fullmatch(r"^\+?\d{10,15}$", cleaned):
+            raise ValueError("Phone number must be 10-15 digits, optional leading +")
+        return cleaned
+
+    @field_validator("email")
+    @classmethod
+    def normalize_email(cls, v: str | None) -> str | None:
+        if v is None or v == "":
+            return None
+        return v.strip()
 
 
 class IdolApplicationOut(BaseModel):
@@ -100,6 +141,37 @@ class IdolApplicationOut(BaseModel):
 
 class IdolApplicationStatusUpdate(BaseModel):
     status: str = Field(..., pattern=r"^(contacted|accepted|rejected)$")
+
+
+# ---------- Contact messages ----------
+class ContactMessageCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=200)
+    email: str = Field(..., min_length=3, max_length=200, pattern=EMAIL_PATTERN)
+    phone: str | None = Field(None, max_length=20)
+    message: str = Field(..., min_length=1, max_length=4000)
+
+    @field_validator("phone")
+    @classmethod
+    def normalize_contact_phone(cls, v: str | None) -> str | None:
+        if v is None or v == "":
+            return None
+        cleaned = _normalize_phone(v)
+        assert cleaned is not None
+        if not re.fullmatch(r"^\+?\d{10,15}$", cleaned):
+            raise ValueError("Phone number must be 10-15 digits, optional leading +")
+        return cleaned
+
+
+class ContactMessageOut(BaseModel):
+    id: int
+    name: str
+    email: str
+    phone: str | None
+    message: str
+    is_read: bool
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
 
 
 # ---------- Admin auth ----------
