@@ -18,10 +18,11 @@ export default function BookingForm({ onSubmit, loading }: Props) {
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    const normalizedPhone = phone.replace(/[\s.\-()]/g, "");
     onSubmit({
-      customer_name: name,
-      customer_phone: phone,
-      customer_email: email || undefined,
+      customer_name: name.trim(),
+      customer_phone: normalizedPhone,
+      customer_email: email.trim() || undefined,
       note: note || undefined,
     });
   }
@@ -38,7 +39,7 @@ export default function BookingForm({ onSubmit, loading }: Props) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="w-full bg-velvet/60 border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane transition-colors"
-          placeholder="Nhập tên của bạn"
+          placeholder="Nhập họ và tên"
         />
       </div>
 
@@ -52,7 +53,7 @@ export default function BookingForm({ onSubmit, loading }: Props) {
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           className="w-full bg-velvet/60 border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane transition-colors"
-          placeholder="0912 345 678"
+          placeholder="Nhập số điện thoại"
         />
       </div>
 
@@ -65,7 +66,7 @@ export default function BookingForm({ onSubmit, loading }: Props) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-full bg-velvet/60 border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane transition-colors"
-          placeholder="email@example.com"
+          placeholder="Nhập địa chỉ email"
         />
       </div>
 
@@ -78,7 +79,7 @@ export default function BookingForm({ onSubmit, loading }: Props) {
           onChange={(e) => setNote(e.target.value)}
           rows={3}
           className="w-full bg-velvet/60 border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane transition-colors resize-none"
-          placeholder="Chia sẻ thêm điều bạn muốn Tarot Reader biết..."
+          placeholder="Nhập ghi chú"
         />
       </div>
 

@@ -18,9 +18,9 @@ export default function FloatingCTA() {
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-void/90 backdrop-blur-md border-t border-velvet/40 py-3 px-4 md:hidden">
       <div className="flex items-center justify-between max-w-2xl mx-auto">
         <img
-          src="/images/logo-sm.png"
+          src="/logo/logo-2-demo.png"
           alt="Healing With My"
-          className="h-8 w-auto drop-shadow-[0_0_4px_rgba(212,168,67,0.2)]"
+          className="h-10 w-auto drop-shadow-[0_0_4px_rgba(212,168,67,0.3)]"
         />
         <Link
           to="/booking"

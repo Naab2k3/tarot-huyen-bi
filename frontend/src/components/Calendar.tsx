@@ -51,7 +51,7 @@ export default function Calendar({ selected, onSelect }: Props) {
   function isPast(day: number): boolean {
     const d = new Date(viewYear, viewMonth, day);
     d.setHours(0, 0, 0, 0);
-    return d <= today;
+    return d < today;
   }
 
   function dateStr(day: number): string {

@@ -4,9 +4,12 @@ import {
   clearOnUnauthorized,
   deleteAdminService,
   deleteApplication,
+  deleteMessage,
   getAdminApplications,
   getAdminBookings,
+  getAdminMessages,
   getAdminServices,
+  markMessageRead,
   setOnUnauthorized,
   updateAdminService,
   updateApplicationStatus,
@@ -14,9 +17,9 @@ import {
   createAdminService,
   deleteBooking,
 } from "../api/client";
-import type { Booking, IdolApplication, Service } from "../api/types";
+import type { Booking, ContactMessage, IdolApplication, Service } from "../api/types";
 
-type Tab = "bookings" | "services" | "applications";
+type Tab = "bookings" | "services" | "applications" | "messages";
 
 function statusBtn(token: string, label: string, active?: boolean) {
   const colors: Record<string, string> = {
@@ -33,6 +36,7 @@ export default function AdminDashboard() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [applications, setApplications] = useState<IdolApplication[]>([]);
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [statusFilter, setStatusFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [appFilter, setAppFilter] = useState("");
@@ -65,6 +69,12 @@ export default function AdminDashboard() {
       .catch((e) => setError(e.message));
   }, [appFilter]);
 
+  const loadMessages = useCallback(() => {
+    getAdminMessages()
+      .then(setMessages)
+      .catch((e) => setError(e.message));
+  }, []);
+
   useEffect(() => {
     const token = localStorage.getItem("admin_token");
     if (!token) {
@@ -75,13 +85,15 @@ export default function AdminDashboard() {
     loadBookings();
     loadServices();
     loadApplications();
+    loadMessages();
     return () => clearOnUnauthorized();
-  }, [loadBookings, loadServices, loadApplications, navigate]);
+  }, [loadBookings, loadServices, loadApplications, loadMessages, navigate]);
 
   useEffect(() => {
     if (tab === "services") loadServices();
     if (tab === "applications") loadApplications();
-  }, [tab, loadServices, loadApplications]);
+    if (tab === "messages") loadMessages();
+  }, [tab, loadServices, loadApplications, loadMessages]);
 
   async function handleStatus(id: number, status: string) {
     try {
@@ -123,9 +135,21 @@ export default function AdminDashboard() {
   }
 
   async function handleSaveService() {
+    if (!svcName.trim()) {
+      setError("Tên dịch vụ không được để trống");
+      return;
+    }
+    if (!Number.isFinite(svcPrice) || svcPrice < 0) {
+      setError("Giá phải là số >= 0");
+      return;
+    }
+    if (!Number.isInteger(svcDuration) || svcDuration <= 0) {
+      setError("Thời lượng phải là số nguyên > 0 (phút)");
+      return;
+    }
     try {
       const data = {
-        name: svcName,
+        name: svcName.trim(),
         description: svcDesc,
         duration_minutes: svcDuration,
         price: svcPrice,
@@ -167,6 +191,25 @@ export default function AdminDashboard() {
     try {
       await deleteApplication(id);
       loadApplications();
+    } catch (e: any) {
+      setError(e.message);
+    }
+  }
+
+  async function handleMarkMessageRead(id: number) {
+    try {
+      await markMessageRead(id);
+      loadMessages();
+    } catch (e: any) {
+      setError(e.message);
+    }
+  }
+
+  async function handleDeleteMessage(id: number) {
+    if (!confirm("Xóa tin nhắn này?")) return;
+    try {
+      await deleteMessage(id);
+      loadMessages();
     } catch (e: any) {
       setError(e.message);
     }
@@ -266,6 +309,21 @@ export default function AdminDashboard() {
             }`}
           >
             Tuyển dụng
+          </button>
+          <button
+            onClick={() => setTab("messages")}
+            className={`px-5 py-2.5 font-body text-sm tracking-wide uppercase transition-all ${
+              tab === "messages"
+                ? "text-mist border-b-2 border-arcane"
+                : "text-lilac/60 hover:text-lilac"
+            }`}
+          >
+            Tin nhắn
+            {messages.some((m) => !m.is_read) && (
+              <span className="ml-1.5 inline-block min-w-5 px-1.5 py-0.5 rounded-full bg-candle-gold text-void text-xs font-body font-bold">
+                {messages.filter((m) => !m.is_read).length}
+              </span>
+            )}
           </button>
         </div>
 
@@ -617,6 +675,78 @@ export default function AdminDashboard() {
                           </p>
                         </div>
                       )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* ──── Tin nhắn tab ──── */}
+        {tab === "messages" && (
+          <section>
+            <div className="flex flex-wrap gap-3 mb-4">
+              <button
+                onClick={loadMessages}
+                className="px-3 py-1.5 rounded-lg font-body text-lilac border border-velvet hover:border-lilac/30 text-sm transition-all"
+              >
+                Tải lại
+              </button>
+            </div>
+
+            {messages.length === 0 ? (
+              <p className="text-center font-body text-lilac/50 italic py-8">
+                Chưa có tin nhắn nào
+              </p>
+            ) : (
+              <div className="grid gap-4">
+                {messages.map((m) => (
+                  <div
+                    key={m.id}
+                    className={`bg-velvet/60 border rounded-xl p-4 ${
+                      m.is_read ? "border-velvet" : "border-candle-gold/40"
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="min-w-[220px]">
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-display text-sm tracking-wider uppercase text-mist">
+                            {m.name}
+                          </h4>
+                          {!m.is_read && (
+                            <span className="px-2 py-0.5 rounded text-xs font-body font-semibold border bg-candle-gold/20 text-candle-gold border-candle-gold/30">
+                              Mới
+                            </span>
+                          )}
+                        </div>
+                        <p className="font-body text-lilac text-sm mt-1">
+                          {m.email}
+                          {m.phone ? ` · ${m.phone}` : ""}
+                        </p>
+                        <p className="font-body text-lilac/60 text-xs mt-0.5">
+                          {new Date(m.created_at).toLocaleString("vi-VN")}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 shrink-0">
+                        {!m.is_read && (
+                          <button
+                            onClick={() => handleMarkMessageRead(m.id)}
+                            className={statusBtn("confirm", "Đã đọc")}
+                          >
+                            ✓ Đã đọc
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDeleteMessage(m.id)}
+                          className={statusBtn("delete", "Xóa")}
+                        >
+                          Xóa
+                        </button>
+                      </div>
+                    </div>
+                    <div className="mt-3 border-t border-velvet/50 pt-3">
+                      <p className="font-body text-mist text-sm whitespace-pre-line">{m.message}</p>
                     </div>
                   </div>
                 ))}

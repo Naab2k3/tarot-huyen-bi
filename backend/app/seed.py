@@ -75,7 +75,126 @@ def seed_services(db: Session) -> None:
         ),
     ]
 
-    to_add = [s for s in services if s.name not in existing]
+    # Gói marketing hiển thị ở trang Services (frontend hardcode).
+    # Thời lượng là ước lượng — chỉnh lại trong trang Admin nếu cần.
+    marketing = [
+        Service(
+            name="Tarot - 1 vấn đề",
+            description="Trải bài Tarot tập trung giải đáp 1 vấn đề bạn quan tâm nhất.",
+            duration_minutes=30,
+            price=200000,
+        ),
+        Service(
+            name="Tarot - 3 vấn đề",
+            description="Trải bài Tarot giải đáp 3 vấn đề trong cuộc sống của bạn.",
+            duration_minutes=60,
+            price=350000,
+        ),
+        Service(
+            name="Tarot - Full vấn đề",
+            description="Trải bài Tarot toàn diện, không giới hạn số vấn đề.",
+            duration_minutes=60,
+            price=500000,
+        ),
+        Service(
+            name="Tarot - 30 phút",
+            description="Buổi xem Tarot 30 phút, hỏi đáp trực tiếp cùng Reader.",
+            duration_minutes=30,
+            price=500000,
+        ),
+        Service(
+            name="Tarot - 1 tiếng",
+            description="Buổi xem Tarot 60 phút, đào sâu mọi khía cạnh bạn quan tâm.",
+            duration_minutes=60,
+            price=900000,
+        ),
+        Service(
+            name="Tea Leaf - 3 tháng full",
+            description="Xem bói lá trà tổng quan vận trình 3 tháng tới.",
+            duration_minutes=60,
+            price=250000,
+        ),
+        Service(
+            name="Tea Leaf - 6 tháng 3 vấn đề",
+            description="Xem bói lá trà 3 vấn đề trong vận trình 6 tháng tới.",
+            duration_minutes=60,
+            price=300000,
+        ),
+        Service(
+            name="Tea Leaf - 6 tháng full",
+            description="Xem bói lá trà toàn diện vận trình 6 tháng tới.",
+            duration_minutes=60,
+            price=400000,
+        ),
+        Service(
+            name="Tea Leaf - 12 tháng full",
+            description="Xem bói lá trà tổng quan cả năm, định hướng dài hạn.",
+            duration_minutes=60,
+            price=450000,
+        ),
+        Service(
+            name="Grand Tableau - cơ bản",
+            description="Trải bài Grand Tableau 36 lá ở mức cơ bản, cái nhìn tổng quan.",
+            duration_minutes=60,
+            price=350000,
+        ),
+        Service(
+            name="Grand Tableau - nâng cao",
+            description="Trải bài Grand Tableau chuyên sâu từng khía cạnh cuộc sống.",
+            duration_minutes=90,
+            price=500000,
+        ),
+        Service(
+            name="Grand Tableau - VIP",
+            description="Trải bài Grand Tableau VIP, phân tích chi tiết và đồng hành.",
+            duration_minutes=120,
+            price=1200000,
+        ),
+        Service(
+            name="Combo Tarot + Tea Leaf",
+            description="Kết hợp Tarot và Tea Leaf, góc nhìn đa chiều, tiết kiệm hơn.",
+            duration_minutes=90,
+            price=800000,
+        ),
+        Service(
+            name="Combo VIP Full Tarot",
+            description="Combo VIP xem full Tarot mọi vấn đề trong một buổi.",
+            duration_minutes=90,
+            price=1000000,
+        ),
+        Service(
+            name="Combo VIP đầy đủ",
+            description="Combo VIP đầy đủ mọi phương pháp, bức tranh toàn diện nhất.",
+            duration_minutes=120,
+            price=1500000,
+        ),
+        Service(
+            name="Đá phong thủy",
+            description="Tư vấn đá phong thủy hợp mệnh, thu hút năng lượng tốt.",
+            duration_minutes=30,
+            price=200000,
+        ),
+        Service(
+            name="Lá số chiêu tinh",
+            description="Luận lá số chiêu tinh, khám phá bản đồ năng lượng cá nhân.",
+            duration_minutes=60,
+            price=500000,
+        ),
+        Service(
+            name="Bản đồ sao",
+            description="Luận bản đồ sao cá nhân, định hướng tính cách và vận trình.",
+            duration_minutes=60,
+            price=300000,
+        ),
+        Service(
+            name="Tử vi",
+            description="Luận tử vi trọn đời, tổng quan vận hạn và định hướng.",
+            duration_minutes=60,
+            price=500000,
+        ),
+    ]
+
+    to_add = [s for s in services + marketing if s.name not in existing]
     if to_add:
         db.add_all(to_add)
         db.commit()

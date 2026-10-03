@@ -71,3 +71,15 @@ class IdolApplication(Base):
     )
     note: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
+
+
+class ContactMessage(Base):
+    __tablename__ = "contact_messages"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(200), nullable=False)
+    email: Mapped[str] = mapped_column(String(200), nullable=False)
+    phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    message: Mapped[str] = mapped_column(Text, nullable=False)
+    is_read: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(default=datetime.now)

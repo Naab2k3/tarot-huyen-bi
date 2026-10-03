@@ -8,12 +8,15 @@ from app.config import ADMIN_USERNAME
 from app.crud import (
     create_service,
     delete_booking,
+    delete_contact_message,
     delete_idol_application,
     delete_service,
     get_all_services,
     get_bookings,
+    get_contact_messages,
     get_idol_applications,
     get_service,
+    mark_contact_message_read,
     update_booking_status,
     update_idol_application_status,
     update_service,
@@ -23,6 +26,7 @@ from app.schemas import (
     AdminLogin,
     BookingOut,
     BookingStatusUpdate,
+    ContactMessageOut,
     IdolApplicationOut,
     IdolApplicationStatusUpdate,
     ServiceCreate,
@@ -40,6 +44,8 @@ def admin_login(body: AdminLogin):
         valid = verify_password(body.password)
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
     if body.username != ADMIN_USERNAME or not valid:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     token = create_access_token()
@@ -169,4 +175,38 @@ def remove_application(
     ok = delete_idol_application(db, application_id)
     if not ok:
         raise HTTPException(status_code=404, detail="Application not found")
+    return None
+
+
+# ---------- Contact messages ----------
+@router.get("/messages", response_model=list[ContactMessageOut])
+def list_contact_messages(
+    unread_only: bool = Query(False),
+    db: Session = Depends(get_db),
+    _=Depends(verify_token),
+):
+    return get_contact_messages(db, unread_only=unread_only)
+
+
+@router.patch("/messages/{message_id}", response_model=ContactMessageOut)
+def mark_message_read(
+    message_id: int,
+    db: Session = Depends(get_db),
+    _=Depends(verify_token),
+):
+    msg = mark_contact_message_read(db, message_id)
+    if not msg:
+        raise HTTPException(status_code=404, detail="Message not found")
+    return msg
+
+
+@router.delete("/messages/{message_id}", status_code=204)
+def remove_message(
+    message_id: int,
+    db: Session = Depends(get_db),
+    _=Depends(verify_token),
+):
+    ok = delete_contact_message(db, message_id)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Message not found")
     return None

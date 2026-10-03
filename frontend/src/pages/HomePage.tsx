@@ -25,10 +25,10 @@ const WHY_US = [
 ];
 
 const SERVICE_CATEGORIES = [
-  { icon: "🃏", name: "Tarot", desc: "Giải mã năng lượng qua 78 lá bài Tarot huyền bí", link: "/services" },
-  { icon: "🍃", name: "Tea Leaf", desc: "Xem bói qua lá trà — nghệ thuật cổ xưa phương Đông", link: "/services" },
-  { icon: "🎴", name: "Bài Oracle", desc: "Lenormand, Oracle, Grand Tableau và nhiều hơn nữa", link: "/services" },
-  { icon: "💫", name: "Combo", desc: "Kết hợp nhiều phương pháp — tiết kiệm hơn, sâu hơn", link: "/services" },
+  { icon: "🃏", name: "Tarot", desc: "Giải mã năng lượng qua 78 lá bài Tarot huyền bí", link: "/booking" },
+  { icon: "🍃", name: "Tea Leaf", desc: "Xem bói qua lá trà — nghệ thuật cổ xưa phương Đông", link: "/booking" },
+  { icon: "🎴", name: "Bài Oracle", desc: "Lenormand, Oracle, Grand Tableau và nhiều hơn nữa", link: "/booking" },
+  { icon: "💫", name: "Combo", desc: "Kết hợp nhiều phương pháp — tiết kiệm hơn, sâu hơn", link: "/booking" },
 ];
 
 export default function HomePage() {
@@ -37,7 +37,7 @@ export default function HomePage() {
   const cardsRevealed = useRef(false);
 
   useEffect(() => {
-    getServices().then(setServices).catch(() => {});
+    getServices().then(setServices).catch((e) => console.warn("getServices failed:", e.message));
   }, []);
 
   // Stagger entry for service cards
@@ -103,12 +103,12 @@ export default function HomePage() {
         <div className="relative z-10 text-center px-4 max-w-2xl mx-auto">
           {/* Brand logo */}
           <img
-            src="/images/logo-lg.png"
+            src="/logo/logo-2-demo.png"
             alt="Healing With My"
-            className="w-28 md:w-36 h-auto mx-auto mb-6"
+            className="w-48 md:w-60 h-auto mx-auto mb-6 drop-shadow-[0_0_16px_rgba(212,168,67,0.3)]"
           />
 
-          <p className="font-logo text-mist tracking-widest uppercase text-sm md:text-base mb-4 opacity-70">
+          <p className="font-logo text-mist tracking-widest uppercase text-base md:text-lg mb-4 opacity-90">
             Huyền học · Tâm linh · Kết nối
           </p>
 
@@ -116,7 +116,7 @@ export default function HomePage() {
             Healing<br />With My
           </h1>
 
-          <p className="font-body text-lilac text-lg md:text-xl italic mb-8 leading-relaxed">
+          <p className="font-body text-lilac text-xl md:text-2xl italic mb-8 leading-relaxed">
             Nơi năng lượng vũ trụ gặp gỡ tâm hồn bạn qua Tarot, Tea Leaf và những bí ẩn huyền học.
           </p>
 
@@ -158,19 +158,19 @@ export default function HomePage() {
               <p className="font-display text-3xl md:text-4xl text-candle-gold">
                 <CountUp end={500} suffix="+" />
               </p>
-              <p className="font-body text-lilac/60 text-sm tracking-wide mt-1">Khách hàng</p>
+              <p className="font-body text-lilac/70 text-base tracking-wide mt-1">Khách hàng</p>
             </div>
             <div>
               <p className="font-display text-3xl md:text-4xl text-candle-gold">
                 <CountUp end={5} suffix="★" />
               </p>
-              <p className="font-body text-lilac/60 text-sm tracking-wide mt-1">Đánh giá</p>
+              <p className="font-body text-lilac/70 text-base tracking-wide mt-1">Đánh giá</p>
             </div>
             <div>
               <p className="font-display text-3xl md:text-4xl text-candle-gold">
                 <CountUp end={3} suffix="+" />
               </p>
-              <p className="font-body text-lilac/60 text-sm tracking-wide mt-1">Năm kinh nghiệm</p>
+              <p className="font-body text-lilac/70 text-base tracking-wide mt-1">Năm kinh nghiệm</p>
             </div>
           </div>
         </div>
@@ -276,13 +276,17 @@ export default function HomePage() {
               <Link
                 key={cat.name}
                 to={cat.link}
-                className="service-card-item bg-velvet/40 border border-velvet rounded-xl p-6 hover:border-arcane/30 hover:bg-velvet/60 transition-all group"
+                className="service-card-item group relative overflow-hidden bg-gradient-to-br from-velvet/70 via-velvet/40 to-arcane/15 border border-arcane/30 rounded-2xl p-6 md:p-7 hover:border-candle-gold/50 hover:-translate-y-1 hover:shadow-xl hover:shadow-candle-gold/15 transition-all duration-300"
               >
-                <span className="text-3xl block mb-3">{cat.icon}</span>
-                <h3 className="font-display text-lg tracking-wider text-mist mb-1 group-hover:text-arcane transition-colors">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-candle-gold/70 to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
+                <span className="text-4xl block mb-4 w-16 h-16 flex items-center justify-center rounded-2xl bg-candle-gold/15 border border-candle-gold/30 shadow-lg shadow-candle-gold/10 group-hover:scale-110 transition-transform">{cat.icon}</span>
+                <h3 className="font-display text-xl tracking-wider text-mist mb-2 group-hover:text-candle-gold transition-colors">
                   {cat.name}
                 </h3>
-                <p className="font-body text-lilac/70 text-sm">{cat.desc}</p>
+                <p className="font-body text-lilac/85 text-base leading-relaxed">{cat.desc}</p>
+                <span className="inline-block mt-4 font-body text-candle-gold text-sm font-semibold tracking-wider uppercase opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
+                  Đặt lịch ngay →
+                </span>
               </Link>
             ))}
           </div>
@@ -318,7 +322,7 @@ export default function HomePage() {
               <div key={w.title} className="text-center">
                 <span className="text-3xl block mb-3">{w.icon}</span>
                 <h3 className="font-display text-sm tracking-wider uppercase text-mist mb-1">{w.title}</h3>
-                <p className="font-body text-lilac/60 text-xs leading-relaxed">{w.desc}</p>
+                <p className="font-body text-lilac/75 text-sm leading-relaxed">{w.desc}</p>
               </div>
             ))}
           </div>

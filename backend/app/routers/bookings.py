@@ -1,4 +1,5 @@
 from datetime import date, datetime, time
+from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -45,7 +46,7 @@ def create_new_booking(body: BookingCreate, db: Session = Depends(get_db)):
     except (ValueError, TypeError):
         raise HTTPException(status_code=400, detail="Invalid time format")
 
-    now = datetime.now()
+    now = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).replace(tzinfo=None)
     slot_dt = datetime.combine(appointment_date, appointment_time)
     if slot_dt <= now:
         raise HTTPException(status_code=400, detail="Cannot book in the past")
