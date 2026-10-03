@@ -79,6 +79,21 @@ def test_build_copies_nothing_into_the_function(vercel_config):
     )
 
 
+def test_python_version_is_pinned(vercel_config):
+    """Without .python-version Vercel picks its own default, which moved to
+    3.14. psycopg2-binary 2.9.10 ships no 3.14 wheels, so the build falls
+    back to compiling from source and dies on a missing pg_config."""
+    pinned = (REPO_ROOT / ".python-version").read_text(encoding="utf-8").strip()
+    assert pinned == "3.12", (
+        f".python-version is {pinned!r}; expected 3.12, otherwise the Lambda "
+        "build cannot resolve psycopg2-binary"
+    )
+    assert vercel_config.get("framework", "unset") is None, (
+        "the FastAPI preset used to pin Python implicitly; with it disabled the "
+        ".python-version file is the only thing holding the version steady"
+    )
+
+
 def test_api_is_routed_to_the_function(vercel_config):
     api_rewrites = [r for r in vercel_config["rewrites"] if r["source"] == "/api/(.*)"]
     assert api_rewrites, f"no /api rewrite in {vercel_config['rewrites']}"
