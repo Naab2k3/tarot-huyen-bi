@@ -57,7 +57,7 @@ Sửa `backend/.env`:
 | `SECRET_KEY` | Khóa JWT — đổi thành chuỗi ngẫu nhiên |
 | `CORS_ORIGINS` | Origin được phép CORS |
 
-> Tạo hash: `python -c "from passlib.context import CryptContext; print(CryptContext(schemes=['bcrypt']).hash('mat-khau-cua-ban'))"`
+> Tạo hash: `python -c "import sys; sys.path.insert(0, 'backend'); from app.auth import hash_password; print(hash_password('mat-khau-cua-ban'))"`
 
 ### 3. Database
 
