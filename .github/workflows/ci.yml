@@ -54,6 +54,17 @@ jobs:
           ADMIN_USERNAME: test
           ADMIN_PASSWORD_HASH: test-hash
           CORS_ORIGINS: "*"
+      # Guards the vercel.json wiring and the SPA static mount. The MIME bug
+      # that blanked production shipped through both of these unnoticed.
+      - run: pip install pytest httpx
+      - name: pytest
+        run: python -m pytest tests -q
+        env:
+          DATABASE_URL: sqlite:///ci-check.db
+          SECRET_KEY: ci-secret-key
+          ADMIN_USERNAME: test
+          ADMIN_PASSWORD_HASH: test-hash
+          CORS_ORIGINS: "*"
 
   data-json:
     name: Tarot data JSON

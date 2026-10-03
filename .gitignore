@@ -40,6 +40,12 @@ docker-compose.override.yml
 # ── Vercel ──
 .vercel/
 
+# `vercel build` generates these from requirements.txt. Do not commit them:
+# a root pyproject.toml would take precedence over requirements.txt on Vercel
+# and pin a different Python/dep set than the lambda actually ships.
+pyproject.toml
+uv.lock
+
 # ── Misc ──
 *.log
 PLAN_NOTES.md
