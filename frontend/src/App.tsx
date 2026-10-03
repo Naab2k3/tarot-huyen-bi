@@ -50,7 +50,6 @@ export default function App() {
     <div className="relative min-h-screen">
       <StarField />
       <Navbar />
-      <FloatingCTA />
       <ScrollToTop />
       <div className="relative z-10">
         <Routes>
@@ -74,6 +73,7 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
+      <FloatingCTA />
     </div>
   );
 }

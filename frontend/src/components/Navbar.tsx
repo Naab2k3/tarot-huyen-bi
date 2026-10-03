@@ -54,7 +54,7 @@ export default function Navbar() {
         {/* Mobile hamburger */}
         <button
           onClick={() => setOpen(!open)}
-          className="md:hidden text-lilac p-2"
+          className="md:hidden text-lilac p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
           aria-label="Menu"
           aria-expanded={open}
         >

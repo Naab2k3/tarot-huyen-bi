@@ -76,7 +76,7 @@ export default function Calendar({ selected, onSelect }: Props) {
           disabled={prevDisabled}
           aria-label="Tháng trước"
           aria-disabled={prevDisabled}
-          className={`p-2 transition-colors rounded-lg ${
+          className={`min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors rounded-lg ${
             prevDisabled
               ? "text-lilac/20 cursor-not-allowed"
               : "text-lilac hover:text-mist hover:bg-velvet/60"
@@ -92,7 +92,7 @@ export default function Calendar({ selected, onSelect }: Props) {
         <button
           onClick={next}
           aria-label="Tháng sau"
-          className="text-lilac hover:text-mist hover:bg-velvet/60 p-2 transition-colors rounded-lg"
+          className="min-w-[44px] min-h-[44px] flex items-center justify-center text-lilac hover:text-mist hover:bg-velvet/60 transition-colors rounded-lg"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

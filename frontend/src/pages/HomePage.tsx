@@ -97,10 +97,10 @@ export default function HomePage() {
   return (
     <main className="min-h-screen">
       {/* ─── Hero ─── */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+      <section className="relative min-h-[100dvh] flex overflow-hidden pt-16">
         <FloatingTarotCards count={6} />
 
-        <div className="relative z-10 text-center px-4 max-w-2xl mx-auto">
+        <div className="relative z-10 text-center px-4 max-w-2xl mx-auto m-auto py-10">
           {/* Brand logo */}
           <img
             src="/logo/logo-192.webp"
@@ -130,14 +130,14 @@ export default function HomePage() {
             <SparkleButton
               as="link"
               href="/booking"
-              className="px-8 py-3 rounded-xl font-display text-sm tracking-widest uppercase bg-arcane text-mist hover:bg-arcane/80 transition-all shadow-lg shadow-arcane/25 btn-glow"
+              className="w-full sm:w-auto max-w-[320px] px-8 py-3 rounded-xl font-display text-sm tracking-widest uppercase bg-arcane text-mist hover:bg-arcane/80 transition-all shadow-lg shadow-arcane/25 btn-glow"
             >
               ✨ Đặt lịch xem bài
             </SparkleButton>
             <SparkleButton
               as="link"
               href="/services"
-              className="px-8 py-3 rounded-xl font-display text-sm tracking-widest uppercase border border-velvet text-lilac hover:border-arcane/50 hover:text-mist transition-all"
+              className="w-full sm:w-auto max-w-[320px] px-8 py-3 rounded-xl font-display text-sm tracking-widest uppercase border border-velvet text-lilac hover:border-arcane/50 hover:text-mist transition-all"
             >
               Khám phá dịch vụ
             </SparkleButton>

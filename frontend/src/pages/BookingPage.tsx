@@ -6,7 +6,7 @@ import BookingForm from "../components/BookingForm";
 import Calendar from "../components/Calendar";
 import ConfirmationScreen from "../components/ConfirmationScreen";
 import MoonStepper from "../components/MoonStepper";
-import ServiceCard from "../components/ServiceCard";
+import ServicePicker from "../components/ServicePicker";
 import TimeSlots from "../components/TimeSlots";
 
 const BRAND = {
@@ -114,9 +114,9 @@ export default function BookingPage() {
 
         {/* ── Brand intro (only before booking starts) ── */}
         {step === 0 && !selectedService && (
-          <section className="mb-10 animate-fade-in">
+          <section className="mb-6 md:mb-10 animate-fade-in">
             {/* Stats */}
-            <div className="flex justify-center gap-6 mb-8 text-center">
+            <div className="flex justify-center gap-6 mb-6 md:mb-8 text-center">
               <div>
                 <p className="font-display text-2xl text-candle-gold">{BRAND.years.split("+")[0]}+</p>
                 <p className="font-body text-lilac/60 text-sm tracking-wide">năm kinh nghiệm</p>
@@ -128,15 +128,16 @@ export default function BookingPage() {
               </div>
             </div>
 
-            {/* Story */}
-            <div className="max-w-xl mx-auto text-center mb-8">
+            {/* Story — desktop only; on mobile it pushes the picker
+                below the fold. Full story lives on /about. */}
+            <div className="hidden md:block max-w-xl mx-auto text-center mb-8">
               <p className="font-body text-lilac leading-relaxed italic">
                 {BRAND.story}
               </p>
             </div>
 
             {/* Core values */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-xl mx-auto mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 max-w-xl mx-auto mb-6 md:mb-8">
               {BRAND.values.map((v) => (
                 <div
                   key={v.title}
@@ -171,16 +172,11 @@ export default function BookingPage() {
             {error && !selectedService && (
               <p className="text-center font-body text-red-400 italic mb-4">{error}</p>
             )}
-            <div className="grid gap-4 md:grid-cols-2">
-              {services.map((svc) => (
-                <ServiceCard
-                  key={svc.id}
-                  service={svc}
-                  selected={selectedService?.id === svc.id}
-                  onSelect={() => selectService(svc)}
-                />
-              ))}
-            </div>
+            <ServicePicker
+              services={services}
+              selectedId={selectedService?.id ?? null}
+              onSelect={selectService}
+            />
           </section>
         )}
 
@@ -213,14 +209,14 @@ export default function BookingPage() {
             <div className="flex justify-center gap-4 mt-8">
               <button
                 onClick={() => setStep(0)}
-                className="px-6 py-2 rounded-lg font-body text-lilac border border-velvet hover:border-lilac/30 transition-all"
+                className="px-6 min-h-[44px] rounded-lg font-body text-lilac border border-velvet hover:border-lilac/30 active:scale-[0.98] transition-all"
               >
                 Quay lại
               </button>
               <button
                 disabled={!selectedTime}
                 onClick={() => setStep(2)}
-                className="px-6 py-2 rounded-xl font-display text-sm tracking-widest uppercase bg-arcane text-mist hover:bg-arcane/80 disabled:opacity-50 transition-all"
+                className="px-6 min-h-[44px] rounded-xl font-display text-sm tracking-widest uppercase bg-arcane text-mist hover:bg-arcane/80 disabled:opacity-50 active:scale-[0.98] transition-all"
               >
                 Tiếp theo
               </button>
@@ -270,7 +266,7 @@ export default function BookingPage() {
             <div className="text-center mt-4">
               <button
                 onClick={() => setStep(1)}
-                className="px-6 py-2 rounded-lg font-body text-lilac border border-velvet hover:border-lilac/30 transition-all"
+                className="px-6 min-h-[44px] rounded-lg font-body text-lilac border border-velvet hover:border-lilac/30 active:scale-[0.98] transition-all"
               >
                 Quay lại
               </button>

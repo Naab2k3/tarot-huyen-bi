@@ -87,7 +87,7 @@ export default function TimeSlots({ serviceId, date, selected, onSelect }: Props
                   key={t}
                   onClick={() => onSelect(t)}
                   className={`
-                    py-2 px-3 rounded-lg font-body font-semibold text-sm tracking-wide transition-all
+                    py-2 px-3 min-h-[44px] rounded-lg font-body font-semibold text-sm tracking-wide transition-all active:scale-[0.98]
                     ${isSelected
                       ? "bg-arcane text-mist shadow-md shadow-arcane/30"
                       : "bg-velvet/60 text-lilac border border-velvet hover:border-arcane/50 hover:text-mist"
