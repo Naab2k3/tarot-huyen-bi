@@ -1,5 +1,7 @@
 fastapi==0.115.6
-uvicorn[standard]==0.34.0
+# uvicorn is intentionally absent: Vercel runs this as a managed ASGI shim and
+# nothing under api/ or app/ imports it. Dropping it also drops uvloop,
+# httptools, websockets and watchfiles from the cold-start bundle.
 sqlalchemy==2.0.36
 psycopg2-binary==2.9.10
 pydantic==2.10.3

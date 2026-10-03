@@ -31,22 +31,27 @@ async def lifespan(app: FastAPI):
             "See backend/.env.example"
         )
 
-    try:
-        Base.metadata.create_all(bind=engine)
-    except Exception:
-        # Serverless (Vercel) cold-start: DB (Neon) có thể lag/timeout.
-        # Không crash app — request tiếp theo sẽ thử lại.
-        # Local dev: kiểm tra Postgres đã chạy chưa (docker compose up).
-        logger.exception(
-            "Database create_all failed — check DATABASE_URL and DB availability"
-        )
-    db = SessionLocal()
-    try:
-        seed_services(db)
-    except Exception:
-        logger.exception("seed_services failed — skipping")
-    finally:
-        db.close()
+    # Schema + seed are NOT idempotent-once-only work: running them on every
+    # Vercel cold start costs 2 blocking DB round-trips (DDL reflection + a
+    # full SELECT on services) before the first request can be served.
+    # Local dev still gets them automatically; production uses Alembic.
+    if os.getenv("RUN_STARTUP_TASKS", "1" if not os.getenv("VERCEL") else "0") == "1":
+        try:
+            Base.metadata.create_all(bind=engine)
+        except Exception:
+            # Serverless (Vercel) cold-start: DB (Neon) có thể lag/timeout.
+            # Không crash app — request tiếp theo sẽ thử lại.
+            # Local dev: kiểm tra Postgres đã chạy chưa (docker compose up).
+            logger.exception(
+                "Database create_all failed — check DATABASE_URL and DB availability"
+            )
+        db = SessionLocal()
+        try:
+            seed_services(db)
+        except Exception:
+            logger.exception("seed_services failed — skipping")
+        finally:
+            db.close()
     yield
 
 
