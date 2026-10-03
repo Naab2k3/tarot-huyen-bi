@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "motion/react";
 import anime from "animejs";
+import Reveal from "../components/Reveal";
 import FloatingTarotCards from "../components/FloatingTarotCards";
 import CountUp from "../components/CountUp";
 import SparkleButton from "../components/SparkleButton";
@@ -103,8 +103,14 @@ export default function HomePage() {
         <div className="relative z-10 text-center px-4 max-w-2xl mx-auto">
           {/* Brand logo */}
           <img
-            src="/logo/logo-2-demo.png"
+            src="/logo/logo-192.webp"
+            srcSet="/logo/logo-192.webp 192w, /logo/logo-512.webp 512w"
+            sizes="(max-width: 768px) 192px, 240px"
+            width={192}
+            height={225}
             alt="Healing With My"
+            fetchPriority="high"
+            decoding="async"
             className="w-48 md:w-60 h-auto mx-auto mb-6 drop-shadow-[0_0_16px_rgba(212,168,67,0.3)]"
           />
 
@@ -145,13 +151,7 @@ export default function HomePage() {
       <div className="section-divider my-4" />
 
       {/* ─── Stats ─── */}
-      <motion.section
-        className="py-16"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      >
+      <Reveal className="py-16">
         <div className="max-w-3xl mx-auto px-4">
           <div className="grid grid-cols-3 gap-8 text-center">
             <div>
@@ -174,16 +174,10 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </motion.section>
+      </Reveal>
 
       {/* ─── Tuyển dụng idol ─── */}
-      <motion.section
-        className="py-16 md:py-24"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      >
+      <Reveal className="py-16 md:py-24" amount={0.2}>
         <div className="max-w-6xl mx-auto px-4">
           {/* Prominent banner */}
           <div className="relative overflow-hidden rounded-3xl border border-arcane/30 bg-gradient-to-br from-velvet/80 via-void to-arcane/20 shadow-2xl shadow-arcane/20">
@@ -247,19 +241,13 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </motion.section>
+      </Reveal>
 
       {/* ─── Section divider ─── */}
       <div className="section-divider my-4" />
 
       {/* ─── Services overview ─── */}
-      <motion.section
-        className="py-16 md:py-24"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-      >
+      <Reveal className="py-16 md:py-24" delay={100}>
         <div className="max-w-4xl mx-auto px-4">
           <p className="font-body text-candle-gold text-sm tracking-widest uppercase text-center mb-2">
             ✦ Những gì tôi cung cấp ✦
@@ -300,19 +288,13 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-      </motion.section>
+      </Reveal>
 
       {/* ─── Section divider ─── */}
       <div className="section-divider my-4" />
 
       {/* ─── Why us ─── */}
-      <motion.section
-        className="py-16 md:py-24"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-      >
+      <Reveal className="py-16 md:py-24" delay={200}>
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-12">
             Tại sao chọn tôi?
@@ -327,19 +309,13 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-      </motion.section>
+      </Reveal>
 
       {/* ─── Section divider ─── */}
       <div className="section-divider my-4" />
 
       {/* ─── Feedback ─── */}
-      <motion.section
-        className="py-16 md:py-24"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-      >
+      <Reveal className="py-16 md:py-24" delay={100}>
         <div className="max-w-5xl mx-auto px-4">
           <p className="font-body text-candle-gold text-sm tracking-widest uppercase text-center mb-2">
             ✦ Phản hồi từ khách hàng ✦
@@ -376,7 +352,7 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-      </motion.section>
+      </Reveal>
 
       {lightboxItem && (
         <FeedbackLightbox
@@ -386,13 +362,7 @@ export default function HomePage() {
       )}
 
       {/* ─── CTA ─── */}
-      <motion.section
-        className="py-16 md:py-24"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-      >
+      <Reveal className="py-16 md:py-24" delay={150}>
         <div className="text-center px-4">
           <h2 className="font-display text-2xl md:text-4xl text-mist mb-4">
             Sẵn sàng khám phá tương lai?
@@ -417,7 +387,7 @@ export default function HomePage() {
             </SparkleButton>
           </div>
         </div>
-      </motion.section>
+      </Reveal>
 
       {/* ─── Section divider ─── */}
       <div className="section-divider my-4" />

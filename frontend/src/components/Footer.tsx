@@ -64,7 +64,13 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-3 mb-4">
               <img
-                src="/logo/logo-2-demo.png"
+                src="/logo/logo-128.webp"
+                srcSet="/logo/logo-128.webp 128w, /logo/logo-192.webp 192w"
+                sizes="64px"
+                width={128}
+                height={150}
+                loading="lazy"
+                decoding="async"
                 alt="Healing With My"
                 className="h-16 w-auto rounded-lg bg-void/30 drop-shadow-[0_0_8px_rgba(212,168,67,0.35)]"
               />

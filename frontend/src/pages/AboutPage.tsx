@@ -74,7 +74,13 @@ export default function AboutPage() {
         <div className="text-center mb-12">
           <div className="mx-auto mb-6 flex justify-center">
             <img
-              src="/logo/logo-2-demo.png"
+              src="/logo/logo-192.webp"
+              srcSet="/logo/logo-192.webp 192w, /logo/logo-512.webp 512w"
+              sizes="(max-width: 768px) 192px, 224px"
+              width={192}
+              height={225}
+              loading="lazy"
+              decoding="async"
               alt="Healing With My"
               className="w-48 md:w-56 h-auto drop-shadow-[0_0_16px_rgba(212,168,67,0.3)]"
             />
