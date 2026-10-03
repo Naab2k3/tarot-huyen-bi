@@ -7,6 +7,7 @@ import CountUp from "../components/CountUp";
 import SparkleButton from "../components/SparkleButton";
 import Footer from "../components/Footer";
 import FeedbackLightbox from "../components/FeedbackLightbox";
+import IdolPolicyDialog from "../components/IdolPolicyDialog";
 
 import { getServices } from "../api/client";
 import type { Service } from "../api/types";
@@ -36,6 +37,8 @@ const SERVICE_CATEGORIES = [
 export default function HomePage() {
   const [services, setServices] = useState<Service[]>([]);
   const [lightboxItem, setLightboxItem] = useState<typeof FEEDBACKS[number] | null>(null);
+  const [posterOpen, setPosterOpen] = useState(false);
+  const [policyOpen, setPolicyOpen] = useState(false);
   const cardsRevealed = useRef(false);
 
   useEffect(() => {
@@ -189,12 +192,20 @@ export default function HomePage() {
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(184,132,159,0.15),transparent_60%)]" />
 
             <div className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr_3fr] min-h-[560px]">
-              {/* Image — full-height rectangular */}
-              <div className="relative min-h-[320px] md:min-h-full">
+              {/* Image — full-height rectangular, click to view full poster */}
+              <button
+                onClick={() => setPosterOpen(true)}
+                aria-label="Xem toàn bộ poster tuyển dụng"
+                title="Nhấn để xem ảnh đầy đủ"
+                className="relative min-h-[320px] md:min-h-full cursor-zoom-in focus-visible:outline-2 focus-visible:outline-candle-gold focus-visible:outline-offset-2"
+              >
                 <img
                   src="/idols/healingidol.jpg"
                   alt="Tuyển dụng Idol xem bài"
                   loading="lazy"
+                  decoding="async"
+                  width={1024}
+                  height={1536}
                   className="absolute inset-0 w-full h-full object-cover object-top"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:via-void/20 md:to-void/60" />
@@ -202,7 +213,7 @@ export default function HomePage() {
                 <span className="absolute top-5 left-5 bg-candle-gold text-void font-display text-xs tracking-widest uppercase px-4 py-1.5 rounded-full shadow-lg">
                   Đang tuyển
                 </span>
-              </div>
+              </button>
 
               {/* Content */}
               <div className="flex items-center px-6 py-12 md:px-12 md:py-16">
@@ -238,6 +249,14 @@ export default function HomePage() {
                   >
                     Ứng tuyển ngay
                   </SparkleButton>
+                  <div>
+                    <button
+                      onClick={() => setPolicyOpen(true)}
+                      className="font-body text-lilac/70 hover:text-candle-gold text-sm underline underline-offset-4 decoration-arcane/30 transition-all min-h-[44px]"
+                    >
+                      Xem chi tiết chế độ lương
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -368,6 +387,15 @@ export default function HomePage() {
           onClose={() => setLightboxItem(null)}
         />
       )}
+
+      {posterOpen && (
+        <FeedbackLightbox
+          item={{ type: "image", src: "/idols/healingidol.jpg", stars: 5 }}
+          onClose={() => setPosterOpen(false)}
+        />
+      )}
+
+      {policyOpen && <IdolPolicyDialog onClose={() => setPolicyOpen(false)} />}
 
       {/* ─── CTA ─── */}
       <Reveal className="py-16 md:py-24" delay={150}>
