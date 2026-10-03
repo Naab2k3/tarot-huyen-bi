@@ -7,8 +7,9 @@
       "includeFiles": "backend/**"
     }
   },
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.py" },
-    { "source": "/(.*)", "destination": "/index.html" }
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/api/(.*)", "dest": "/api/index.py" },
+    { "src": "/.*", "dest": "/index.html" }
   ]
 }
