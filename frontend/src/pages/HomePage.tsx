@@ -184,80 +184,74 @@ export default function HomePage() {
       {/* ─── Tuyển dụng idol ─── */}
       <Reveal className="py-16 md:py-24" amount={0.2}>
         <div className="max-w-6xl mx-auto px-4">
-          {/* Prominent banner */}
+          {/* Text-first banner: the poster is unreadable when cropped, so the
+              salary story is told in native markup. Full poster stays one
+              tap away via "Xem poster gốc". */}
           <div className="relative overflow-hidden rounded-3xl border border-arcane/30 bg-gradient-to-br from-velvet/80 via-void to-arcane/20 shadow-2xl shadow-arcane/20">
-            {/* Decorative glows */}
-            <div className="pointer-events-none absolute -top-24 -right-24 w-80 h-80 rounded-full bg-arcane/25 blur-3xl animate-glow-pulse" />
-            <div className="pointer-events-none absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-candle-gold/10 blur-3xl" />
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(184,132,159,0.15),transparent_60%)]" />
+            <div className="relative max-w-3xl mx-auto px-6 py-12 md:px-12 md:py-16 text-center">
+              <span className="inline-block bg-candle-gold text-void font-display text-xs tracking-widest uppercase px-4 py-1.5 rounded-full shadow-lg mb-5">
+                Đang tuyển
+              </span>
+              <h2 className="font-display text-3xl md:text-5xl text-mist mb-5 leading-tight">
+                Trở thành Idol<br /> xem bài
+              </h2>
+              <p className="font-body text-lilac italic mb-7 leading-relaxed max-w-md mx-auto">
+                Bạn đam mê huyền học, yêu thích Tarot và Tea Leaf? Healing With My đang
+                tìm kiếm những gương mặt mới để cùng lan tỏa năng lượng đến cộng đồng.
+              </p>
 
-            <div className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr_3fr] min-h-[560px]">
-              {/* Image — full-height rectangular, click to view full poster */}
-              <button
-                onClick={() => setPosterOpen(true)}
-                aria-label="Xem toàn bộ poster tuyển dụng"
-                title="Nhấn để xem ảnh đầy đủ"
-                className="relative min-h-[320px] md:min-h-full cursor-zoom-in focus-visible:outline-2 focus-visible:outline-candle-gold focus-visible:outline-offset-2"
-              >
-                <img
-                  src="/idols/healingidol.jpg"
-                  alt="Tuyển dụng Idol xem bài"
-                  loading="lazy"
-                  decoding="async"
-                  width={1024}
-                  height={1536}
-                  className="absolute inset-0 w-full h-full object-cover object-top"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:via-void/20 md:to-void/60" />
-                {/* Badge */}
-                <span className="absolute top-5 left-5 bg-candle-gold text-void font-display text-xs tracking-widest uppercase px-4 py-1.5 rounded-full shadow-lg">
-                  Đang tuyển
-                </span>
-              </button>
-
-              {/* Content */}
-              <div className="flex items-center px-6 py-12 md:px-12 md:py-16">
-                <div className="text-center md:text-left">
-                  <p className="font-body text-candle-gold text-sm tracking-widest uppercase mb-3">
-                    ✦ Tuyển dụng ✦
-                  </p>
-                  <h2 className="font-display text-3xl md:text-5xl lg:text-6xl text-mist mb-5 leading-tight">
-                    Trở thành Idol<br /> xem bài
-                  </h2>
-                  <p className="font-body text-lilac italic mb-7 leading-relaxed max-w-md mx-auto md:mx-0">
-                    Bạn đam mê huyền học, yêu thích Tarot và Tea Leaf? Healing With My đang
-                    tìm kiếm những gương mặt mới để cùng lan tỏa năng lượng đến cộng đồng.
-                  </p>
-
-                  <ul className="space-y-3 mb-9 text-left max-w-sm mx-auto md:mx-0">
-                    {[
-                      "Thu nhập hấp dẫn theo từng phiên xem bài",
-                      "Được đào tạo chuyên sâu miễn phí",
-                      "Làm việc tự do, linh hoạt thời gian",
-                    ].map((item) => (
-                      <li key={item} className="flex items-start gap-3 font-body text-lilac/80 text-sm">
-                        <span className="text-candle-gold mt-0.5">✦</span>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <SparkleButton
-                    as="link"
-                    href="/recruit"
-                    className="px-10 py-4 rounded-xl font-display text-sm tracking-widest uppercase bg-candle-gold text-void hover:bg-candle-gold/85 transition-all shadow-lg shadow-candle-gold/25 btn-glow"
+              {/* Salary at a glance — the decision-critical info, legible */}
+              <div className="flex flex-wrap items-stretch justify-center gap-2.5 md:gap-3 mb-8">
+                {[
+                  { top: "Thử việc", bottom: "6.000.000₫" },
+                  { top: "Chính thức", bottom: "8.000.000₫" },
+                  { top: "Theo hiệu suất", bottom: "tới 30.000.000₫" },
+                ].map((s) => (
+                  <div
+                    key={s.top}
+                    className="rounded-xl border border-candle-gold/40 bg-candle-gold/10 px-5 py-3 min-w-[140px]"
                   >
-                    Ứng tuyển ngay
-                  </SparkleButton>
-                  <div>
-                    <button
-                      onClick={() => setPolicyOpen(true)}
-                      className="font-body text-lilac/70 hover:text-candle-gold text-sm underline underline-offset-4 decoration-arcane/30 transition-all min-h-[44px]"
-                    >
-                      Xem chi tiết chế độ lương
-                    </button>
+                    <p className="font-body text-candle-gold text-xs tracking-widest uppercase">{s.top}</p>
+                    <p className="font-display text-lg md:text-xl text-mist">{s.bottom}</p>
                   </div>
-                </div>
+                ))}
+              </div>
+
+              <ul className="space-y-3 mb-9 text-left max-w-sm mx-auto">
+                {[
+                  "Thu nhập hấp dẫn theo từng phiên xem bài",
+                  "Được đào tạo chuyên sâu miễn phí",
+                  "Làm việc tự do, linh hoạt thời gian",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3 font-body text-lilac/80 text-sm">
+                    <span className="text-candle-gold mt-0.5">✦</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <SparkleButton
+                  as="link"
+                  href="/recruit"
+                  className="w-full sm:w-auto px-10 py-4 rounded-xl font-display text-sm tracking-widest uppercase bg-candle-gold text-void hover:bg-candle-gold/85 transition-all shadow-lg shadow-candle-gold/25 btn-glow"
+                >
+                  Ứng tuyển ngay
+                </SparkleButton>
+                <button
+                  onClick={() => setPolicyOpen(true)}
+                  className="w-full sm:w-auto px-8 min-h-[52px] rounded-xl font-display text-sm tracking-widest uppercase border border-arcane/50 text-mist hover:border-candle-gold/60 active:scale-[0.98] transition-all"
+                >
+                  Xem chế độ lương
+                </button>
+              </div>
+              <div>
+                <button
+                  onClick={() => setPosterOpen(true)}
+                  className="mt-4 font-body text-lilac/60 hover:text-candle-gold text-sm underline underline-offset-4 decoration-arcane/30 transition-all min-h-[44px]"
+                >
+                  Xem poster gốc
+                </button>
               </div>
             </div>
           </div>
