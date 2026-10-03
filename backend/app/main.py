@@ -14,7 +14,11 @@ from app.database import Base, SessionLocal, engine
 from app.routers import admin, bookings, contact, recruit, services
 from app.seed import seed_services
 
-FRONTEND_DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
+_REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+
+# On Vercel the SPA is served from the CDN (outputDirectory), not from here;
+# this is the fallback for running `uvicorn app.main:app` directly.
+FRONTEND_DIST = _REPO_ROOT / "frontend" / "dist"
 
 logger = logging.getLogger(__name__)
 @asynccontextmanager
@@ -71,9 +75,39 @@ app.include_router(contact.router)
 app.include_router(recruit.router)
 app.include_router(admin.router)
 
+class _ImmutableStaticFiles(StaticFiles):
+    """Vite emits content-hashed filenames under /assets, so they can be
+    cached forever. StaticFiles alone only sets ETag/Last-Modified."""
+
+    def file_response(self, full_path, stat_result, scope, status_code=200):
+        response = super().file_response(full_path, stat_result, scope, status_code)
+        response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+        return response
+
+
 # ── Serve frontend static files ──
-if FRONTEND_DIST.exists():
-    app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIST / "assets")), name="assets")
+_INDEX_HTML = FRONTEND_DIST / "index.html"
+
+if _INDEX_HTML.is_file():
+    # Mount assets explicitly so they get immutable caching. Guarded on the
+    # directory existing: StaticFiles raises at import time otherwise, which
+    # would take down the whole app rather than just the static route.
+    _ASSETS_DIR = FRONTEND_DIST / "assets"
+    if _ASSETS_DIR.is_dir():
+        app.mount("/assets", _ImmutableStaticFiles(directory=str(_ASSETS_DIR)), name="assets")
+
+    def _resolve_inside_dist(rel_path: str) -> Path | None:
+        """Resolve a request path inside FRONTEND_DIST, or None if it escapes.
+
+        Without the containment check, '/../../etc/passwd' walks straight out
+        of the bundle.
+        """
+        candidate = (FRONTEND_DIST / rel_path).resolve()
+        try:
+            candidate.relative_to(FRONTEND_DIST.resolve())
+        except ValueError:
+            return None
+        return candidate if candidate.is_file() else None
 
     @app.get("/{full_path:path}", include_in_schema=False)
     async def serve_frontend(full_path: str):
@@ -81,10 +115,18 @@ if FRONTEND_DIST.exists():
         if full_path.startswith("api/"):
             from fastapi.responses import JSONResponse
             return JSONResponse({"detail": "Not Found"}, status_code=404)
-        file_path = FRONTEND_DIST / full_path
-        if file_path.exists() and file_path.is_file():
-            return FileResponse(str(file_path))
-        return FileResponse(str(FRONTEND_DIST / "index.html"))
+
+        file_path = _resolve_inside_dist(full_path)
+        if file_path is None:
+            # Unknown path or an attempted escape: hand back the SPA shell.
+            return FileResponse(str(_INDEX_HTML))
+
+        headers = {}
+        # Vite emits content-hashed filenames under /assets, so they are safe
+        # to cache forever.
+        if full_path.startswith("assets/"):
+            headers["Cache-Control"] = "public, max-age=31536000, immutable"
+        return FileResponse(str(file_path), headers=headers)
 
     logger.info("Frontend static files mounted from %s", FRONTEND_DIST)
 else:
