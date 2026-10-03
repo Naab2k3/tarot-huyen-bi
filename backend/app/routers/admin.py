@@ -1,6 +1,7 @@
 from datetime import date
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.auth import create_access_token, verify_password, verify_token
@@ -76,7 +77,15 @@ def update_status(
     db: Session = Depends(get_db),
     _=Depends(verify_token),
 ):
-    booking = update_booking_status(db, booking_id, body.status)
+    try:
+        booking = update_booking_status(db, booking_id, body.status)
+    except IntegrityError:
+        # Re-activating into a slot that is taken since: same backstop.
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="Another active booking already occupies that slot.",
+        )
     if not booking:
         raise HTTPException(status_code=404, detail="Booking not found")
     return booking
