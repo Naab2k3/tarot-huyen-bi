@@ -46,7 +46,11 @@ export default function ServicePicker({ services, selectedId, onSelect }: Props)
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 10.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z" />
           </svg>
           <input
-            type="search"
+            // NOTE: must stay type="text", NOT type="search": WebKit/Chromium
+            // render a native clear (x) button inside search inputs, which
+            // duplicates the custom clear button below (two x side by side).
+            type="text"
+            enterKeyHint="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Tìm dịch vụ… (vd: tình duyên)"
