@@ -354,10 +354,23 @@ export default function HomePage() {
                     <img
                       src={fb.src}
                       alt={`Feedback ${i + 1}`}
-                      loading="lazy"
+                      // Eager: loading="lazy" never fired on some mobile/in-app
+                      // webviews (Zalo/Messenger), leaving grid cells blank
+                      // even in viewport. 17 thumbs total ~0.9 MB, safe eager.
+                      loading="eager"
                       decoding="async"
                       width={480}
                       height={640}
+                      // Belt and suspenders: if a thumb 404s (stale deploy /
+                      // poisoned CDN cache serves index.html with status 200),
+                      // fall back to the full original instead of a blank cell.
+                      onError={(e) => {
+                        const el = e.currentTarget;
+                        if (!el.dataset.fbkFallback && fb.full !== fb.src) {
+                          el.dataset.fbkFallback = "1";
+                          el.src = fb.full;
+                        }
+                      }}
                       className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
                     />
                   </div>
