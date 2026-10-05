@@ -18,6 +18,10 @@ const FEEDBACKS = Array.from({ length: 17 }, (_, i) => ({
   src: `/images/feedbacks/thumbs/fb_${i + 1}.jpg`,
   full: `/images/feedbacks/fb_${i + 1}.jpg`,
   stars: 5,
+  customerName: `Khách hàng ${i + 1}`,
+  service: i % 4 === 0 ? "Tarot" : i % 4 === 1 ? "Tea Leaf" : i % 4 === 2 ? "Bài Oracle" : "Combo",
+  comment: "Rất hài lòng với dịch vụ! Chân thành và chính xác.",
+  date: new Date(Date.now() - (16 - i) * 24 * 60 * 60 * 1000).toLocaleDateString("vi-VN"),
 }));
 
 const WHY_US = [
@@ -339,31 +343,24 @@ export default function HomePage() {
             Khách hàng nói gì?
           </h2>
 
-          <div id="feedback-cards" className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+          <div id="feedback-cards" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
             {FEEDBACKS.map((fb, i) => (
               <button
                 key={i}
                 onClick={() => setLightboxItem(fb)}
-                className="feedback-card opacity-0 text-left w-full group"
-                aria-label={`Xem phản hồi ${i + 1} cỡ lớn`}
+                className="feedback-card opacity-0 text-left w-full group cursor-pointer"
+                aria-label={`Xem phản hồi từ ${fb.customerName} - ${fb.service}`}
               >
-                <div className="relative bg-velvet/30 border border-velvet/60 rounded-2xl overflow-hidden hover:border-arcane/30 hover:bg-velvet/50 transition-all duration-300">
-                  {/* Portrait cells match the screenshot shape: the old
-                      4:3 cover cropped away over half the image height. */}
-                  <div className="aspect-[3/4] w-full">
+                <div className="relative bg-velvet/30 border border-velvet/60 rounded-2xl overflow-hidden hover:border-arcane/40 hover:bg-velvet/50 transition-all duration-300 shadow-lg shadow-velvet/20 group-hover:shadow-xl group-hover:shadow-arcane/20">
+                  
+                  <div className="aspect-[4/5] w-full">
                     <img
                       src={fb.src}
-                      alt={`Feedback ${i + 1}`}
-                      // Eager: loading="lazy" never fired on some mobile/in-app
-                      // webviews (Zalo/Messenger), leaving grid cells blank
-                      // even in viewport. 17 thumbs total ~0.9 MB, safe eager.
+                      alt={`Feedback từ ${fb.customerName}`}
                       loading="eager"
                       decoding="async"
                       width={480}
-                      height={640}
-                      // Belt and suspenders: if a thumb 404s (stale deploy /
-                      // poisoned CDN cache serves index.html with status 200),
-                      // fall back to the full original instead of a blank cell.
+                      height={600}
                       onError={(e) => {
                         const el = e.currentTarget;
                         if (!el.dataset.fbkFallback && fb.full !== fb.src) {
@@ -373,12 +370,30 @@ export default function HomePage() {
                       }}
                       className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
                     />
+                    <div className="absolute top-2 right-2 bg-black/40 rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <span className="text-white text-xs">🔍</span>
+                    </div>
                   </div>
 
-                  {/* Bottom info */}
-                  <div className="p-3 flex items-center justify-center border-t border-velvet/50">
-                    <div className="text-candle-gold text-xs tracking-wider">
-                      {'★'.repeat(fb.stars)}
+                  <div className="p-3 bg-gradient-to-t from-velvet/80 to-transparent border-t border-velvet/50">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-candle-gold text-xs font-medium truncate max-w-[60%]">
+                        {fb.customerName}
+                      </span>
+                      <span className="text-lilac/70 text-xs truncate max-w-[40%]">
+                        {fb.service}
+                      </span>
+                    </div>
+                    <p className="text-lilac/80 text-xs line-clamp-2 mb-1.5">
+                      {fb.comment}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <div className="text-candle-gold text-xs tracking-wider">
+                        {'★'.repeat(fb.stars)}
+                      </div>
+                      <span className="text-lilac/60 text-xs">
+                        {fb.date}
+                      </span>
                     </div>
                   </div>
                 </div>

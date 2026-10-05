@@ -4,6 +4,10 @@ interface FeedbackItem {
   type: "image" | "video";
   src: string;
   stars: number;
+  customerName?: string;
+  service?: string;
+  comment?: string;
+  date?: string;
 }
 
 interface Props {
@@ -39,18 +43,42 @@ export default function FeedbackLightbox({ item, onClose }: Props) {
       >
         <button
           onClick={onClose}
-          className="absolute -top-10 right-0 min-w-[44px] min-h-[44px] text-mist/60 hover:text-mist transition-colors text-sm font-body tracking-wide z-10"
+          className="absolute top-4 right-4 min-w-[44px] min-h-[44px] text-mist/60 hover:text-mist transition-colors text-sm font-body tracking-wide z-10 bg-void/80 rounded-full hover:bg-void p-2"
+          aria-label="Đóng"
         >
-          ✕ Đóng
+          ✕
         </button>
 
         <div className="bg-void border border-velvet rounded-2xl overflow-hidden">
           <img
             src={item.src}
-            alt="Feedback"
-            className="w-full max-h-[85vh] object-contain"
+            alt={item.customerName ? `Feedback từ ${item.customerName}` : 'Feedback'}
+            className="w-full max-h-[70vh] object-contain"
           />
         </div>
+        {item.customerName && (
+          <div className="mt-4 px-6 py-4 bg-velvet/20 rounded-xl border border-velvet/30">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-candle-gold text-sm font-medium">
+                {item.customerName}
+              </span>
+              <span className="text-lilac/70 text-xs">
+                {item.service}
+              </span>
+            </div>
+            <p className="text-lilac/90 text-sm mb-2">
+              {item.comment}
+            </p>
+            <div className="flex items-center justify-between">
+              <div className="text-candle-gold text-sm tracking-wider">
+                {'★'.repeat(item.stars)}
+              </div>
+              <span className="text-lilac/60 text-xs">
+                {item.date}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
