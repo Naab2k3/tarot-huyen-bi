@@ -12,17 +12,178 @@ import IdolPolicyDialog from "../components/IdolPolicyDialog";
 import { getServices } from "../api/client";
 import type { Service } from "../api/types";
 
-const FEEDBACKS = Array.from({ length: 17 }, (_, i) => ({
-  type: "image" as const,
-  // Grid loads the 480px thumb; the lightbox opens the full original.
-  src: `/images/feedbacks/thumbs/fb_${i + 1}.jpg`,
-  full: `/images/feedbacks/fb_${i + 1}.jpg`,
-  stars: 5,
-  customerName: `Khách hàng ${i + 1}`,
-  service: i % 4 === 0 ? "Tarot" : i % 4 === 1 ? "Tea Leaf" : i % 4 === 2 ? "Bài Oracle" : "Combo",
-  comment: "Rất hài lòng với dịch vụ! Chân thành và chính xác.",
-  date: new Date(Date.now() - (16 - i) * 24 * 60 * 60 * 1000).toLocaleDateString("vi-VN"),
-}));
+const FEEDBACKS = [
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_1.jpg`,
+    full: `/images/feedbacks/fb_1.jpg`,
+    stars: 5,
+    customerName: "N.T.",
+    service: "Tarot",
+    comment: "Dịch vụ tuyệt vời! Tôi đã tìm được hướng đi rõ ràng cho cuộc sống.",
+    date: "19/09/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_2.jpg`,
+    full: `/images/feedbacks/fb_2.jpg`,
+    stars: 5,
+    customerName: "T.V.",
+    service: "Tea Leaf",
+    comment: "Chân thành và chính xác. Cảm ơn đã giúp tôi hiểu rõ hơn về bản thân.",
+    date: "20/09/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_3.jpg`,
+    full: `/images/feedbacks/fb_3.jpg`,
+    stars: 5,
+    customerName: "L.P.",
+    service: "Bài Oracle",
+    comment: "Rất hài lòng với kết quả. Những lời tư vấn rất hữu ích.",
+    date: "21/09/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_4.jpg`,
+    full: `/images/feedbacks/fb_4.jpg`,
+    stars: 5,
+    customerName: "P.N.",
+    service: "Combo",
+    comment: "Tuyệt hảo! Tôi đã có thể đưa ra quyết định quan trọng nhờ bài xem.",
+    date: "22/09/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_5.jpg`,
+    full: `/images/feedbacks/fb_5.jpg`,
+    stars: 5,
+    customerName: "B.Đ.",
+    service: "Tarot",
+    comment: "Cảm ơn rất nhiều! Dịch vụ chuyên nghiệp và tận tâm.",
+    date: "23/09/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_6.jpg`,
+    full: `/images/feedbacks/fb_6.jpg`,
+    stars: 5,
+    customerName: "Đ.M.",
+    service: "Tea Leaf",
+    comment: "Quá bất ngờ với độ chính xác. Đúng những gì tôi đang thắc mắc.",
+    date: "24/09/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_7.jpg`,
+    full: `/images/feedbacks/fb_7.jpg`,
+    stars: 5,
+    customerName: "H.H.",
+    service: "Bài Oracle",
+    comment: "Rất cảm kích! Những lời khuyên đã giúp tôi vượt qua khó khăn.",
+    date: "25/09/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_8.jpg`,
+    full: `/images/feedbacks/fb_8.jpg`,
+    stars: 5,
+    customerName: "V.T.",
+    service: "Combo",
+    comment: "Dịch vụ chất lượng cao. Tôi sẽ giới thiệu cho bạn bè.",
+    date: "26/09/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_9.jpg`,
+    full: `/images/feedbacks/fb_9.jpg`,
+    stars: 5,
+    customerName: "Đ.L.",
+    service: "Tarot",
+    comment: "Cảm thấy an tâm hơn rất nhiều sau buổi tư vấn.",
+    date: "27/09/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_10.jpg`,
+    full: `/images/feedbacks/fb_10.jpg`,
+    stars: 5,
+    customerName: "Đ.H.",
+    service: "Tea Leaf",
+    comment: "Rất ấn tượng với kiến thức sâu rộng của chuyên gia.",
+    date: "28/09/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_11.jpg`,
+    full: `/images/feedbacks/fb_11.jpg`,
+    stars: 5,
+    customerName: "L.A.",
+    service: "Bài Oracle",
+    comment: "Đây là lần xem bài hay nhất tôi từng trải nghiệm.",
+    date: "29/09/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_12.jpg`,
+    full: `/images/feedbacks/fb_12.jpg`,
+    stars: 5,
+    customerName: "N.M.",
+    service: "Combo",
+    comment: "Cảm ơn đã mang đến cho tôi sự rõ ràng và bình an.",
+    date: "30/09/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_13.jpg`,
+    full: `/images/feedbacks/fb_13.jpg`,
+    stars: 5,
+    customerName: "T.P.",
+    service: "Tarot",
+    comment: "Quá xứng đáng với số tiền bỏ ra. Kết quả vượt mong đợi.",
+    date: "01/10/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_14.jpg`,
+    full: `/images/feedbacks/fb_14.jpg`,
+    stars: 5,
+    customerName: "L.Đ.",
+    service: "Tea Leaf",
+    comment: "Rất hài lòng! Tôi sẽ quay lại vào lần sau.",
+    date: "02/10/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_15.jpg`,
+    full: `/images/feedbacks/fb_15.jpg`,
+    stars: 5,
+    customerName: "P.Q.",
+    service: "Bài Oracle",
+    comment: "Dịch vụ nhanh chóng và hiệu quả. Không phải chờ đợi lâu.",
+    date: "03/10/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_16.jpg`,
+    full: `/images/feedbacks/fb_16.jpg`,
+    stars: 5,
+    customerName: "B.T.",
+    service: "Combo",
+    comment: "Cảm thấy được lắng nghe và thấu hiểu sâu sắc.",
+    date: "04/10/2026",
+  },
+  {
+    type: "image" as const,
+    src: `/images/feedbacks/thumbs/fb_17.jpg`,
+    full: `/images/feedbacks/fb_17.jpg`,
+    stars: 5,
+    customerName: "N.Y.",
+    service: "Tarot",
+    comment: "Những lời tiên đoán rất chính xác. Tôi ngạc nhiên lắm!",
+    date: "05/10/2026",
+  },
+];
 
 const WHY_US = [
   { icon: "🔮", title: "Chính xác", desc: "Phán đoán sâu sắc, chính xác từ kinh nghiệm thực tiễn" },
@@ -167,19 +328,19 @@ export default function HomePage() {
               <p className="font-display text-3xl md:text-4xl text-candle-gold">
                 <CountUp end={500} suffix="+" />
               </p>
-              <p className="font-body text-lilac/70 text-base tracking-wide mt-1">Khách hàng</p>
+              <p className="font-body text-lilac/90 text-base tracking-wide mt-1">Khách hàng</p>
             </div>
             <div>
               <p className="font-display text-3xl md:text-4xl text-candle-gold">
                 <CountUp end={5} suffix="★" />
               </p>
-              <p className="font-body text-lilac/70 text-base tracking-wide mt-1">Đánh giá</p>
+              <p className="font-body text-lilac/90 text-base tracking-wide mt-1">Đánh giá</p>
             </div>
             <div>
               <p className="font-display text-3xl md:text-4xl text-candle-gold">
                 <CountUp end={3} suffix="+" />
               </p>
-              <p className="font-body text-lilac/70 text-base tracking-wide mt-1">Năm kinh nghiệm</p>
+              <p className="font-body text-lilac/90 text-base tracking-wide mt-1">Năm kinh nghiệm</p>
             </div>
           </div>
         </div>
@@ -227,7 +388,7 @@ export default function HomePage() {
                   "Được đào tạo chuyên sâu miễn phí",
                   "Làm việc tự do, linh hoạt thời gian",
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-3 font-body text-lilac/80 text-sm">
+                  <li key={item} className="flex items-start gap-3 font-body text-lilac/90 text-sm">
                     <span className="text-candle-gold mt-0.5">✦</span>
                     {item}
                   </li>
@@ -252,7 +413,7 @@ export default function HomePage() {
               <div>
                 <button
                   onClick={() => setPosterOpen(true)}
-                  className="mt-4 font-body text-lilac/60 hover:text-candle-gold text-sm underline underline-offset-4 decoration-arcane/30 transition-all min-h-[44px]"
+                  className="mt-4 font-body text-lilac/90 hover:text-candle-gold text-sm underline underline-offset-4 decoration-arcane/30 transition-all min-h-[44px]"
                 >
                   Xem poster gốc
                 </button>
@@ -380,18 +541,18 @@ export default function HomePage() {
                       <span className="text-candle-gold text-xs font-medium truncate max-w-[60%]">
                         {fb.customerName}
                       </span>
-                      <span className="text-lilac/70 text-xs truncate max-w-[40%]">
+                      <span className="text-lilac/90 text-xs truncate max-w-[40%]">
                         {fb.service}
                       </span>
                     </div>
-                    <p className="text-lilac/80 text-xs line-clamp-2 mb-1.5">
+                    <p className="text-lilac/90 text-xs line-clamp-2 mb-1.5">
                       {fb.comment}
                     </p>
                     <div className="flex items-center justify-between">
                       <div className="text-candle-gold text-xs tracking-wider">
                         {'★'.repeat(fb.stars)}
                       </div>
-                      <span className="text-lilac/60 text-xs">
+                      <span className="text-lilac/90 text-xs">
                         {fb.date}
                       </span>
                     </div>

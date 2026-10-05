@@ -138,7 +138,7 @@ export default function RecruitPage() {
 
               <ul className="space-y-3 mb-9 text-left max-w-sm mx-auto">
                 {BENEFIT_LIST.map((item) => (
-                  <li key={item} className="flex items-start gap-3 font-body text-lilac/80 text-sm">
+                  <li key={item} className="flex items-start gap-3 font-body text-lilac/90 text-sm">
                     <span className="text-candle-gold mt-0.5">✦</span>
                     {item}
                   </li>
@@ -178,7 +178,7 @@ export default function RecruitPage() {
                 <h3 className="font-display text-sm tracking-wider uppercase text-mist mb-2">
                   {b.title}
                 </h3>
-                <p className="font-body text-lilac/70 text-sm leading-relaxed">{b.desc}</p>
+                <p className="font-body text-lilac/90 text-sm leading-relaxed">{b.desc}</p>
               </div>
             ))}
           </div>
@@ -209,7 +209,7 @@ export default function RecruitPage() {
                   required
                   value={form.full_name}
                   onChange={(e) => update("full_name", e.target.value)}
-                  className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane transition-colors"
+                  className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane focus:ring-2 focus:ring-arcane transition-colors"
                   placeholder="Nhập họ và tên"
                 />
               </div>
@@ -224,7 +224,7 @@ export default function RecruitPage() {
                     required
                     value={form.phone}
                     onChange={(e) => update("phone", e.target.value)}
-                    className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane transition-colors"
+                    className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane focus:ring-2 focus:ring-arcane transition-colors"
                     placeholder="Nhập số điện thoại"
                   />
                 </div>
@@ -234,7 +234,7 @@ export default function RecruitPage() {
                     type="email"
                     value={form.email}
                     onChange={(e) => update("email", e.target.value)}
-                    className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane transition-colors"
+                    className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane focus:ring-2 focus:ring-arcane transition-colors"
                     placeholder="Nhập địa chỉ email"
                   />
                 </div>
@@ -248,7 +248,7 @@ export default function RecruitPage() {
                   type="text"
                   value={form.social_link}
                   onChange={(e) => update("social_link", e.target.value)}
-                  className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane transition-colors"
+                  className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane focus:ring-2 focus:ring-arcane transition-colors"
                   placeholder="Nhập link Facebook / Zalo / TikTok"
                 />
               </div>
@@ -261,7 +261,7 @@ export default function RecruitPage() {
                   required
                   value={form.reason}
                   onChange={(e) => update("reason", e.target.value)}
-                  className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane transition-colors"
+                  className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane focus:ring-2 focus:ring-arcane transition-colors"
                 >
                   <option value="" disabled>
                     Chọn lý do phù hợp với bạn
@@ -282,7 +282,7 @@ export default function RecruitPage() {
                   value={form.experience}
                   onChange={(e) => update("experience", e.target.value)}
                   rows={3}
-                  className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane transition-colors resize-none"
+                  className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane focus:ring-2 focus:ring-arcane transition-colors resize-none"
                   placeholder="Nhập kinh nghiệm xem bài"
                 />
               </div>
