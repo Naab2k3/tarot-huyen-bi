@@ -46,7 +46,7 @@ const PRESS_LINKS = [
     title: "Góc nhìn mới về làm đẹp thông minh cùng Phan Than Hieu My",
     url: "https://phapluattaichinhvadautu.vn/nhan-vat/goc-nhin-moi-ve-lam-dep-thong-minh-cung-phan-than-hieu-my/",
     monogram: "P",
-    logo: "/images/press/logo-pltcdt.png",
+    logo: "/images/press/logo-pltcdt.webp",
   },
   {
     outlet: "Người Nổi Tiếng TV",
@@ -54,7 +54,7 @@ const PRESS_LINKS = [
     title: "Phan Hiếu My",
     url: "https://nguoinoitieng.tv/nghe-nghiep/kol/phan-hieu-my/bhtx/amp",
     monogram: "N",
-    logo: "/images/press/logo-nguoinoitieng.jpg",
+    logo: "/images/press/logo-nguoinoitieng.webp",
   },
 ];
 

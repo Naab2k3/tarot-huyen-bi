@@ -15,8 +15,8 @@ import type { Service } from "../api/types";
 const FEEDBACKS = [
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_1.jpg`,
-    full: `/images/feedbacks/fb_1.jpg`,
+    src: `/images/feedbacks/thumbs/fb_1.webp`,
+    full: `/images/feedbacks/fb_1.webp`,
     stars: 5,
     customerName: "N.T.",
     service: "Tarot",
@@ -25,8 +25,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_2.jpg`,
-    full: `/images/feedbacks/fb_2.jpg`,
+    src: `/images/feedbacks/thumbs/fb_2.webp`,
+    full: `/images/feedbacks/fb_2.webp`,
     stars: 5,
     customerName: "T.V.",
     service: "Tea Leaf",
@@ -35,8 +35,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_3.jpg`,
-    full: `/images/feedbacks/fb_3.jpg`,
+    src: `/images/feedbacks/thumbs/fb_3.webp`,
+    full: `/images/feedbacks/fb_3.webp`,
     stars: 5,
     customerName: "L.P.",
     service: "Bài Oracle",
@@ -45,8 +45,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_4.jpg`,
-    full: `/images/feedbacks/fb_4.jpg`,
+    src: `/images/feedbacks/thumbs/fb_4.webp`,
+    full: `/images/feedbacks/fb_4.webp`,
     stars: 5,
     customerName: "P.N.",
     service: "Combo",
@@ -55,8 +55,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_5.jpg`,
-    full: `/images/feedbacks/fb_5.jpg`,
+    src: `/images/feedbacks/thumbs/fb_5.webp`,
+    full: `/images/feedbacks/fb_5.webp`,
     stars: 5,
     customerName: "B.Đ.",
     service: "Tarot",
@@ -65,8 +65,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_6.jpg`,
-    full: `/images/feedbacks/fb_6.jpg`,
+    src: `/images/feedbacks/thumbs/fb_6.webp`,
+    full: `/images/feedbacks/fb_6.webp`,
     stars: 5,
     customerName: "Đ.M.",
     service: "Tea Leaf",
@@ -75,8 +75,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_7.jpg`,
-    full: `/images/feedbacks/fb_7.jpg`,
+    src: `/images/feedbacks/thumbs/fb_7.webp`,
+    full: `/images/feedbacks/fb_7.webp`,
     stars: 5,
     customerName: "H.H.",
     service: "Bài Oracle",
@@ -85,8 +85,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_8.jpg`,
-    full: `/images/feedbacks/fb_8.jpg`,
+    src: `/images/feedbacks/thumbs/fb_8.webp`,
+    full: `/images/feedbacks/fb_8.webp`,
     stars: 5,
     customerName: "V.T.",
     service: "Combo",
@@ -95,8 +95,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_9.jpg`,
-    full: `/images/feedbacks/fb_9.jpg`,
+    src: `/images/feedbacks/thumbs/fb_9.webp`,
+    full: `/images/feedbacks/fb_9.webp`,
     stars: 5,
     customerName: "Đ.L.",
     service: "Tarot",
@@ -105,8 +105,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_10.jpg`,
-    full: `/images/feedbacks/fb_10.jpg`,
+    src: `/images/feedbacks/thumbs/fb_10.webp`,
+    full: `/images/feedbacks/fb_10.webp`,
     stars: 5,
     customerName: "Đ.H.",
     service: "Tea Leaf",
@@ -115,8 +115,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_11.jpg`,
-    full: `/images/feedbacks/fb_11.jpg`,
+    src: `/images/feedbacks/thumbs/fb_11.webp`,
+    full: `/images/feedbacks/fb_11.webp`,
     stars: 5,
     customerName: "L.A.",
     service: "Bài Oracle",
@@ -125,8 +125,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_12.jpg`,
-    full: `/images/feedbacks/fb_12.jpg`,
+    src: `/images/feedbacks/thumbs/fb_12.webp`,
+    full: `/images/feedbacks/fb_12.webp`,
     stars: 5,
     customerName: "N.M.",
     service: "Combo",
@@ -135,8 +135,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_13.jpg`,
-    full: `/images/feedbacks/fb_13.jpg`,
+    src: `/images/feedbacks/thumbs/fb_13.webp`,
+    full: `/images/feedbacks/fb_13.webp`,
     stars: 5,
     customerName: "T.P.",
     service: "Tarot",
@@ -145,8 +145,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_14.jpg`,
-    full: `/images/feedbacks/fb_14.jpg`,
+    src: `/images/feedbacks/thumbs/fb_14.webp`,
+    full: `/images/feedbacks/fb_14.webp`,
     stars: 5,
     customerName: "L.Đ.",
     service: "Tea Leaf",
@@ -155,8 +155,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_15.jpg`,
-    full: `/images/feedbacks/fb_15.jpg`,
+    src: `/images/feedbacks/thumbs/fb_15.webp`,
+    full: `/images/feedbacks/fb_15.webp`,
     stars: 5,
     customerName: "P.Q.",
     service: "Bài Oracle",
@@ -165,8 +165,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_16.jpg`,
-    full: `/images/feedbacks/fb_16.jpg`,
+    src: `/images/feedbacks/thumbs/fb_16.webp`,
+    full: `/images/feedbacks/fb_16.webp`,
     stars: 5,
     customerName: "B.T.",
     service: "Combo",
@@ -175,8 +175,8 @@ const FEEDBACKS = [
   },
   {
     type: "image" as const,
-    src: `/images/feedbacks/thumbs/fb_17.jpg`,
-    full: `/images/feedbacks/fb_17.jpg`,
+    src: `/images/feedbacks/thumbs/fb_17.webp`,
+    full: `/images/feedbacks/fb_17.webp`,
     stars: 5,
     customerName: "N.Y.",
     service: "Tarot",
@@ -280,6 +280,7 @@ export default function HomePage() {
             height={225}
             alt="Healing With My"
             fetchPriority="high"
+            loading="eager"
             decoding="async"
             className="w-48 md:w-60 h-auto mx-auto mb-6 drop-shadow-[0_0_16px_rgba(212,168,67,0.3)]"
           />
@@ -573,7 +574,7 @@ export default function HomePage() {
 
       {posterOpen && (
         <FeedbackLightbox
-          item={{ type: "image", src: "/idols/healingidol.jpg", stars: 5 }}
+          item={{ type: "image", src: "/idols/healingidol.webp", stars: 5 }}
           onClose={() => setPosterOpen(false)}
         />
       )}

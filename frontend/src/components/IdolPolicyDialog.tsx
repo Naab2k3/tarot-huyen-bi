@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from "react";
 
 /**
- * Transcribed from public/idols/healingidol.jpg so the policy text is
+ * Transcribed from public/idols/healingidol.webp so the policy text is
  * actually readable (and searchable) instead of baked into poster pixels.
  */
 const TIERS = [

@@ -90,12 +90,12 @@ export default function FloatingTarotCards({ count = 6 }: { count?: number }) {
         const fallback: TarotCard[] = [];
         for (let i = 0; i < 22; i++) {
           const id = `m${i.toString().padStart(2, "0")}`;
-          fallback.push({ id, name: `Major ${i}`, nameVi: `Major ${i}`, img: `/images/cards/${id}.jpg`, arcana: "Major", suit: null, meaning: "" });
+          fallback.push({ id, name: `Major ${i}`, nameVi: `Major ${i}`, img: `/images/cards/${id}.webp`, arcana: "Major", suit: null, meaning: "" });
         }
         for (const s of ["c", "p", "s", "w"]) {
           for (let i = 1; i <= 14; i++) {
             const id = `${s}${i.toString().padStart(2, "0")}`;
-            fallback.push({ id, name: id, nameVi: id, img: `/images/cards/${id}.jpg`, arcana: "Minor", suit: s, meaning: "" });
+            fallback.push({ id, name: id, nameVi: id, img: `/images/cards/${id}.webp`, arcana: "Minor", suit: s, meaning: "" });
           }
         }
         poolRef.current = fallback;
