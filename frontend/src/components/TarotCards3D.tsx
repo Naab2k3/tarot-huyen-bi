@@ -20,19 +20,27 @@ interface TarotCard {
   meaning: string;
 }
 
-// Card component with 3D mesh and interactions
-function TarotCardMesh({ 
+// Spiral arm parameters (galaxy arms)
+const SPIRAL_ARMS = 4;
+const ARM_COLORS = ['#b8849f', '#d4a843', '#dbb5cc', '#3a2045'];
+
+// Card component that rolls out along spiral arm
+function GalaxyCardMesh({ 
   card, 
-  angle,
+  armIndex,
   distance,
+  angle,
+  rollProgress,
   index,
   hovered,
   setHovered,
   flipped
 }: {
   card: TarotCard;
-  angle: number;
+  armIndex: number;
   distance: number;
+  angle: number;
+  rollProgress: number;
   index: number;
   hovered: number | null;
   setHovered: (index: number | null) => void;
@@ -41,19 +49,28 @@ function TarotCardMesh({
   const meshRef = useRef<THREE.Mesh>(null);
   const texture = useTexture(flipped ? card.img : "/images/cards/m00.webp");
 
-  // Position card in fan layout
+  // Animate card rolling out along spiral arm
   useFrame((state, delta) => {
     if (meshRef.current) {
-      const x = Math.cos(angle) * distance;
-      const z = Math.sin(angle) * distance;
+      // Spiral position: distance increases as card rolls out
+      const spiralDistance = distance * rollProgress;
       
-      // Add subtle floating animation
+      // Spiral angle: angle + rotation based on arm index
+      const spiralAngle = angle + state.clock.elapsedTime * 0.05 * (armIndex + 1);
+      
+      // Calculate spiral coordinates (Archimedean spiral)
+      const x = Math.cos(spiralAngle) * spiralDistance;
+      const z = Math.sin(spiralAngle) * spiralDistance;
+      
+      // Gentle floating on Y axis
       const floatOffset = Math.sin(state.clock.elapsedTime * 0.5 + index * 0.3) * 0.02;
       
       meshRef.current.position.set(x, floatOffset, z);
       
-      // Cards face slightly upward for better visibility
-      meshRef.current.rotation.set(0.1, -angle + Math.PI / 2, 0);
+      // Card faces slightly upward and toward center
+      const lookAtX = Math.cos(spiralAngle) * (spiralDistance * 0.5);
+      const lookAtZ = Math.sin(spiralAngle) * (spiralDistance * 0.5);
+      meshRef.current.lookAt(lookAtX, 0.5, lookAtZ);
       
       // Hover scale effect
       meshRef.current.scale.set(
@@ -64,19 +81,14 @@ function TarotCardMesh({
     }
   });
 
-  // Handle click to flip card
-  const handleClick = (e: any) => {
-    e.stopPropagation();
-    // Single click: flip
-    // For double click, we'll handle it in the parent
-  };
-
   return (
     <mesh
       ref={meshRef}
       onPointerOver={() => setHovered(index)}
       onPointerOut={() => setHovered(null)}
-      onClick={handleClick}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
     >
       <planeGeometry args={[0.6, 1, 16, 16]} />
       <meshStandardMaterial
@@ -89,63 +101,92 @@ function TarotCardMesh({
   );
 }
 
-// Fan layout rig - cards spread like a fan from bottom-left
-function FanRig({ children, fanAngle }: { children: React.ReactNode[]; fanAngle: number }) {
-  const groupRef = useRef<THREE.Group>(null);
+// Spiral Galaxy Arms - the colored arms that cards roll along
+function GalaxyArms() {
+  const armRefs = useRef<THREE.Group[]>([]);
   
   useFrame((state, delta) => {
-    if (groupRef.current) {
-      // Slight rotation based on mouse position for parallax
-      groupRef.current.rotation.y = state.mouse.x * 0.1;
-      groupRef.current.rotation.x = state.mouse.y * 0.05;
-    }
-  });
-
-  return <group ref={groupRef}>{children}</group>;
-}
-
-// Animated orbiting rings
-function OrbitingRings() {
-  const ringRefs = useRef<THREE.Mesh[]>([]);
-  
-  useFrame((state, delta) => {
-    ringRefs.current.forEach((ring, i) => {
-      if (ring) {
-        ring.rotation.y -= delta * (0.02 + i * 0.01);
-        ring.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 0.3 + i) * 0.02);
+    armRefs.current.forEach((arm, i) => {
+      if (arm) {
+        // Rotate arms slowly in opposite directions
+        const direction = i % 2 === 0 ? 1 : -1;
+        arm.rotation.z += delta * 0.01 * direction;
       }
     });
   });
 
-  const rings = useMemo(() => {
-    const colors = ['#b8849f', '#d4a843', '#dbb5cc', '#3a2045'];
-    return colors.map((color, i) => ({
-      radius: 3.5 + i * 1.2,
-      color: color,
-      width: 0.02 + i * 0.01,
-    }));
-  }, []);
-
   return (
-    <>
-      {rings.map((ring, i) => (
-        <mesh
-          key={i}
-          ref={(el) => (ringRefs.current[i] = el!)}
-          position={[0, 0, 0]}
-          rotation={[Math.PI / 2, 0, 0]}
-        >
-          <ringGeometry args={[ring.radius - ring.width, ring.radius, 64]} />
-          <meshBasicMaterial
-            color={ring.color.replace('80', '')}
-            side={THREE.DoubleSide}
-            transparent
-            opacity={0.3}
-          />
-        </mesh>
-      ))}
-    </>
+    <group>
+      {Array.from({ length: SPIRAL_ARMS }).map((_, armIndex) => {
+        // Create spiral curve for each arm
+        const points: THREE.Vector3[] = [];
+        const segments = 100;
+        const maxRadius = 5;
+        const armColor = ARM_COLORS[armIndex % ARM_COLORS.length];
+        
+        for (let i = 0; i <= segments; i++) {
+          const t = i / segments;
+          const radius = t * maxRadius;
+          const angle = armIndex * (Math.PI / 2) + t * Math.PI * 2 * (armIndex % 2 === 0 ? 1 : -1);
+          const x = Math.cos(angle) * radius;
+          const z = Math.sin(angle) * radius;
+          points.push(new THREE.Vector3(x, 0, z));
+        }
+        
+        return (
+          <group key={armIndex} ref={(el) => (armRefs.current[armIndex] = el!)}>
+            {/* Spiral line */}
+            <line>
+              <bufferGeometry attach="geometry">
+                <bufferAttribute
+                  attach="attributes-position"
+                  array={new Float32Array(points.flatMap(p => [p.x, p.y, p.z]))}
+                  count={points.length}
+                  itemSize={3}
+                />
+              </bufferGeometry>
+              <lineBasicMaterial color={armColor} transparent opacity={0.3} />
+            </line>
+            
+            {/* Glow effect along arm */}
+            {Array.from({ length: 10 }).map((_, i) => {
+              const t = (i + 1) / 11;
+              const radius = t * maxRadius;
+              const angle = armIndex * (Math.PI / 2) + t * Math.PI * 2 * (armIndex % 2 === 0 ? 1 : -1);
+              const x = Math.cos(angle) * radius;
+              const z = Math.sin(angle) * radius;
+              return (
+                <pointLight
+                  key={i}
+                  position={[x, 0, z]}
+                  color={armColor}
+                  intensity={0.1 + t * 0.3}
+                  distance={t * maxRadius * 2}
+                />
+              );
+            })}
+          </group>
+        );
+      })}
+    </group>
   );
+}
+
+// Scroll-based rig that controls galaxy rotation
+function GalaxyRig({ children, scrollVelocity }: { children: React.ReactNode; scrollVelocity: number }) {
+  const groupRef = useRef<THREE.Group>(null);
+  
+  useFrame((state, delta) => {
+    if (groupRef.current) {
+      // Rotate galaxy based on scroll velocity
+      groupRef.current.rotation.y += delta * scrollVelocity * 0.002;
+      
+      // Add subtle automatic rotation
+      groupRef.current.rotation.y += delta * 0.05;
+    }
+  });
+
+  return <group ref={groupRef}>{children}</group>;
 }
 
 // Tooltip component for card info
@@ -182,7 +223,7 @@ function CardTooltip({ card, position }: { card: TarotCard; position: { x: numbe
   );
 }
 
-// Main 3D Tarot Cards Component
+// Main 3D Tarot Cards Component - Galaxy/Spiral Arms Layout
 interface TarotCards3DProps {
   count?: number;
   cardData?: TarotCard[];
@@ -191,20 +232,42 @@ interface TarotCards3DProps {
 export default function TarotCards3D({ count = 6, cardData }: TarotCards3DProps) {
   const [hovered, setHovered] = useState<number | null>(null);
   const [cards, setCards] = useState<TarotCard[]>([]);
+  const [scrollY, setScrollY] = useState(0);
+  const [scrollVelocity, setScrollVelocity] = useState(0);
   const [flippedCards, setFlippedCards] = useState<boolean[]>([]);
   const [tooltip, setTooltip] = useState<{ card: TarotCard; x: number; y: number } | null>(null);
-  const [fanAngle, setFanAngle] = useState(0);
-  const [lastClickTime, setLastClickTime] = useState(0);
+  const [rollProgress, setRollProgress] = useState(0); // 0 = at center, 1 = fully rolled out
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [lastTime, setLastTime] = useState(0);
 
-  // Track scroll to control fan angle
+  // Track scroll position and velocity
   useEffect(() => {
+    let lastY = 0;
+    let lastT = Date.now();
+    
     const handleScroll = () => {
-      // Calculate fan angle based on scroll position
-      const scrollY = window.scrollY;
-      // At top: fan closed (0), as we scroll down: fan opens (up to PI/2)
-      const normalizedScroll = Math.min(scrollY / 500, 1);
-      setFanAngle(normalizedScroll * Math.PI / 2);
+      const now = Date.now();
+      const currentY = window.scrollY;
+      
+      // Calculate velocity
+      const deltaY = currentY - lastY;
+      const deltaT = now - lastT;
+      const velocity = deltaT > 0 ? deltaY / deltaT : 0;
+      
+      setScrollY(currentY);
+      setScrollVelocity(velocity);
+      setLastScrollY(currentY);
+      setLastTime(now);
+      
+      lastY = currentY;
+      lastT = now;
+      
+      // Calculate roll progress (0-1) based on scroll
+      const maxScroll = 500;
+      const progress = Math.min(currentY / maxScroll, 1);
+      setRollProgress(progress);
     };
+    
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll(); // Initialize
     return () => window.removeEventListener('scroll', handleScroll);
@@ -249,33 +312,13 @@ export default function TarotCards3D({ count = 6, cardData }: TarotCards3DProps)
 
   // Handle card interactions
   const handleCardClick = useCallback((index: number) => {
-    const now = Date.now();
-    
-    // Double click detection (swap card)
-    if (now - lastClickTime < 300) {
-      if (cardData && cardData.length > count) {
-        const availableCards = cardData.filter(c => 
-          !cards.some(cc => cc.id === c.id)
-        );
-        if (availableCards.length > 0) {
-          const randomIndex = Math.floor(Math.random() * availableCards.length);
-          setCards(prev => {
-            const newCards = [...prev];
-            newCards[index] = availableCards[randomIndex];
-            return newCards;
-          });
-        }
-      }
-    }
-    setLastClickTime(now);
-    
-    // Single click: flip
+    // Flip card on click
     setFlippedCards(prev => {
       const newFlipped = [...prev];
       newFlipped[index] = !newFlipped[index];
       return newFlipped;
     });
-  }, [lastClickTime, cards, cardData, count]);
+  }, []);
 
   // Track mouse position for tooltip
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -303,7 +346,7 @@ export default function TarotCards3D({ count = 6, cardData }: TarotCards3DProps)
     <>
       <Canvas
         camera={{
-          position: [0, 0, 8],
+          position: [0, 0, 10],
           fov: 60,
           near: 0.1,
           far: 1000,
@@ -332,24 +375,33 @@ export default function TarotCards3D({ count = 6, cardData }: TarotCards3DProps)
           position={[-10, -10, -5]}
           intensity={0.5}
         />
-        <pointLight position={[0, 0, 0]} intensity={0.3} color="#d4a843" />
+        <pointLight position={[0, 0, 0]} intensity={0.5} color="#d4a843" />
 
-        {/* Orbiting rings in background */}
-        <OrbitingRings />
+        {/* Galaxy spiral arms */}
+        <GalaxyArms />
 
-        {/* Fan layout - cards spread from bottom-left like a fan */}
-        <FanRig fanAngle={fanAngle}>
+        {/* Galaxy rig with cards rolling out along spiral arms */}
+        <GalaxyRig scrollVelocity={scrollVelocity}>
           {cards.map((card, i) => {
-            // Fan spread: each card at a different angle
-            const cardAngle = -Math.PI / 4 + (i / (count - 1)) * fanAngle;
-            const distance = 2.5 + i * 0.3;
+            // Assign each card to a spiral arm
+            const armIndex = i % SPIRAL_ARMS;
+            const cardsPerArm = Math.ceil(count / SPIRAL_ARMS);
+            const positionInArm = Math.floor(i / SPIRAL_ARMS);
+            
+            // Spiral parameters for this card
+            const maxDistance = 4;
+            const distance = 1 + (positionInArm / cardsPerArm) * maxDistance;
+            const angleOffset = armIndex * (Math.PI / 2);
+            const angle = angleOffset + positionInArm * 0.2;
             
             return (
-              <TarotCardMesh
+              <GalaxyCardMesh
                 key={card.id}
                 card={card}
-                angle={cardAngle}
+                armIndex={armIndex}
                 distance={distance}
+                angle={angle}
+                rollProgress={rollProgress}
                 index={i}
                 hovered={hovered}
                 setHovered={setHovered}
@@ -357,7 +409,7 @@ export default function TarotCards3D({ count = 6, cardData }: TarotCards3DProps)
               />
             );
           })}
-        </FanRig>
+        </GalaxyRig>
 
         {/* Environment */}
         <Environment preset="city" />
