@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import anime from "animejs";
 import Reveal from "../components/Reveal";
 import FloatingTarotCards from "../components/FloatingTarotCards";
-import TarotCards3D from "../components/TarotCards3D";
+import GalaxyTarotSystem from "../components/GalaxyTarotSystem";
 import CountUp from "../components/CountUp";
 import SparkleButton from "../components/SparkleButton";
 import Footer from "../components/Footer";
@@ -273,7 +273,7 @@ export default function HomePage() {
       {/* ─── Hero ─── */}
       <section className="relative min-h-[100dvh] flex overflow-hidden pt-16">
         <Suspense fallback={null}>
-          <TarotCards3D count={6} cardData={tarotCardsData as any} />
+          <GalaxyTarotSystem count={6} cardData={tarotCardsData as any} starCount={5000} />
         </Suspense>
         <FloatingTarotCards count={6} />
 
