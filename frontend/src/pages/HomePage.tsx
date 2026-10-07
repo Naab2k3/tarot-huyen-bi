@@ -272,7 +272,7 @@ export default function HomePage() {
       {/* ─── Hero ─── */}
       <section className="relative min-h-[100dvh] flex overflow-hidden pt-16">
         <Suspense fallback={null}>
-          <GalaxyTarotSystem count={14} cardData={tarotCardsData as any} starCount={4500} />
+          <GalaxyTarotSystem count={56} cardData={tarotCardsData as any} />
         </Suspense>
 
         <div className="relative z-10 text-center px-4 max-w-2xl mx-auto m-auto py-10">
@@ -284,7 +284,6 @@ export default function HomePage() {
             width={192}
             height={225}
             alt="Healing With My"
-            fetchPriority="high"
             loading="eager"
             decoding="async"
             className="w-48 md:w-60 h-auto mx-auto mb-6 drop-shadow-[0_0_16px_rgba(212,168,67,0.3)]"
