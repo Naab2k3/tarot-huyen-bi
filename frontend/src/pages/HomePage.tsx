@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, Suspense } from "react";
 import { Link } from "react-router-dom";
 import anime from "animejs";
 import Reveal from "../components/Reveal";
 import FloatingTarotCards from "../components/FloatingTarotCards";
+import TarotCards3D from "../components/TarotCards3D";
 import CountUp from "../components/CountUp";
 import SparkleButton from "../components/SparkleButton";
 import Footer from "../components/Footer";
@@ -11,6 +12,9 @@ import IdolPolicyDialog from "../components/IdolPolicyDialog";
 
 import { getServices } from "../api/client";
 import type { Service } from "../api/types";
+
+// Import tarot card data
+import tarotCardsData from "../../public/data/tarot-cards.json";
 
 const FEEDBACKS = [
   {
@@ -268,6 +272,9 @@ export default function HomePage() {
     <main className="min-h-screen">
       {/* ─── Hero ─── */}
       <section className="relative min-h-[100dvh] flex overflow-hidden pt-16">
+        <Suspense fallback={null}>
+          <TarotCards3D count={6} cardData={tarotCardsData as any} />
+        </Suspense>
         <FloatingTarotCards count={6} />
 
         <div className="relative z-10 text-center px-4 max-w-2xl mx-auto m-auto py-10">
