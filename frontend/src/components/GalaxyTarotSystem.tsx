@@ -50,7 +50,7 @@ export default function GalaxyTarotSystem({
   const cardEls = useRef<(HTMLDivElement | null)[]>([]);
   const [riders, setRiders] = useState<Rider[]>([]);
   const [hovered, setHovered] = useState<string | null>(null);
-  const anim = useRef({ journey: 0, scrollY: 0, mx: 0, my: 0, fx: 0, fy: 0, t0: 0 });
+  const anim = useRef({ journey: 0, scrollY: 0, mx: 0, my: 0, fx: 0, fy: 0, t0: 0, hover: -1, zooms: [] as number[] });
 
   /* pick cards once */
   useEffect(() => {
@@ -197,6 +197,9 @@ export default function GalaxyTarotSystem({
       A.fx += ((reduced ? 0 : A.mx * 14) - A.fx) * k;
       A.fy += ((reduced ? 0 : A.my * 10) - A.fy) * k;
       const baseH = Math.max(64, Math.min(Math.min(w, h) * 0.16, h * 0.22));
+      // keep hero copy readable: exclusion ellipse over the centered text block
+      const exX = Math.min(w * 0.4, 380);
+      const exY = Math.min(h * 0.3, 300);
 
       for (let i = 0; i < riders.length; i++) {
         const R = riders[i];
@@ -211,14 +214,20 @@ export default function GalaxyTarotSystem({
         const y = cy + Math.sin(ang) * r + woby + A.fy * (0.4 + p * 0.8);
         const grow = 0.3 + 0.7 * smooth(0, 0.35, p);
         const shrink = 1 - 0.45 * smooth(0.85, 1, p);
-        const cardH = baseH * R.sizeJ * grow * shrink;
+        if (!A.zooms || A.zooms.length !== riders.length) A.zooms = riders.map(() => 1);
+        const zTarget = i === A.hover ? 1.6 : 1; // hovered card pops up
+        A.zooms[i] += (zTarget - A.zooms[i]) * (1 - Math.exp(-10 * dt));
+        const cardH = baseH * R.sizeJ * grow * shrink * A.zooms[i];
         const cardW = cardH * (7 / 12);
-        const alpha = smooth(0, 0.1, p) * (1 - smooth(0.88, 1, p));
+        const alpha =
+          smooth(0, 0.1, p) *
+          (1 - smooth(0.88, 1, p)) *
+          smooth(0.85, 1.2, Math.hypot((x - cx) / exX, (y - cy) / exY));
         node.style.transform = `translate3d(${(x - cardW / 2).toFixed(1)}px,${(y - cardH / 2).toFixed(1)}px,0) rotate(${R.tilt.toFixed(2)}deg)`;
         node.style.width = `${cardW.toFixed(1)}px`;
         node.style.height = `${cardH.toFixed(1)}px`;
         node.style.opacity = alpha.toFixed(3);
-        node.style.zIndex = String(10 + Math.floor(p * 40));
+        node.style.zIndex = String(i === A.hover ? 999 : 10 + Math.floor(p * 40));
       }
       raf = requestAnimationFrame(frame);
     };
@@ -247,8 +256,14 @@ export default function GalaxyTarotSystem({
             ref={(el) => {
               cardEls.current[i] = el;
             }}
-            onMouseEnter={() => setHovered(R.card.id)}
-            onMouseLeave={() => setHovered(null)}
+            onMouseEnter={() => {
+              anim.current.hover = i;
+              setHovered(R.card.id);
+            }}
+            onMouseLeave={() => {
+              anim.current.hover = -1;
+              setHovered(null);
+            }}
             style={{
               position: "absolute",
               left: 0,
