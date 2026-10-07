@@ -3,7 +3,6 @@ import React, { useRef, useMemo, useEffect, useState, useCallback } from "react"
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, useTexture } from "@react-three/drei";
 import * as THREE from "three";
-import anime from "animejs";
 
 // Ensure THREE is properly configured for r160+
 if (typeof THREE.ColorManagement !== 'undefined') {
@@ -24,44 +23,37 @@ interface TarotCard {
 // Card component with 3D mesh and interactions
 function TarotCardMesh({ 
   card, 
-  radius,
   angle,
-  yOffset,
+  distance,
   index,
   hovered,
   setHovered,
-  scrollY,
-  onFlip,
   flipped
 }: {
   card: TarotCard;
-  radius: number;
   angle: number;
-  yOffset: number;
+  distance: number;
   index: number;
   hovered: number | null;
   setHovered: (index: number | null) => void;
-  scrollY: number;
-  onFlip: (index: number) => void;
   flipped: boolean;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const texture = useTexture(flipped ? card.img : "/images/cards/card-back.webp");
 
-  // Calculate position - cards orbit around center point
+  // Position card in fan layout
   useFrame((state, delta) => {
     if (meshRef.current) {
-      // Circular position around center (0,0,0)
-      const x = Math.cos(angle + scrollY * 0.001) * radius;
-      const z = Math.sin(angle + scrollY * 0.001) * radius;
+      const x = Math.cos(angle) * distance;
+      const z = Math.sin(angle) * distance;
       
       // Add subtle floating animation
-      const floatOffset = Math.sin(state.clock.elapsedTime * 0.5 + index * 0.3) * 0.03;
+      const floatOffset = Math.sin(state.clock.elapsedTime * 0.5 + index * 0.3) * 0.02;
       
-      meshRef.current.position.set(x, yOffset + floatOffset, z);
+      meshRef.current.position.set(x, floatOffset, z);
       
-      // Cards always face the center
-      meshRef.current.lookAt(0, yOffset, 0);
+      // Cards face slightly upward for better visibility
+      meshRef.current.rotation.set(0.1, -angle + Math.PI / 2, 0);
       
       // Hover scale effect
       meshRef.current.scale.set(
@@ -75,7 +67,8 @@ function TarotCardMesh({
   // Handle click to flip card
   const handleClick = (e: any) => {
     e.stopPropagation();
-    onFlip(index);
+    // Single click: flip
+    // For double click, we'll handle it in the parent
   };
 
   return (
@@ -96,14 +89,15 @@ function TarotCardMesh({
   );
 }
 
-// Scroll-based rig
-function ScrollRig({ children, scrollY }: { children: React.ReactNode; scrollY: number }) {
+// Fan layout rig - cards spread like a fan from bottom-left
+function FanRig({ children, fanAngle }: { children: React.ReactNode[]; fanAngle: number }) {
   const groupRef = useRef<THREE.Group>(null);
   
   useFrame((state, delta) => {
     if (groupRef.current) {
-      // Subtle rotation based on scroll
-      groupRef.current.rotation.y = scrollY * 0.0005;
+      // Slight rotation based on mouse position for parallax
+      groupRef.current.rotation.y = state.mouse.x * 0.1;
+      groupRef.current.rotation.x = state.mouse.y * 0.05;
     }
   });
 
@@ -117,7 +111,6 @@ function OrbitingRings() {
   useFrame((state, delta) => {
     ringRefs.current.forEach((ring, i) => {
       if (ring) {
-        // Rotate opposite to cards
         ring.rotation.y -= delta * (0.02 + i * 0.01);
         ring.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 0.3 + i) * 0.02);
       }
@@ -147,7 +140,7 @@ function OrbitingRings() {
             color={ring.color}
             side={THREE.DoubleSide}
             transparent
-            opacity={0.4}
+            opacity={0.3}
           />
         </mesh>
       ))}
@@ -198,17 +191,22 @@ interface TarotCards3DProps {
 export default function TarotCards3D({ count = 6, cardData }: TarotCards3DProps) {
   const [hovered, setHovered] = useState<number | null>(null);
   const [cards, setCards] = useState<TarotCard[]>([]);
-  const [scrollY, setScrollY] = useState(0);
   const [flippedCards, setFlippedCards] = useState<boolean[]>([]);
   const [tooltip, setTooltip] = useState<{ card: TarotCard; x: number; y: number } | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [fanAngle, setFanAngle] = useState(0);
+  const [lastClickTime, setLastClickTime] = useState(0);
 
-  // Track scroll position
+  // Track scroll to control fan angle
   useEffect(() => {
     const handleScroll = () => {
-      setScrollY(window.scrollY);
+      // Calculate fan angle based on scroll position
+      const scrollY = window.scrollY;
+      // At top: fan closed (0), as we scroll down: fan opens (up to PI/2)
+      const normalizedScroll = Math.min(scrollY / 500, 1);
+      setFanAngle(normalizedScroll * Math.PI / 2);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initialize
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -249,32 +247,35 @@ export default function TarotCards3D({ count = 6, cardData }: TarotCards3DProps)
     }
   }, [count, cardData]);
 
-  // Handle card flip
-  const handleFlip = useCallback((index: number) => {
+  // Handle card interactions
+  const handleCardClick = useCallback((index: number) => {
+    const now = Date.now();
+    
+    // Double click detection (swap card)
+    if (now - lastClickTime < 300) {
+      if (cardData && cardData.length > count) {
+        const availableCards = cardData.filter(c => 
+          !cards.some(cc => cc.id === c.id)
+        );
+        if (availableCards.length > 0) {
+          const randomIndex = Math.floor(Math.random() * availableCards.length);
+          setCards(prev => {
+            const newCards = [...prev];
+            newCards[index] = availableCards[randomIndex];
+            return newCards;
+          });
+        }
+      }
+    }
+    setLastClickTime(now);
+    
+    // Single click: flip
     setFlippedCards(prev => {
       const newFlipped = [...prev];
       newFlipped[index] = !newFlipped[index];
       return newFlipped;
     });
-  }, []);
-
-  // Handle double click to swap card
-  const handleDoubleClick = useCallback((index: number) => {
-    if (cardData && cardData.length > count) {
-      // Swap with a random card from the deck
-      const availableCards = cardData.filter(c => 
-        !cards.some(cc => cc.id === c.id)
-      );
-      if (availableCards.length > 0) {
-        const randomIndex = Math.floor(Math.random() * availableCards.length);
-        setCards(prev => {
-          const newCards = [...prev];
-          newCards[index] = availableCards[randomIndex];
-          return newCards;
-        });
-      }
-    }
-  }, [cards, cardData, count]);
+  }, [lastClickTime, cards, cardData, count]);
 
   // Track mouse position for tooltip
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -319,7 +320,6 @@ export default function TarotCards3D({ count = 6, cardData }: TarotCards3DProps)
           antialias: true,
           alpha: true,
         }}
-        ref={canvasRef}
       >
         {/* Lighting */}
         <ambientLight intensity={0.4} />
@@ -337,30 +337,27 @@ export default function TarotCards3D({ count = 6, cardData }: TarotCards3DProps)
         {/* Orbiting rings in background */}
         <OrbitingRings />
 
-        {/* Scroll rig with cards orbiting around center */}
-        <ScrollRig scrollY={scrollY}>
+        {/* Fan layout - cards spread from bottom-left like a fan */}
+        <FanRig fanAngle={fanAngle}>
           {cards.map((card, i) => {
-            const angle = (i / count) * Math.PI * 2;
-            const radius = 3.5 + Math.sin(i * 0.5) * 0.3;
-            const yOffset = (i % 2 === 0 ? 0.3 : -0.3) * (1 - i * 0.05);
+            // Fan spread: each card at a different angle
+            const cardAngle = -Math.PI / 4 + (i / (count - 1)) * fanAngle;
+            const distance = 2.5 + i * 0.3;
             
             return (
               <TarotCardMesh
                 key={card.id}
                 card={card}
-                radius={radius}
-                angle={angle}
-                yOffset={yOffset}
+                angle={cardAngle}
+                distance={distance}
                 index={i}
                 hovered={hovered}
                 setHovered={setHovered}
-                scrollY={scrollY}
-                onFlip={handleFlip}
                 flipped={flippedCards[i]}
               />
             );
           })}
-        </ScrollRig>
+        </FanRig>
 
         {/* Environment */}
         <Environment preset="city" />
@@ -373,5 +370,3 @@ export default function TarotCards3D({ count = 6, cardData }: TarotCards3DProps)
     </>
   );
 }
-
-// Export for use in pages
