@@ -40,7 +40,7 @@ const GalaxyParticleMaterial = new THREE.ShaderMaterial({
     void main() {
       vColor = aColor;
       
-      // Spiral galaxy motion
+      // Horizontal spiral (lying on XZ plane, viewing from Y-axis)
       float angle = aOffset + uTime * 0.2;
       float radius = aScale * 2.0;
       
@@ -93,13 +93,14 @@ function GalaxyStars({ count = 5000 }) {
       const armIndex = Math.floor(Math.random() * 4);
       const armColor = armColors[armIndex];
       
-      // Spiral galaxy parameters (Logarithmic spiral)
+      // Horizontal spiral (lying on XZ plane, viewing from Y-axis)
+      // This creates a galaxy that lies flat (horizontal) when viewed
       const angle = Math.random() * Math.PI * 2;
       const radius = Math.pow(Math.random(), 0.5) * 8; // Square root for denser center
       const armAngle = armIndex * (Math.PI / 2);
       
       const x = Math.cos(angle + armAngle) * radius;
-      const y = (Math.random() - 0.5) * 0.5;
+      const y = (Math.random() - 0.5) * 0.5;  // Small vertical dispersion
       const z = Math.sin(angle + armAngle) * radius;
       
       positions[i * 3] = x;
@@ -164,7 +165,7 @@ function GalaxyStars({ count = 5000 }) {
   );
 }
 
-// Tarot Card Mesh with instancing for performance
+// Tarot Card Mesh - now positioned HORIZONTALLY
 function TarotCardInstance({
   card,
   position,
@@ -175,8 +176,7 @@ function TarotCardInstance({
   setHovered,
   flipped,
   onFlip,
-  mouseX,
-  mouseY
+  mouseX
 }: {
   card: TarotCard;
   position: [number, number, number];
@@ -188,20 +188,18 @@ function TarotCardInstance({
   flipped: boolean;
   onFlip: (index: number) => void;
   mouseX: number;
-  mouseY: number;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const texture = useTexture(flipped ? card.img : "/images/cards/m00.webp");
 
   useFrame((state, delta) => {
     if (meshRef.current) {
-      // Apply mouse-based parallax
+      // Apply mouse-based parallax (horizontal movement)
       const parallaxX = mouseX * 0.01;
-      const parallaxY = mouseY * 0.01;
       
       meshRef.current.position.set(
         position[0] + parallaxX,
-        position[1] + parallaxY + Math.sin(state.clock.elapsedTime * 0.5 + index) * 0.02,
+        position[1] + Math.sin(state.clock.elapsedTime * 0.5 + index) * 0.02,
         position[2]
       );
       
@@ -246,16 +244,12 @@ function TarotCardInstance({
 // Scroll and mouse interaction rig
 function GalaxyRig({
   children,
-  scrollY,
   scrollVelocity,
-  mouseX,
-  mouseY
+  mouseX
 }: {
   children: React.ReactNode;
-  scrollY: number;
   scrollVelocity: number;
   mouseX: number;
-  mouseY: number;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const { camera } = useThree();
@@ -264,17 +258,13 @@ function GalaxyRig({
     if (groupRef.current) {
       // Rotate galaxy based on scroll velocity
       groupRef.current.rotation.y += delta * (scrollVelocity * 0.002 + 0.05);
-      
-      // Mouse-based camera movement (orbit)
-      camera.position.x = THREE.MathUtils.lerp(camera.position.x, mouseX * 0.1, 0.05);
-      camera.position.y = THREE.MathUtils.lerp(camera.position.y, mouseY * 0.05, 0.05);
-      camera.lookAt(0, 0, 0);
-      
-      // Scroll-based zoom
-      const zoomFactor = 8 - scrollY * 0.01;
-      camera.position.z = THREE.MathUtils.lerp(camera.position.z, zoomFactor, 0.1);
-      camera.updateProjectionMatrix();
     }
+    
+    // Mouse-based camera movement (horizontal orbit)
+    camera.position.x = THREE.MathUtils.lerp(camera.position.x, mouseX * 0.1, 0.05);
+    camera.position.y = THREE.MathUtils.lerp(camera.position.y, 0, 0.05); // Keep Y at 0 for horizontal view
+    camera.position.z = 8; // Fixed distance
+    camera.lookAt(0, 0, 0);
   });
 
   return <group ref={groupRef}>{children}</group>;
@@ -422,7 +412,11 @@ export default function GalaxyTarotSystem({
   // Show tooltip
   useEffect(() => {
     if (hovered !== null && cards[hovered]) {
-      setTooltip({ card: cards[hovered], x: mousePos.x * window.innerWidth / 2 + window.innerWidth / 2, y: -mousePos.y * window.innerHeight / 2 + window.innerHeight / 2 });
+      setTooltip({ 
+        card: cards[hovered], 
+        x: mousePos.x * window.innerWidth / 2 + window.innerWidth / 2, 
+        y: -mousePos.y * window.innerHeight / 2 + window.innerHeight / 2 
+      });
     } else {
       setTooltip(null);
     }
@@ -456,7 +450,7 @@ export default function GalaxyTarotSystem({
         {/* Ambient lighting */}
         <ambientLight intensity={0.3} />
         
-        {/* Directional lights for cards */}
+        {/* Directional lights */}
         <directionalLight
           position={[10, 10, 5]}
           intensity={1}
@@ -470,28 +464,24 @@ export default function GalaxyTarotSystem({
         {/* Point light at center */}
         <pointLight position={[0, 0, 0]} intensity={0.5} color="#d4a843" />
         
-        {/* Galaxy stars background */}
+        {/* Galaxy stars background - HORIZONTAL layout */}
         <GalaxyStars count={starCount} />
         
-        {/* Galaxy rig with cards */}
-        <GalaxyRig
-          scrollY={scrollY}
-          scrollVelocity={scrollVelocity}
-          mouseX={mousePos.x}
-          mouseY={mousePos.y}
-        >
+        {/* Galaxy rig with cards - HORIZONTAL layout */}
+        <GalaxyRig scrollVelocity={scrollVelocity} mouseX={mousePos.x}>
           {cards.map((card, i) => {
-            // Position cards in spiral pattern
-            const angle = (i / count) * Math.PI * 2;
-            const radius = 2.5 + Math.sin(i * 0.5) * 0.5;
-            const yOffset = (i % 2 === 0 ? 0.2 : -0.2) * (1 - i * 0.05);
+            // Position cards horizontally (along X-axis)
+            // Spread cards in a horizontal arc
+            const angle = (i / count) * Math.PI - Math.PI / 2; // -90 to +90 degrees (horizontal)
+            const radius = 3.5;
+            const yOffset = (i % 2 === 0 ? 0.2 : -0.2) * 0.5;
             
             return (
               <TarotCardInstance
                 key={card.id}
                 card={card}
                 position={[Math.cos(angle) * radius, yOffset, Math.sin(angle) * radius]}
-                rotation={[0.1, -angle + Math.PI / 2, 0]}
+                rotation={[0, -angle, 0]}
                 scale={0.8 + i * 0.05}
                 index={i}
                 hovered={hovered}
@@ -499,7 +489,6 @@ export default function GalaxyTarotSystem({
                 flipped={flippedCards[i]}
                 onFlip={handleFlip}
                 mouseX={mousePos.x}
-                mouseY={mousePos.y}
               />
             );
           })}
