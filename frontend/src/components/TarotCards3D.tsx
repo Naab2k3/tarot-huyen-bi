@@ -39,7 +39,7 @@ function TarotCardMesh({
   flipped: boolean;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const texture = useTexture(flipped ? card.img : "/images/cards/card-back.webp");
+  const texture = useTexture(flipped ? card.img : "/images/cards/m00.webp");
 
   // Position card in fan layout
   useFrame((state, delta) => {
@@ -118,7 +118,7 @@ function OrbitingRings() {
   });
 
   const rings = useMemo(() => {
-    const colors = ['#b8849f80', '#d4a84380', '#dbb5cc80', '#3a204580'];
+    const colors = ['#b8849f', '#d4a843', '#dbb5cc', '#3a2045'];
     return colors.map((color, i) => ({
       radius: 3.5 + i * 1.2,
       color: color,
@@ -137,7 +137,7 @@ function OrbitingRings() {
         >
           <ringGeometry args={[ring.radius - ring.width, ring.radius, 64]} />
           <meshBasicMaterial
-            color={ring.color}
+            color={ring.color.replace('80', '')}
             side={THREE.DoubleSide}
             transparent
             opacity={0.3}
