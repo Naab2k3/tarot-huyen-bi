@@ -4,6 +4,11 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 
+// Ensure THREE is properly configured for r160+
+if (typeof THREE.ColorManagement !== 'undefined') {
+  THREE.ColorManagement.enabled = true;
+}
+
 // Card data type
 interface TarotCard {
   id: string;
