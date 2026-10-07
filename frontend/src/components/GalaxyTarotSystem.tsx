@@ -38,7 +38,7 @@ const smooth = (a: number, b: number, x: number) => {
 };
 
 export default function GalaxyTarotSystem({
-  count = 56,
+  count = 36,
   cardData,
 }: {
   count?: number;
@@ -60,16 +60,23 @@ export default function GalaxyTarotSystem({
       const arms = mobile ? 3 : 6;
       const shuffled = [...pool].sort(() => Math.random() - 0.5);
       const rng = mulberry(42);
-      // golden-ratio stagger so arms never birth in lockstep rings
+      // even slots per arm (ArtCraft-style track-gap): k-th card on an arm
+      // sits at slot k, arms staggered by golden ratio so rings never align
+      const perArm = Math.ceil(n / arms);
+      const taken = new Array(arms).fill(0);
       setRiders(
-        Array.from({ length: Math.min(n, shuffled.length) }, (_, i) => ({
-          card: shuffled[i % shuffled.length],
-          arm: i % arms,
-          off: (i * 0.61803398875) % 1,
-          tilt: (rng() - 0.5) * 12,
-          sizeJ: 0.8 + rng() * 0.45,
-          wob: rng() * Math.PI * 2,
-        }))
+        Array.from({ length: Math.min(n, shuffled.length) }, (_, i) => {
+          const arm = i % arms;
+          const k = taken[arm]++;
+          return {
+            card: shuffled[i % shuffled.length],
+            arm,
+            off: ((k + arm * 0.61803398875) / perArm) % 1,
+            tilt: (rng() - 0.5) * 12,
+            sizeJ: 0.8 + rng() * 0.45,
+            wob: rng() * Math.PI * 2,
+          };
+        })
       );
     };
     if (cardData?.length) deal(cardData);
@@ -197,6 +204,10 @@ export default function GalaxyTarotSystem({
       A.fx += ((reduced ? 0 : A.mx * 14) - A.fx) * k;
       A.fy += ((reduced ? 0 : A.my * 10) - A.fy) * k;
       const baseH = Math.max(64, Math.min(Math.min(w, h) * 0.16, h * 0.22));
+      // track-gap cap: a card can never be taller than 80% of the radial
+      // distance to its next same-arm neighbour → no stacking
+      const perArm = Math.max(1, Math.ceil(riders.length / arms));
+      const gapCap = ((rMax * 1.12 - birth) / perArm) * 0.8;
       // keep hero copy readable: exclusion ellipse over the centered text block
       const exX = Math.min(w * 0.4, 380);
       const exY = Math.min(h * 0.3, 300);
@@ -217,7 +228,7 @@ export default function GalaxyTarotSystem({
         if (!A.zooms || A.zooms.length !== riders.length) A.zooms = riders.map(() => 1);
         const zTarget = i === A.hover ? 1.6 : 1; // hovered card pops up
         A.zooms[i] += (zTarget - A.zooms[i]) * (1 - Math.exp(-10 * dt));
-        const cardH = baseH * R.sizeJ * grow * shrink * A.zooms[i];
+        const cardH = Math.min(baseH * R.sizeJ * grow * shrink * A.zooms[i], gapCap * A.zooms[i]);
         const cardW = cardH * (7 / 12);
         const alpha =
           smooth(0, 0.1, p) *

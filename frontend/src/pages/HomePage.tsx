@@ -272,7 +272,7 @@ export default function HomePage() {
       {/* ─── Hero ─── */}
       <section className="relative min-h-[100dvh] flex overflow-hidden pt-16">
         <Suspense fallback={null}>
-          <GalaxyTarotSystem count={56} cardData={tarotCardsData as any} />
+          <GalaxyTarotSystem count={36} cardData={tarotCardsData as any} />
         </Suspense>
 
         <div className="relative z-10 text-center px-4 max-w-2xl mx-auto m-auto py-10">
