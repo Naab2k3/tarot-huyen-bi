@@ -1,15 +1,6 @@
 "use client";
-import React, { useRef, useMemo, useEffect, useState, useCallback } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, useTexture } from "@react-three/drei";
-import * as THREE from "three";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-// Ensure THREE is properly configured
-if (typeof THREE.ColorManagement !== 'undefined') {
-  THREE.ColorManagement.enabled = true;
-}
-
-// Card data type
 interface TarotCard {
   id: string;
   name: string;
@@ -20,381 +11,339 @@ interface TarotCard {
   meaning: string;
 }
 
-// Galaxy Stars Component - scattered stars background
-function GalaxyStars({ count = 3000 }) {
-  const starsRef = useRef<THREE.Points>(null);
-  
-  const geometry = useMemo(() => {
-    const positions: number[] = [];
-    const colors: number[] = [];
-    const sizes: number[] = [];
-    
-    const armColors = [
-      new THREE.Color('#b8849f'),
-      new THREE.Color('#d4a843'),
-      new THREE.Color('#dbb5cc'),
-      new THREE.Color('#3a2045'),
-    ];
-    
-    for (let i = 0; i < count; i++) {
-      const armIndex = Math.floor(Math.random() * 4);
-      const armColor = armColors[armIndex];
-      
-      // Scatter stars in a wide area (horizontal galaxy)
-      const x = (Math.random() - 0.5) * 15;
-      const y = (Math.random() - 0.5) * 8;
-      const z = (Math.random() - 0.5) * 15;
-      
-      positions.push(x, y, z);
-      colors.push(armColor.r, armColor.g, armColor.b);
-      sizes.push(0.05 + Math.random() * 0.1);
-    }
-    
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-    geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
-    
-    return geometry;
-  }, [count]);
-
-  useFrame((state, delta) => {
-    if (starsRef.current) {
-      // Stars rotate slowly from left to right (clockwise when viewed from above)
-      starsRef.current.rotation.y += delta * 0.05;
-    }
-  });
-
-  return (
-    <points ref={starsRef} geometry={geometry}>
-      <pointsMaterial
-        size={0.1}
-        vertexColors
-        transparent
-        opacity={0.8}
-        blending={THREE.AdditiveBlending}
-        depthWrite={false}
-      />
-    </points>
-  );
-}
-
-// Tarot Card Mesh - floating above galaxy image
-function TarotCardInstance({
-  card,
-  position,
-  rotation,
-  scale,
-  index,
-  hovered,
-  setHovered,
-  flipped,
-  onFlip,
-  globalRotation
-}: {
+interface Rider {
   card: TarotCard;
-  position: [number, number, number];
-  rotation: [number, number, number];
-  scale: number;
-  index: number;
-  hovered: number | null;
-  setHovered: (index: number | null) => void;
-  flipped: boolean;
-  onFlip: (index: number) => void;
-  globalRotation: number;
-}) {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const texture = useTexture(flipped ? card.img : "/images/cards/m00.webp");
-
-  useFrame((state, delta) => {
-    if (meshRef.current) {
-      // Apply global rotation (left to right, like a clock)
-      const totalRotation = globalRotation + index * 0.1;
-      
-      // Floating animation
-      const floatOffset = Math.sin(state.clock.elapsedTime * 0.5 + index * 0.3) * 0.03;
-      
-      meshRef.current.position.set(
-        position[0] + floatOffset * 0.5,
-        position[1] + floatOffset,
-        position[2]
-      );
-      
-      meshRef.current.rotation.set(
-        rotation[0],
-        totalRotation,
-        rotation[2]
-      );
-      
-      // Hover scale
-      meshRef.current.scale.set(
-        scale * (hovered === index ? 1.2 : 1),
-        scale * (hovered === index ? 1.2 : 1),
-        scale
-      );
-    }
-  });
-
-  return (
-    <mesh
-      ref={meshRef}
-      onPointerOver={() => setHovered(index)}
-      onPointerOut={() => setHovered(null)}
-      onClick={(e) => {
-        e.stopPropagation();
-        onFlip(index);
-      }}
-    >
-      <planeGeometry args={[0.6, 1, 16, 16]} />
-      <meshStandardMaterial
-        map={texture}
-        side={THREE.DoubleSide}
-        roughness={0.3}
-        metalness={0.1}
-        emissive={hovered === index ? '#d4a843' : '#000'}
-        emissiveIntensity={hovered === index ? 0.3 : 0}
-      />
-    </mesh>
-  );
+  arm: number; // which spiral arm (round-robin)
+  off: number; // journey offset [0,1)
+  tilt: number; // fixed slight tilt, cards stay upright
+  sizeJ: number; // size jitter
+  wob: number; // wobble phase
 }
 
-// Tooltip component
-function CardTooltip({ card, position }: { card: TarotCard; position: { x: number; y: number } }) {
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-        transform: 'translate(-50%, -100%)',
-        background: 'rgba(26, 16, 40, 0.95)',
-        backdropFilter: 'blur(8px)',
-        border: '1px solid rgba(212, 168, 67, 0.3)',
-        borderRadius: '12px',
-        padding: '12px 16px',
-        minWidth: '200px',
-        fontFamily: '"Playfair Display", serif',
-        fontSize: '14px',
-        color: '#d4a843',
-        zIndex: 100,
-        pointerEvents: 'none',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-      }}
-    >
-      <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{card.name}</div>
-      <div style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '12px', color: '#dbb5cc' }}>
-        {card.meaning}
-      </div>
-      <div style={{ fontSize: '10px', color: '#b8849f', marginTop: '4px' }}>
-        {card.arcana} Arcana {card.suit && `• ${card.suit}`}
-      </div>
-    </div>
-  );
+/* deterministic rng so SSR/first-frame matches */
+function mulberry(seed: number) {
+  let s = seed;
+  return () => {
+    s |= 0;
+    s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
 }
 
-// Main Galaxy Tarot System Component
-interface GalaxyTarotSystemProps {
-  count?: number;
-  cardData?: TarotCard[];
-  starCount?: number;
-}
+const smooth = (a: number, b: number, x: number) => {
+  const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+  return t * t * (3 - 2 * t);
+};
 
 export default function GalaxyTarotSystem({
-  count = 6,
+  count = 36,
   cardData,
-  starCount = 3000
-}: GalaxyTarotSystemProps) {
-  const [hovered, setHovered] = useState<number | null>(null);
-  const [cards, setCards] = useState<TarotCard[]>([]);
-  const [scrollY, setScrollY] = useState(0);
-  const [scrollVelocity, setScrollVelocity] = useState(0);
-  const [flippedCards, setFlippedCards] = useState<boolean[]>([]);
-  const [tooltip, setTooltip] = useState<{ card: TarotCard; x: number; y: number } | null>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [globalRotation, setGlobalRotation] = useState(0);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [lastTime, setLastTime] = useState(0);
+}: {
+  count?: number;
+  cardData?: TarotCard[];
+  starCount?: number; // kept for prop compat, unused in 2D mode
+}) {
+  const fieldRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const cardEls = useRef<(HTMLDivElement | null)[]>([]);
+  const [riders, setRiders] = useState<Rider[]>([]);
+  const [hovered, setHovered] = useState<string | null>(null);
+  const anim = useRef({ journey: 0, scrollY: 0, mx: 0, my: 0, fx: 0, fy: 0, t0: 0, hover: -1, zooms: [] as number[] });
 
-  // Track scroll and calculate rotation
+  /* pick cards once */
   useEffect(() => {
-    let lastY = 0;
-    let lastT = Date.now();
-    let accumulatedRotation = 0;
-    
-    const handleScroll = () => {
-      const now = Date.now();
-      const currentY = window.scrollY;
-      
-      const deltaY = currentY - lastY;
-      const deltaT = now - lastT;
-      const velocity = deltaT > 0 ? deltaY / deltaT : 0;
-      
-      setScrollY(currentY);
-      setScrollVelocity(velocity);
-      setLastScrollY(currentY);
-      setLastTime(now);
-      
-      // Accumulate rotation based on scroll velocity
-      // Scroll down = rotate clockwise (left to right)
-      if (Math.abs(deltaY) > 0) {
-        accumulatedRotation += deltaY * 0.002;
-        setGlobalRotation(accumulatedRotation);
-      }
-      
-      lastY = currentY;
-      lastT = now;
+    const deal = (pool: TarotCard[]) => {
+      const mobile = window.innerWidth < 768;
+      const n = mobile ? Math.min(14, count) : count;
+      const arms = mobile ? 3 : 6;
+      const shuffled = [...pool].sort(() => Math.random() - 0.5);
+      const rng = mulberry(42);
+      // even slots per arm (ArtCraft-style track-gap): k-th card on an arm
+      // sits at slot k, arms staggered by golden ratio so rings never align
+      const perArm = Math.ceil(n / arms);
+      const taken = new Array(arms).fill(0);
+      setRiders(
+        Array.from({ length: Math.min(n, shuffled.length) }, (_, i) => {
+          const arm = i % arms;
+          const k = taken[arm]++;
+          return {
+            card: shuffled[i % shuffled.length],
+            arm,
+            off: ((k + arm * 0.61803398875) / perArm) % 1,
+            tilt: (rng() - 0.5) * 12,
+            sizeJ: 0.8 + rng() * 0.45,
+            wob: rng() * Math.PI * 2,
+          };
+        })
+      );
     };
-    
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-    };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    handleScroll();
-    handleMouseMove({ clientX: window.innerWidth / 2, clientY: window.innerHeight / 2 } as MouseEvent);
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []);
-
-  // Initialize cards
-  useEffect(() => {
-    if (cardData && cardData.length > 0) {
-      setCards(cardData.slice(0, count));
-      setFlippedCards(cardData.slice(0, count).map(() => Math.random() > 0.5));
-    } else {
+    if (cardData?.length) deal(cardData);
+    else
       fetch("/data/tarot-cards.json")
         .then((r) => r.json())
-        .then((data: TarotCard[]) => {
-          const shuffled = [...data].sort(() => Math.random() - 0.5);
-          const selected = shuffled.slice(0, count);
-          setCards(selected);
-          setFlippedCards(selected.map(() => Math.random() > 0.5));
-        })
-        .catch(() => {
-          const fallback: TarotCard[] = [];
-          for (let i = 0; i < 22; i++) {
-            const id = `m${i.toString().padStart(2, "0")}`;
-            fallback.push({
-              id,
-              name: `Major ${i}`,
-              nameVi: `Major ${i}`,
-              img: `/images/cards/${id}.webp`,
-              arcana: "Major",
-              suit: null,
-              meaning: "",
-            });
-          }
-          setCards(fallback.slice(0, count));
-          setFlippedCards(fallback.slice(0, count).map(() => Math.random() > 0.5));
-        });
-    }
+        .then(deal)
+        .catch(() => {});
   }, [count, cardData]);
 
-  // Handle card flip
-  const handleFlip = useCallback((index: number) => {
-    setFlippedCards(prev => {
-      const newFlipped = [...prev];
-      newFlipped[index] = !newFlipped[index];
-      return newFlipped;
-    });
+  /* faint spiral guides + stars, drawn once per resize */
+  useEffect(() => {
+    const cv = canvasRef.current;
+    const field = fieldRef.current;
+    if (!cv || !field) return;
+    const draw = () => {
+      const w = field.clientWidth;
+      const h = field.clientHeight;
+      if (!w || !h) return;
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      cv.width = w * dpr;
+      cv.height = h * dpr;
+      const ctx = cv.getContext("2d")!;
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, w, h);
+      const mobile = w < 768;
+      const arms = mobile ? 3 : 6;
+      const turns = mobile ? 0.7 : 1.05;
+      const halfDiag = Math.hypot(w, h) / 2;
+      const rMax = halfDiag * 0.7;
+      const cx = w / 2;
+      const cy = h / 2;
+      const rng = mulberry(7);
+      // arm guides
+      ctx.lineWidth = 1;
+      for (let a = 0; a < arms; a++) {
+        ctx.strokeStyle = "rgba(212,168,67,0.07)";
+        ctx.beginPath();
+        for (let s = 0; s <= 60; s++) {
+          const p = s / 60;
+          const ang = (a / arms) * Math.PI * 2 + p * turns * Math.PI * 2;
+          const r = rMax * 0.08 + p * (rMax * 1.1 - rMax * 0.08);
+          const x = cx + Math.cos(ang) * r;
+          const y = cy + Math.sin(ang) * r;
+          s === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+      // construction circle
+      ctx.strokeStyle = "rgba(184,132,159,0.08)";
+      ctx.setLineDash([4, 6]);
+      ctx.beginPath();
+      ctx.arc(cx, cy, rMax * 0.56, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // stars clustered near arms
+      for (let i = 0; i < 420; i++) {
+        const a = Math.floor(rng() * arms);
+        const p = Math.pow(rng(), 0.7);
+        const ang = (a / arms) * Math.PI * 2 + p * turns * Math.PI * 2 + (rng() - 0.5) * 0.35;
+        const r = rMax * 0.08 + p * rMax * 1.15 + (rng() - 0.5) * 30;
+        const x = cx + Math.cos(ang) * r;
+        const y = cy + Math.sin(ang) * r;
+        const tw = rng();
+        ctx.fillStyle =
+          tw > 0.9 ? "rgba(255,246,221,0.9)" : tw > 0.6 ? "rgba(232,196,106,0.55)" : "rgba(219,181,204,0.4)";
+        const s = tw > 0.9 ? 1.8 : 1.1;
+        ctx.fillRect(x, y, s, s);
+      }
+    };
+    draw();
+    const ro = new ResizeObserver(draw);
+    ro.observe(field);
+    return () => ro.disconnect();
   }, []);
 
-  // Show tooltip
+  /* the conveyor: single rAF loop, transform-only writes */
   useEffect(() => {
-    if (hovered !== null && cards[hovered]) {
-      setTooltip({ 
-        card: cards[hovered], 
-        x: mousePos.x, 
-        y: mousePos.y 
-      });
-    } else {
-      setTooltip(null);
-    }
-  }, [hovered, mousePos, cards]);
+    if (!riders.length) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const A = anim.current;
+    A.t0 = performance.now();
+    A.scrollY = window.scrollY;
 
-  if (cards.length === 0) return null;
+    const onScroll = () => {
+      A.scrollY = window.scrollY;
+    };
+    const onMouse = (e: MouseEvent) => {
+      A.mx = (e.clientX / window.innerWidth) * 2 - 1;
+      A.my = (e.clientY / window.innerHeight) * 2 - 1;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("mousemove", onMouse, { passive: true });
+
+    const IDLE = 0.57 / 60; // journeys/sec (ArtCraft: 0.57 journeys/min)
+    const spinRs = (-50 * Math.PI) / 180 / 60; // whole-system rotation, -50°/min
+    let raf = 0;
+    let last = performance.now();
+
+    const frame = (now: number) => {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      const el = now - A.t0;
+      const field = fieldRef.current;
+      if (!field) {
+        raf = requestAnimationFrame(frame);
+        return;
+      }
+      const w = field.clientWidth;
+      const h = field.clientHeight;
+      const mobile = w < 768;
+      const arms = mobile ? 3 : 6;
+      const turns = mobile ? 0.7 : 1.05;
+      const halfDiag = Math.hypot(w, h) / 2;
+      const rMax = halfDiag * 0.7;
+      const birth = rMax * 0.08;
+      const cx = w / 2;
+      const cy = h / 2;
+      const burst = 1 + 2 * Math.exp(-el / 1000 / 2.5); // intro burst ×3 → 1
+      if (!reduced) A.journey += dt * IDLE * burst;
+      const sysRot = reduced ? 0 : spinRs * (el / 1000);
+      const scrub = reduced ? 0 : (A.scrollY * 0.2) / 1000; // journeys per 1000px, reversible
+      // mouse parallax, lerped
+      const k = 1 - Math.exp(-3 * dt);
+      A.fx += ((reduced ? 0 : A.mx * 14) - A.fx) * k;
+      A.fy += ((reduced ? 0 : A.my * 10) - A.fy) * k;
+      const baseH = Math.max(64, Math.min(Math.min(w, h) * 0.16, h * 0.22));
+      // track-gap cap: a card can never be taller than 80% of the radial
+      // distance to its next same-arm neighbour → no stacking
+      const perArm = Math.max(1, Math.ceil(riders.length / arms));
+      const gapCap = ((rMax * 1.12 - birth) / perArm) * 0.8;
+      // keep hero copy readable: exclusion ellipse over the centered text block
+      const exX = Math.min(w * 0.4, 380);
+      const exY = Math.min(h * 0.3, 300);
+
+      for (let i = 0; i < riders.length; i++) {
+        const R = riders[i];
+        const node = cardEls.current[i];
+        if (!node) continue;
+        const p = (((R.off + A.journey + scrub) % 1) + 1) % 1;
+        const ang = (R.arm / arms) * Math.PI * 2 + sysRot + p * turns * Math.PI * 2;
+        const r = birth + p * (rMax * 1.12 - birth);
+        const wobx = Math.sin((el / 1000) * (Math.PI * 2 * 0.25) + R.wob) * 6;
+        const woby = Math.cos((el / 1000) * (Math.PI * 2 * 0.25) + R.wob * 1.7) * 6;
+        const x = cx + Math.cos(ang) * r + wobx + A.fx * (0.4 + p * 0.8);
+        const y = cy + Math.sin(ang) * r + woby + A.fy * (0.4 + p * 0.8);
+        const grow = 0.3 + 0.7 * smooth(0, 0.35, p);
+        const shrink = 1 - 0.45 * smooth(0.85, 1, p);
+        if (!A.zooms || A.zooms.length !== riders.length) A.zooms = riders.map(() => 1);
+        const zTarget = i === A.hover ? 1.6 : 1; // hovered card pops up
+        A.zooms[i] += (zTarget - A.zooms[i]) * (1 - Math.exp(-10 * dt));
+        const cardH = Math.min(baseH * R.sizeJ * grow * shrink * A.zooms[i], gapCap * A.zooms[i]);
+        const cardW = cardH * (7 / 12);
+        const alpha =
+          smooth(0, 0.1, p) *
+          (1 - smooth(0.88, 1, p)) *
+          smooth(0.85, 1.2, Math.hypot((x - cx) / exX, (y - cy) / exY));
+        node.style.transform = `translate3d(${(x - cardW / 2).toFixed(1)}px,${(y - cardH / 2).toFixed(1)}px,0) rotate(${R.tilt.toFixed(2)}deg)`;
+        node.style.width = `${cardW.toFixed(1)}px`;
+        node.style.height = `${cardH.toFixed(1)}px`;
+        node.style.opacity = alpha.toFixed(3);
+        node.style.zIndex = String(i === A.hover ? 999 : 10 + Math.floor(p * 40));
+      }
+      raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("mousemove", onMouse);
+    };
+  }, [riders]);
+
+  const hoveredCard = useMemo(
+    () => (hovered ? riders.find((r) => r.card.id === hovered)?.card ?? null : null),
+    [hovered, riders]
+  );
 
   return (
     <>
-      <Canvas
-        camera={{
-          position: [0, 0, 8],
-          fov: 60,
-          near: 0.1,
-          far: 1000,
-        }}
+      {/* star + guide underlay */}
+      <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 }} />
+      {/* riding cards */}
+      <div ref={fieldRef} style={{ position: "absolute", inset: 0, zIndex: 0, overflow: "hidden" }}>
+        {riders.map((R, i) => (
+          <div
+            key={`${R.card.id}-${i}`}
+            ref={(el) => {
+              cardEls.current[i] = el;
+            }}
+            onMouseEnter={() => {
+              anim.current.hover = i;
+              setHovered(R.card.id);
+            }}
+            onMouseLeave={() => {
+              anim.current.hover = -1;
+              setHovered(null);
+            }}
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 0,
+              willChange: "transform, opacity",
+              borderRadius: 6,
+              overflow: "hidden",
+              boxShadow: "0 0 0 1px rgba(212,168,67,0.55), 0 6px 24px rgba(0,0,0,0.55)",
+              opacity: 0,
+            }}
+          >
+            <img
+              src={R.card.img}
+              alt={R.card.name}
+              draggable={false}
+              style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }}
+            />
+          </div>
+        ))}
+      </div>
+      {/* nebula pocket: hides births behind the hero copy */}
+      <div
         style={{
           position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: 0,
+          left: "50%",
+          top: "46%",
+          transform: "translate(-50%,-50%)",
+          width: "min(72vmin,560px)",
+          height: "min(72vmin,560px)",
+          zIndex: 1,
+          pointerEvents: "none",
+          background: "radial-gradient(closest-side, rgba(26,16,40,0.88) 30%, rgba(26,16,40,0.45) 60%, transparent 100%)",
         }}
-        gl={{
-          antialias: true,
-          alpha: true,
-          powerPreference: "high-performance",
+      />
+      {/* vignette */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 1,
+          pointerEvents: "none",
+          background: "radial-gradient(ellipse 90% 70% at 50% 45%, transparent 55%, rgba(13,8,18,0.6) 100%)",
         }}
-      >
-        {/* Ambient lighting */}
-        <ambientLight intensity={0.4} />
-        
-        {/* Directional lights */}
-        <directionalLight
-          position={[10, 10, 5]}
-          intensity={1}
-          castShadow
-        />
-        <directionalLight
-          position={[-10, -10, -5]}
-          intensity={0.5}
-        />
-        
-        {/* Point light at center */}
-        <pointLight position={[0, 0, 0]} intensity={0.5} color="#d4a843" />
-        
-        {/* Galaxy stars background - scattered in 3D space */}
-        <GalaxyStars count={starCount} />
-        
-        {/* Cards positioned above the galaxy, rotating left to right */}
-        <group rotation={[0, globalRotation, 0]}>
-          {cards.map((card, i) => {
-            // Position cards in a horizontal circle above the galaxy
-            const angle = (i / count) * Math.PI * 2;
-            const radius = 3.5;
-            const yOffset = 0.5; // Cards float above the galaxy plane
-            
-            return (
-              <TarotCardInstance
-                key={card.id}
-                card={card}
-                position={[
-                  Math.cos(angle) * radius,
-                  yOffset + (i % 2 === 0 ? 0.2 : -0.2),
-                  Math.sin(angle) * radius
-                ]}
-                rotation={[0.1, 0, 0]}
-                scale={0.8 + i * 0.05}
-                index={i}
-                hovered={hovered}
-                setHovered={setHovered}
-                flipped={flippedCards[i]}
-                onFlip={handleFlip}
-                globalRotation={globalRotation}
-              />
-            );
-          })}
-        </group>
-      </Canvas>
-      
-      {/* Tooltip overlay */}
-      {tooltip && (
-        <CardTooltip card={tooltip.card} position={{ x: tooltip.x, y: tooltip.y }} />
+      />
+      {hoveredCard && (
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            bottom: 28,
+            transform: "translateX(-50%)",
+            zIndex: 2,
+            pointerEvents: "none",
+            background: "rgba(13,8,18,0.85)",
+            border: "1px solid rgba(212,168,67,0.35)",
+            borderRadius: 10,
+            padding: "8px 18px",
+            textAlign: "center",
+            fontFamily: '"Playfair Display", serif',
+            color: "#d4a843",
+            fontSize: 14,
+            whiteSpace: "nowrap",
+          }}
+        >
+          {hoveredCard.nameVi || hoveredCard.name}
+          <span style={{ display: "block", fontSize: 11, color: "#b8849f", fontFamily: '"Cormorant Garamond", serif' }}>
+            {hoveredCard.meaning}
+          </span>
+        </div>
       )}
     </>
   );

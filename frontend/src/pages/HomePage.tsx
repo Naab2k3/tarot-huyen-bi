@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, useCallback, Suspense } from "react";
 import { Link } from "react-router-dom";
 import anime from "animejs";
 import Reveal from "../components/Reveal";
-import FloatingTarotCards from "../components/FloatingTarotCards";
 import GalaxyTarotSystem from "../components/GalaxyTarotSystem";
 import CountUp from "../components/CountUp";
 import SparkleButton from "../components/SparkleButton";
@@ -273,9 +272,8 @@ export default function HomePage() {
       {/* ─── Hero ─── */}
       <section className="relative min-h-[100dvh] flex overflow-hidden pt-16">
         <Suspense fallback={null}>
-          <GalaxyTarotSystem count={6} cardData={tarotCardsData as any} starCount={5000} />
+          <GalaxyTarotSystem count={36} cardData={tarotCardsData as any} />
         </Suspense>
-        <FloatingTarotCards count={6} />
 
         <div className="relative z-10 text-center px-4 max-w-2xl mx-auto m-auto py-10">
           {/* Brand logo */}
@@ -286,7 +284,6 @@ export default function HomePage() {
             width={192}
             height={225}
             alt="Healing With My"
-            fetchPriority="high"
             loading="eager"
             decoding="async"
             className="w-48 md:w-60 h-auto mx-auto mb-6 drop-shadow-[0_0_16px_rgba(212,168,67,0.3)]"
