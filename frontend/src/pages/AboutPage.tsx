@@ -5,18 +5,18 @@ import SparkleButton from "../components/SparkleButton";
 const VALUES = [
   {
     icon: "🌙",
-    title: "Chân thực",
-    desc: "Tôi đọc bài với trái tim thành thật, không phóng đại, không che giấu.",
+    title: "Nói thật, không dọa",
+    desc: "Bạn sẽ không nghe những lời chung chung hay hù dọa. Chỉ có sự thật dịu dàng — đủ rõ để bạn quyết định.",
   },
   {
     icon: "💜",
-    title: "Đồng cảm",
-    desc: "Mỗi buổi xem là một cuộc trò chuyện. Tôi lắng nghe và thấu hiểu câu chuyện của bạn.",
+    title: "Bạn được lắng nghe",
+    desc: "Mỗi buổi xem là một cuộc trò chuyện không phán xét. Cứ kể hết — My ở đây để hiểu, không phải để đánh giá.",
   },
   {
     icon: "✨",
-    title: "Trao quyền",
-    desc: "Bài đọc giúp bạn tự tin hơn với lựa chọn của mình, không phụ thuộc vào tôi.",
+    title: "Ra về nhẹ lòng hơn",
+    desc: "Bạn sẽ rời đi với lòng rõ ràng và vững vàng hơn — đủ tự tin bước tiếp mà không cần dựa vào ai.",
   },
 ];
 
@@ -65,7 +65,7 @@ export default function AboutPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <p className="font-body text-candle-gold text-sm tracking-widest uppercase mb-2">
-            ✦ Về tôi ✦
+            ✦ Về My ✦
           </p>
           <h1 className="font-display text-3xl md:text-5xl text-mist mb-4">Giới thiệu</h1>
         </div>
@@ -87,37 +87,41 @@ export default function AboutPage() {
           </div>
           <h2 className="font-display text-2xl text-mist mb-1">My</h2>
           <p className="font-body text-candle-gold text-sm tracking-wide uppercase mb-6">
-            Tarot Reader · Tea Leaf Artist
+            Người lắng nghe bằng Tarot · Tea Leaf
           </p>
           <p className="font-body text-lilac max-w-xl mx-auto leading-relaxed">
-            Với hơn 3 năm nghiên cứu và thực hành Tarot, Tea Leaf, Oracle cùng Grand Tableau,
-            tôi kết hợp trực giác và kiến thức huyền học để mang đến những bài đọc sâu sắc và ý nghĩa.
+            Hơn 10 năm đồng hành cùng Tarot, Tea Leaf, Oracle và Grand Tableau —
+            My ở đây không phải để phán xét số phận bạn, mà để cùng bạn nhìn sâu vào lòng mình
+            và tìm lại sự bình yên đã lạc mất.
           </p>
         </div>
 
         {/* Story */}
         <section className="mb-16">
           <h2 className="font-display text-xl md:text-2xl text-mist text-center mb-6">
-            Câu chuyện của tôi
+            Nếu bạn đang đọc những dòng này…
           </h2>
           <div className="bg-velvet/40 border border-velvet rounded-xl p-6 md:p-8 space-y-4 font-body text-lilac leading-relaxed">
             <p>
-              Healing With My ra đời từ niềm đam mê sâu sắc với huyền học và mong muốn kết nối con người
-              với năng lượng vũ trụ. Tôi tin rằng mỗi người đều mang trong mình một hành trình độc đáo,
-              và các lá bài chỉ là chiếc gương phản chiếu con đường đó.
+              Có lẽ bạn đang mang trong lòng một điều khó nói — một mối quan hệ chênh vênh,
+              một ngã rẽ sự nghiệp, hay chỉ là cảm giác mông lung chẳng biết mai sẽ ra sao.
+              Healing With My có mặt là vì những khoảnh khắc như thế.
             </p>
             <p>
-              Tôi không tiên đoán số phận. Tôi giúp bạn hiểu rõ năng lượng hiện tại và đưa ra quyết định
-              sáng suốt hơn cho tương lai của chính mình.
+              Ở đây, các lá bài không phải để quyết định thay bạn. Chúng như một tấm gương hiền —
+              giúp bạn soi rõ điều trái tim mình thực sự muốn, để rồi can đảm hơn với lựa chọn của chính mình.
             </p>
           </div>
         </section>
 
         {/* Values */}
         <section className="mb-16">
-          <h2 className="font-display text-xl md:text-2xl text-mist text-center mb-8">
-            Cách tôi làm việc
+          <h2 className="font-display text-xl md:text-2xl text-mist text-center mb-2">
+            Điều bạn sẽ cảm nhận ở đây
           </h2>
+          <p className="font-body text-lilac/60 italic text-center mb-8">
+            Không phải lời khoe khoang — chỉ là lời hứa dịu dàng dành cho bạn.
+          </p>
           <div className="grid gap-5">
             {VALUES.map((v) => (
               <div
@@ -138,7 +142,7 @@ export default function AboutPage() {
         <section className="mb-16">
           <div className="grid grid-cols-3 gap-6 text-center bg-velvet/40 border border-velvet rounded-xl p-8">
             <div>
-              <p className="font-display text-3xl text-candle-gold"><CountUp end={3} suffix="+" /></p>
+              <p className="font-display text-3xl text-candle-gold"><CountUp end={10} suffix="+" /></p>
               <p className="font-body text-lilac/60 text-sm">năm kinh nghiệm</p>
             </div>
             <div>
@@ -158,7 +162,7 @@ export default function AboutPage() {
             ✦ Báo chí ✦
           </p>
           <h2 className="font-display text-xl md:text-2xl text-mist text-center mb-8">
-            Báo chí nói về tôi
+            Báo chí nói về My
           </h2>
 
           {/* Featured article */}
@@ -248,10 +252,10 @@ export default function AboutPage() {
         {/* CTA */}
         <section className="text-center">
           <h2 className="font-display text-xl md:text-2xl text-mist mb-4">
-            Sẵn sàng khám phá?
+            Khi lòng đã mỏi, đừng đi một mình
           </h2>
           <p className="font-body text-lilac italic mb-6">
-            Đặt lịch xem bài ngay hôm nay và để năng lượng vũ trụ dẫn đường cho bạn.
+            Đặt một buổi xem — để được lắng nghe, được thấu hiểu và nhẹ lòng bước tiếp.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <SparkleButton

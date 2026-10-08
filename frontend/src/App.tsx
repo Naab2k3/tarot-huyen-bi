@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import PhoneFrame from "./components/PhoneFrame";
 import StarField from "./components/StarField";
 import FloatingCTA from "./components/FloatingCTA";
+import FloatingContact from "./components/FloatingContact";
 import BookingPage from "./pages/BookingPage";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
@@ -74,6 +75,7 @@ export default function App() {
         </Routes>
       </div>
       <FloatingCTA />
+      <FloatingContact />
     </div>
   );
 }

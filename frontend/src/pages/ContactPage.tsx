@@ -43,7 +43,7 @@ export default function ContactPage() {
           <span className="text-5xl block mb-6">💌</span>
           <h1 className="font-display text-3xl text-mist mb-4">Đã gửi tin nhắn!</h1>
           <p className="font-body text-lilac italic mb-8">
-            Cảm ơn bạn đã liên hệ. Tôi sẽ phản hồi trong thời gian sớm nhất.
+            Cảm ơn bạn đã liên hệ. My sẽ phản hồi trong thời gian sớm nhất.
           </p>
           <SparkleButton
             as="link"
@@ -64,9 +64,9 @@ export default function ContactPage() {
           <p className="font-body text-candle-gold text-sm tracking-widest uppercase mb-2">
             ✦ Liên hệ ✦
           </p>
-          <h1 className="font-display text-3xl md:text-5xl text-mist mb-4">Liên hệ với tôi</h1>
+          <h1 className="font-display text-3xl md:text-5xl text-mist mb-4">Liên hệ với My</h1>
           <p className="font-body text-lilac italic">
-            Bạn có câu hỏi? Tôi luôn sẵn sàng lắng nghe.
+            Bạn có câu hỏi? My luôn sẵn sàng lắng nghe.
           </p>
         </div>
 
@@ -114,7 +114,7 @@ export default function ContactPage() {
         {/* Contact form */}
         <div className="bg-velvet/40 border border-velvet rounded-xl p-6 md:p-8">
           <h2 className="font-display text-lg tracking-wider uppercase text-mist text-center mb-6">
-            Gửi tin nhắn cho tôi
+            Gửi tin nhắn cho My
           </h2>
 
           {error && (

@@ -189,17 +189,17 @@ const FEEDBACKS = [
 ];
 
 const WHY_US = [
-  { icon: "🔮", title: "Chính xác", desc: "Phán đoán sâu sắc, chính xác từ kinh nghiệm thực tiễn" },
-  { icon: "💜", title: "Tận tâm", desc: "Lắng nghe, thấu hiểu từng câu hỏi của bạn" },
-  { icon: "🔒", title: "Bảo mật", desc: "Thông tin cá nhân hoàn toàn được bảo mật tuyệt đối" },
-  { icon: "⚡", title: "Nhanh chóng", desc: "Phản hồi trong vòng 24 giờ, đặt lịch linh hoạt" },
+  { icon: "💜", title: "Được lắng nghe", desc: "Không phán xét, không vội vàng. Bạn có thể nói hết những điều giữ trong lòng bấy lâu" },
+  { icon: "🔮", title: "Nhìn rõ lòng mình", desc: "Không chỉ đoán tương lai — bạn ra về với hướng đi rõ ràng và lòng nhẹ hơn" },
+  { icon: "🔒", title: "Riêng tư tuyệt đối", desc: "Mọi tâm sự chỉ ở lại trong buổi xem đó. Nơi an toàn để bạn dám mở lòng" },
+  { icon: "🤝", title: "Đồng hành khi cần", desc: "Những lúc chênh vênh nhất, bạn không phải chờ một mình — phản hồi trong 24 giờ" },
 ];
 
 const SERVICE_CATEGORIES = [
-  { icon: "🃏", name: "Tarot", desc: "Giải mã năng lượng qua 78 lá bài Tarot huyền bí", link: "/booking" },
-  { icon: "🍃", name: "Tea Leaf", desc: "Xem bói qua lá trà — nghệ thuật cổ xưa phương Đông", link: "/booking" },
-  { icon: "🎴", name: "Bài Oracle", desc: "Lenormand, Oracle, Grand Tableau và nhiều hơn nữa", link: "/booking" },
-  { icon: "💫", name: "Combo", desc: "Kết hợp nhiều phương pháp — tiết kiệm hơn, sâu hơn", link: "/booking" },
+  { icon: "🃏", name: "Tarot", desc: "Khi lòng rối bời vì tình cảm, sự nghiệp hay một ngã rẽ — để 78 lá bài giúp bạn nghe rõ điều trái tim muốn", about: "Tarot là 78 lá bài rút theo năng lượng câu hỏi của bạn — soi rõ chuyện trước mắt. Hợp nhất khi lòng đang rối và cần một câu trả lời ngay.", link: "/booking" },
+  { icon: "🍃", name: "Tea Leaf", desc: "Như một tách trà ấm giữa ngày chênh vênh — dịu dàng hé lộ những gì sắp đến với bạn", about: "Tea Leaf đọc biểu tượng trong tách trà — nhẹ như lời thủ thỉ, hé lộ dòng chảy 3–12 tháng tới. Hợp khi bạn muốn nhìn xa để chuẩn bị lòng.", link: "/booking" },
+  { icon: "🎴", name: "Bài Oracle", desc: "Khi bạn cần bức tranh toàn cảnh — không chỉ hôm nay, mà những tháng tới sẽ đưa bạn về đâu", about: "Lenormand, Oracle, Grand Tableau 36 lá — trải toàn cảnh tình cảm, công việc, gia đình cùng lúc. Hợp khi bạn muốn thấy hết, không bỏ sót mảnh nào.", link: "/booking" },
+  { icon: "💫", name: "Combo", desc: "Dành cho lúc lòng mang quá nhiều điều nặng — đi sâu một lần, để được gỡ rối trọn vẹn", about: "Kết hợp nhiều bộ môn để đối chiếu, đào sâu trong một buổi — tiết kiệm hơn mà thấu hơn. Hợp khi lòng mang quá nhiều điều, muốn gỡ cho hết.", link: "/booking" },
 ];
 
 export default function HomePage() {
@@ -290,7 +290,7 @@ export default function HomePage() {
           />
 
           <p className="font-logo text-mist tracking-widest uppercase text-base md:text-lg mb-4 opacity-90">
-            Huyền học · Tâm linh · Kết nối
+            Reader · Healer · Coaching
           </p>
 
           <h1 className="font-display text-4xl md:text-6xl lg:text-7xl text-mist mb-4 leading-tight">
@@ -298,7 +298,7 @@ export default function HomePage() {
           </h1>
 
           <p className="font-body text-lilac text-xl md:text-2xl italic mb-8 leading-relaxed">
-            Nơi năng lượng vũ trụ gặp gỡ tâm hồn bạn qua Tarot, Tea Leaf và những bí ẩn huyền học.
+            Có những điều chẳng biết tỏ cùng ai — hãy để Tarot, Tea Leaf lắng nghe và vỗ về bạn.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -343,7 +343,7 @@ export default function HomePage() {
             </div>
             <div>
               <p className="font-display text-3xl md:text-4xl text-candle-gold">
-                <CountUp end={3} suffix="+" />
+                <CountUp end={10} suffix="+" />
               </p>
               <p className="font-body text-lilac/90 text-base tracking-wide mt-1">Năm kinh nghiệm</p>
             </div>
@@ -435,11 +435,14 @@ export default function HomePage() {
       <Reveal className="py-16 md:py-24" delay={100}>
         <div className="max-w-4xl mx-auto px-4">
           <p className="font-body text-candle-gold text-sm tracking-widest uppercase text-center mb-2">
-            ✦ Những gì tôi cung cấp ✦
+            ✦ Bạn đang tìm câu trả lời cho điều gì? ✦
           </p>
-          <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-12">
-            Dịch vụ của tôi
+          <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-3">
+            Tìm một nơi để lòng được nhẹ hơn
           </h2>
+          <p className="font-body text-lilac/70 italic text-center mb-12 max-w-xl mx-auto">
+            Tình cảm, sự nghiệp hay những ngã rẽ không tên — luôn có một trải bài dành cho điều bạn đang mang trong lòng.
+          </p>
 
           <div
             id="service-cards"
@@ -457,6 +460,10 @@ export default function HomePage() {
                   {cat.name}
                 </h3>
                 <p className="font-body text-lilac/85 text-base leading-relaxed">{cat.desc}</p>
+                <p className="font-body text-lilac/60 text-sm leading-relaxed mt-3 pt-3 border-t border-velvet/50">
+                  <span className="text-candle-gold/80 text-xs tracking-widest uppercase block mb-1">Loại bài này là gì?</span>
+                  {cat.about}
+                </p>
                 <span className="inline-block mt-4 font-body text-candle-gold text-sm font-semibold tracking-wider uppercase opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
                   Đặt lịch ngay →
                 </span>
@@ -481,9 +488,15 @@ export default function HomePage() {
       {/* ─── Why us ─── */}
       <Reveal className="py-16 md:py-24" delay={200}>
         <div className="max-w-4xl mx-auto px-4">
-          <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-12">
-            Tại sao chọn tôi?
+          <p className="font-body text-candle-gold text-sm tracking-widest uppercase text-center mb-2">
+            ✦ Nơi bạn được là chính mình ✦
+          </p>
+          <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-3">
+            Vì sao nhiều người tìm đến My?
           </h2>
+          <p className="font-body text-lilac/70 italic text-center mb-12 max-w-xl mx-auto">
+            Không phải để nghe phán xét đúng sai — mà để được hiểu, được gỡ rối và bước tiếp nhẹ nhàng hơn.
+          </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {WHY_US.map((w) => (
               <div key={w.title} className="text-center">
@@ -589,10 +602,10 @@ export default function HomePage() {
       <Reveal className="py-16 md:py-24" delay={150}>
         <div className="text-center px-4">
           <h2 className="font-display text-2xl md:text-4xl text-mist mb-4">
-            Sẵn sàng khám phá tương lai?
+            Đêm nay, đừng ôm nỗi lo một mình
           </h2>
           <p className="font-body text-lilac italic mb-8 max-w-md mx-auto">
-            Đặt lịch ngay hôm nay và để năng lượng vũ trụ dẫn đường cho bạn.
+            Đặt một buổi xem — để có người lắng nghe, để lòng được sáng rõ và bình yên trở lại.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <SparkleButton
@@ -609,6 +622,89 @@ export default function HomePage() {
             >
               Xem bảng giá
             </SparkleButton>
+          </div>
+        </div>
+      </Reveal>
+
+      {/* ─── Section divider ─── */}
+      <div className="section-divider my-4" />
+
+      {/* ─── Câu chuyện của My ─── */}
+      <Reveal className="py-16 md:py-24" amount={0.15}>
+        <div className="max-w-3xl mx-auto px-4">
+          <p className="font-body text-candle-gold text-sm tracking-widest uppercase text-center mb-2">
+            ✦ Câu chuyện của My ✦
+          </p>
+          <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-3 leading-tight">
+            Cô gái từng vỡ vụn,<br />nay là nơi bình yên của hàng trăm người
+          </h2>
+          <p className="font-body text-lilac/70 italic text-center mb-10 max-w-xl mx-auto">
+            Nếu bạn thấy mình trong những dòng này — thì buổi xem này là dành cho bạn.
+          </p>
+
+          <div className="bg-velvet/40 border border-velvet rounded-2xl p-6 md:p-10 space-y-5 font-body text-lilac leading-relaxed">
+            <p>
+              My đã từng mở một quán cà phê tổ hợp giải trí cho giới trẻ ở Hà Nội —
+              mang theo cả thanh xuân và niềm tin rằng chỉ cần hết mình thì giấc mơ nào
+              cũng thành. Rồi nó thất bại. Sạch trơn.
+            </p>
+            <p>
+              Sau lần kiệt sức đó, My rơi vào trầm cảm và lui về ở ẩn suốt một năm.
+              Một năm không muốn gặp ai, không muốn bắt đầu lại điều gì.
+            </p>
+            <p>
+              My đã từng không hạnh phúc. Đã từng cho đi rất nhiều, yêu hết mình
+              rồi đau đến nghẹt thở. Đã từng bị phản bội, bị lừa dối bởi chính
+              những người mình tin nhất.
+            </p>
+            <p>
+              My đã từng béo, từng xấu, từng bị bạo lực học đường, từng bị tẩy chay
+              và kỳ thị chỉ vì mình khác biệt. Đã từng soi gương mà không nhận ra
+              người trong đó là ai.
+            </p>
+            <p className="font-display text-lg md:text-xl text-mist leading-relaxed">
+              Vậy làm sao My vượt qua — để trở thành cô gái luôn tràn trề năng lượng
+              mà hôm nay ai cũng muốn ở cạnh?
+            </p>
+            <p>
+              Không có phép màu nào cả. Chỉ là một ngày, My học cách ngồi lại và ôm lấy
+              chính mình — ôm cả những mảnh vỡ, những vết thương, những phiên bản
+              từng bị chê cười. My học Tarot, học Tea Leaf, học chữa lành — không phải
+              để đoán số phận, mà để hiểu lòng người, bắt đầu từ lòng mình.
+            </p>
+            <p className="text-candle-gold/90">
+              Và hôm nay, My ở đây — để làm cho bạn điều mà năm đó My từng ước có ai đó
+              làm cho mình: lắng nghe, không phán xét, và cùng bạn tìm lại ánh sáng.
+            </p>
+          </div>
+
+          {/* Video — Chemie Coffee, nơi giấc mơ bắt đầu */}
+          <div className="mt-8">
+            <p className="font-body text-candle-gold/80 text-xs tracking-widest uppercase text-center mb-3">
+              Xem thêm — Chemie Coffee, nơi giấc mơ bắt đầu
+            </p>
+            <div className="relative overflow-hidden rounded-2xl border border-arcane/30 shadow-xl shadow-arcane/20">
+              <div className="aspect-video w-full">
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/4UwqrUl5wP8"
+                  title="Chemie Coffee — Tổ hợp Cà Phê Boardgame 24/7 tại Hà Nội"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center mt-8">
+            <Link
+              to="/about"
+              className="font-body text-lilac hover:text-mist underline underline-offset-4 decoration-arcane/30 transition-all"
+            >
+              Hiểu thêm về My →
+            </Link>
           </div>
         </div>
       </Reveal>
