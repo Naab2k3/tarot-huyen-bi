@@ -91,7 +91,7 @@ export default function RecruitPage() {
           <span className="text-5xl block mb-6">✨</span>
           <h1 className="font-display text-3xl text-mist mb-4">Cảm ơn bạn đã ứng tuyển!</h1>
           <p className="font-body text-lilac italic mb-8">
-            Đơn của bạn đã được ghi nhận. Tôi sẽ liên hệ trong thời gian sớm nhất.
+            Đơn của bạn đã được ghi nhận. My sẽ liên hệ trong thời gian sớm nhất.
           </p>
           <SparkleButton
             as="link"

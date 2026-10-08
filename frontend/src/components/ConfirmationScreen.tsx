@@ -151,7 +151,7 @@ export default function ConfirmationScreen({ booking, serviceName }: Props) {
       </div>
 
       <p className="font-body text-lilac/60 text-sm italic mt-6">
-        Tôi sẽ liên hệ bạn trong thời gian sớm nhất để xác nhận lịch hẹn.
+        My sẽ liên hệ bạn trong thời gian sớm nhất để xác nhận lịch hẹn.
       </p>
     </div>
   );

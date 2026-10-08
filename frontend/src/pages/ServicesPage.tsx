@@ -5,7 +5,7 @@ const CATEGORIES = [
   {
     icon: "🃏",
     name: "Tarot",
-    desc: "Khám phá năng lượng hiện tại và tương lai qua 78 lá bài Tarot huyền bí. Phù hợp cho tình cảm, sự nghiệp và quyết định quan trọng.",
+    desc: "Dành cho những đêm bạn trăn trở: người ấy có còn thương mình? Nên ở lại hay bước tiếp? 78 lá bài sẽ cùng bạn soi rõ từng ngổn ngang.",
     items: [
       { name: "Tarot - 1 vấn đề", price: "200.000đ" },
       { name: "Tarot - 3 vấn đề", price: "350.000đ" },
@@ -17,7 +17,7 @@ const CATEGORIES = [
   {
     icon: "🍃",
     name: "Tea Leaf",
-    desc: "Nghệ thuật xem bói qua lá trà, phương pháp cổ xưa kết hợp trực giác và biểu tượng học.",
+    desc: "Như ngồi lại bên một tách trà ấm — những biểu tượng lá trà thì thầm với bạn về 3 tháng, 6 tháng, 12 tháng sắp tới.",
     items: [
       { name: "Tea Leaf - 3 tháng full", price: "250.000đ" },
       { name: "Tea Leaf - 6 tháng 3 vấn đề", price: "300.000đ" },
@@ -28,7 +28,7 @@ const CATEGORIES = [
   {
     icon: "🎴",
     name: "Grand Tableau",
-    desc: "Trải bài toàn diện với hệ thống 36 lá, mang đến cái nhìn chi tiết về mọi khía cạnh.",
+    desc: "Khi bạn cần nhìn toàn cảnh cuộc đời mình — tình cảm, công việc, gia đình — tất cả hiện ra trong một trải bài sâu 36 lá.",
     items: [
       { name: "Grand Tableau - cơ bản", price: "350.000đ" },
       { name: "Grand Tableau - nâng cao", price: "500.000đ" },
@@ -38,7 +38,7 @@ const CATEGORIES = [
   {
     icon: "💫",
     name: "Combo ưu đãi",
-    desc: "Kết hợp nhiều phương pháp, tiết kiệm hơn và sâu hơn cho bức tranh toàn diện.",
+    desc: "Dành cho lúc lòng mang quá nhiều điều — tình cảm rối, sự nghiệp mông lung. Một lần đi sâu, để lòng được gỡ hết nút thắt.",
     items: [
       { name: "Combo Tarot + Tea Leaf", price: "800.000đ" },
       { name: "Combo VIP Full Tarot", price: "1.000.000đ" },
@@ -48,7 +48,7 @@ const CATEGORIES = [
   {
     icon: "🔮",
     name: "Dịch vụ khác",
-    desc: "Đá phong thủy, bản đồ sao, lá số chiêu tinh, tử vi... Đa dạng dịch vụ huyền học.",
+    desc: "Bản đồ sao, tử vi, đá phong thủy… — những mảnh ghép nhỏ giúp bạn hiểu mình hơn và vững vàng hơn mỗi ngày.",
     items: [
       { name: "Đá phong thủy", price: "200.000đ" },
       { name: "Bản đồ sao", price: "300.000đ - 600.000đ" },
@@ -65,11 +65,11 @@ export default function ServicesPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <p className="font-body text-candle-gold text-sm tracking-widest uppercase mb-2">
-            ✦ Những gì tôi cung cấp ✦
+            ✦ Điều gì đang nặng trong lòng bạn? ✦
           </p>
-          <h1 className="font-display text-3xl md:text-5xl text-mist mb-4">Dịch vụ</h1>
+          <h1 className="font-display text-3xl md:text-5xl text-mist mb-4">Chọn một nơi để trút lòng</h1>
           <p className="font-body text-lilac italic max-w-xl mx-auto">
-            Tôi cung cấp đa dạng dịch vụ huyền học, từ Tarot cổ điển đến các phương pháp độc đáo. Mỗi buổi xem là một hành trình khám phá riêng tư.
+            Mỗi trải bài là một cuộc trò chuyện riêng tư — không phán xét, chỉ có lắng nghe và gỡ rối cùng bạn.
           </p>
         </div>
 
@@ -106,10 +106,10 @@ export default function ServicesPage() {
         {/* CTA */}
         <section className="text-center mt-12 bg-arcane/10 border border-arcane/20 rounded-xl p-8">
           <h2 className="font-display text-xl md:text-2xl text-mist mb-3">
-            Không biết chọn dịch vụ nào?
+            Lòng đang rối, chưa biết chọn gì?
           </h2>
           <p className="font-body text-lilac italic mb-6">
-            Liên hệ với tôi. Tôi sẽ tư vấn dịch vụ phù hợp nhất với câu hỏi của bạn.
+            Cứ nhắn cho My — kể điều bạn đang mang, My sẽ giúp bạn chọn trải bài ôm ấp đúng nỗi lòng đó.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <SparkleButton

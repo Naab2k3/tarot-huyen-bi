@@ -11,15 +11,15 @@ import TimeSlots from "../components/TimeSlots";
 
 const BRAND = {
   name: "Healing With My",
-  tagline: "Kết nối con người với năng lượng vũ trụ",
+  tagline: "Có những điều chẳng biết tỏ cùng ai — ở đây, bạn được lắng nghe",
   story:
-    "Healing With My ra đời từ niềm đam mê sâu sắc với huyền học và mong muốn kết nối con người với năng lượng vũ trụ. Tôi tin rằng mỗi người đều mang trong mình một hành trình độc đáo, và các lá bài chỉ là chiếc gương phản chiếu con đường đó.",
-  years: "3+ năm kinh nghiệm",
+    "Nếu đêm nay lòng bạn nặng trĩu, hãy ngồi lại một chút. Mỗi lá bài ở đây không phải để phán xét bạn, mà để cùng bạn soi rõ điều trái tim thực sự muốn — rồi nhẹ nhàng bước tiếp.",
+  years: "10+ năm kinh nghiệm",
   clients: "500+ khách hàng",
   values: [
-    { icon: "🌙", title: "Chân thực", desc: "Đọc bài với trái tim thành thật, không phóng đại, không che giấu." },
-    { icon: "💜", title: "Đồng cảm", desc: "Mỗi buổi xem là một cuộc trò chuyện. Tôi lắng nghe và thấu hiểu." },
-    { icon: "✨", title: "Trao quyền", desc: "Bài đọc giúp bạn tự tin hơn với lựa chọn của mình, không phụ thuộc." },
+    { icon: "🌙", title: "Nói thật", desc: "Không chung chung, không hù dọa — chỉ sự thật dịu dàng để bạn vững lòng." },
+    { icon: "💜", title: "Lắng nghe", desc: "Cứ kể hết điều giữ trong lòng. Ở đây, bạn không bị đánh giá." },
+    { icon: "✨", title: "Nhẹ lòng", desc: "Ra về với hướng đi rõ ràng, lòng bình yên hơn lúc đến." },
   ],
 };
 
@@ -108,7 +108,7 @@ export default function BookingPage() {
             {BRAND.tagline}
           </p>
           <p className="font-body text-candle-gold/60 text-sm tracking-wide">
-            ✦ Tarot · Tea Leaf · Huyền học ✦
+            ✦ Reader · Healer · Coaching ✦
           </p>
         </div>
 
@@ -153,10 +153,10 @@ export default function BookingPage() {
             </div>
 
             <h2 className="font-display text-xl tracking-wider uppercase text-mist text-center">
-              Chọn dịch vụ
+              Bạn đang mang điều gì trong lòng?
             </h2>
             <p className="font-body text-lilac/50 text-center text-sm italic mb-6">
-              Chọn một dịch vụ để bắt đầu hành trình của bạn
+              Chọn một trải bài — để bắt đầu gỡ rối từng chút một
             </p>
           </section>
         )}
