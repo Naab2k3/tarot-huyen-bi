@@ -15,7 +15,7 @@ const SPREAD: { left: string; top: string; rotate: number }[] = [
   { left: "82%", top: "66%", rotate: 8   },
 ];
 
-/* ── Card face HTML (RWS image) ── */
+/* ── Card face HTML (deck image) ── */
 function cardFrontHTML(img: string, alt: string): string {
   return `<div style="position:relative;width:100%;height:100%;border-radius:5px;overflow:hidden;
     box-shadow:0 0 0 1.5px #d4a843,0 0 12px rgba(212,168,67,0.15),0 6px 24px rgba(0,0,0,0.55)">

@@ -49,3 +49,4 @@ uv.lock
 # ── Misc ──
 *.log
 PLAN_NOTES.md
+scripts/.tmp-*/

@@ -1,6 +1,6 @@
 # Tarot Huyền Bí 🔮 — Website đặt lịch Tarot
 
-Full-stack website đặt lịch hẹn bói Tarot với **Rider-Waite-Smith** 78 lá bài gốc, hiệu ứng 3D flip và floating animation.
+Full-stack website đặt lịch hẹn bói Tarot với **Sola Busca (1491)** 78 lá bài public-domain, hiệu ứng 3D flip và floating animation.
 
 - **Backend:** FastAPI + SQLAlchemy + PostgreSQL (NeonDB)
 - **Frontend:** React 18 + TypeScript + Vite + Tailwind v4 + animejs
@@ -10,7 +10,7 @@ Full-stack website đặt lịch hẹn bói Tarot với **Rider-Waite-Smith** 78
 
 | Tính năng | |
 |---|---|
-| 🃏 **78 lá RWS gốc** | 22 Major Arcana + 56 Minor Arcana, ảnh JPG 350×600 |
+| 🃏 **78 lá Sola Busca** | 22 Major Arcana + 56 Minor Arcana, ảnh JPG/WebP 640px |
 | 🔄 **Card flip 3D** | Click lật ngửa/úp, double-click đổi bài, auto-flip mỗi 10s |
 | 🎨 **Dark theme** | Bảng màu: void, velvet, arcane, lilac, candle-gold |
 | 🧭 **Multi-page** | Home, About, Services, Booking, Contact, Admin |
@@ -83,7 +83,7 @@ Mở **http://localhost:8000**
 
 ## 🃏 Tarot Cards
 
-78 lá **Rider-Waite-Smith** trong `frontend/public/images/cards/`:
+78 lá **Sola Busca (1491, public-domain)** trong `frontend/public/images/cards/` — tải bằng `scripts/download-sola-busca.py` (nguồn: mixvlad/TarotCards, gốc Wikimedia Commons):
 
 | Bộ | Số lượng | File |
 |---|---|---|
@@ -140,7 +140,7 @@ tarot-huyen-bi/
 ├── frontend/
 │   ├── public/
 │   │   ├── data/tarot-cards.json   # 78 cards data
-│   │   └── images/cards/           # 78 RWS JPGs
+│   │   └── images/cards/           # 78 Sola Busca JPGs + WebPs
 │   ├── src/
 │   │   ├── components/             # StarField, FloatingTarotCards, Navbar, …
 │   │   ├── pages/                  # Home, About, Services, Booking, Contact, Admin
@@ -157,7 +157,7 @@ tarot-huyen-bi/
 │   │   └── seed.py                 # Seed data
 │   ├── alembic/                    # Migrations
 │   └── requirements.txt
-└── scripts/download-cards.py       # Tải 78 RWS cards
+└── scripts/download-sola-busca.py  # Tải 78 Sola Busca cards (Wikimedia Commons)
 ```
 
 ## 🔒 CI/CD
