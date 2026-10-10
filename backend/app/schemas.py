@@ -47,6 +47,11 @@ class BookingCreate(BaseModel):
     service_id: int
     date: date
     time: str = Field(..., description="HH:MM format")
+    meeting_method: str = Field(
+        ...,
+        pattern=r"^(online|offline)$",
+        description="Hình thức xem: online (gọi video) hoặc offline (gặp trực tiếp)",
+    )
     customer_name: str = Field(..., min_length=1, max_length=200)
     customer_phone: str = Field(
         ...,
@@ -83,6 +88,7 @@ class BookingOut(BaseModel):
     appointment_date: date
     appointment_time: time
     status: str
+    meeting_method: str
     note: str | None
     created_at: datetime
 

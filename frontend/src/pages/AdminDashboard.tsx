@@ -18,6 +18,7 @@ import {
   deleteBooking,
 } from "../api/client";
 import type { Booking, ContactMessage, IdolApplication, Service } from "../api/types";
+import { MeetingMethodIcon } from "../components/MeetingMethod";
 
 type Tab = "bookings" | "services" | "applications" | "messages";
 
@@ -186,8 +187,8 @@ export default function AdminDashboard() {
     }
   }
 
-  async function handleDeleteApplication(id: number) {
-    if (!confirm("Xóa đơn ứng tuyển này?")) return;
+  async function handleDeleteRegistration(id: number) {
+    if (!confirm("Xóa đơn đăng ký này?")) return;
     try {
       await deleteApplication(id);
       loadApplications();
@@ -308,7 +309,7 @@ export default function AdminDashboard() {
                 : "text-lilac/60 hover:text-lilac"
             }`}
           >
-            Tuyển dụng
+            Đăng ký học
           </button>
           <button
             onClick={() => setTab("messages")}
@@ -364,6 +365,7 @@ export default function AdminDashboard() {
                     <th scope="col" className="py-3 pr-2">Khách hàng</th>
                     <th scope="col" className="py-3 pr-2">SĐT</th>
                     <th scope="col" className="py-3 pr-2">Dịch vụ</th>
+                    <th scope="col" className="py-3 pr-2">Hình thức</th>
                     <th scope="col" className="py-3 pr-2">Ngày</th>
                     <th scope="col" className="py-3 pr-2">Giờ</th>
                     <th scope="col" className="py-3 pr-2">Trạng thái</th>
@@ -381,6 +383,15 @@ export default function AdminDashboard() {
                       </td>
                       <td className="py-3 pr-2 font-body text-lilac text-sm max-w-[120px] truncate">
                         {services.find((s) => s.id === b.service_id)?.name || `#${b.service_id}`}
+                      </td>
+                      <td className="py-3 pr-2">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-body font-semibold border border-arcane/40 text-lilac whitespace-nowrap">
+                          <MeetingMethodIcon
+                            method={b.meeting_method === "offline" ? "offline" : "online"}
+                            className="w-3.5 h-3.5"
+                          />
+                          {b.meeting_method === "offline" ? "Off" : "Onl"}
+                        </span>
                       </td>
                       <td className="py-3 pr-2 font-body text-lilac text-sm whitespace-nowrap">
                         {b.appointment_date}
@@ -433,7 +444,7 @@ export default function AdminDashboard() {
                   ))}
                   {bookings.length === 0 && (
                     <tr>
-                      <td colSpan={7} className="py-8 text-center font-body text-lilac/50 italic">
+                        <td colSpan={8} className="py-8 text-center font-body text-lilac/50 italic">
                         Chưa có lịch hẹn nào
                       </td>
                     </tr>
@@ -573,7 +584,7 @@ export default function AdminDashboard() {
           </section>
         )}
 
-        {/* ──── Tuyển dụng tab ──── */}
+        {/* ──── Đăng ký học tab ──── */}
         {tab === "applications" && (
           <section>
             <div className="flex flex-wrap gap-3 mb-4">
@@ -598,7 +609,7 @@ export default function AdminDashboard() {
 
             {applications.length === 0 ? (
               <p className="text-center font-body text-lilac/50 italic py-8">
-                Chưa có đơn ứng tuyển nào
+                Chưa có đơn đăng ký nào
               </p>
             ) : (
               <div className="grid gap-4">
@@ -619,7 +630,6 @@ export default function AdminDashboard() {
                         <p className="font-body text-lilac text-sm mt-1">
                           {a.phone}
                           {a.email ? ` · ${a.email}` : ""}
-                          {a.social_link ? ` · ${a.social_link}` : ""}
                         </p>
                         <p className="font-body text-lilac/60 text-xs mt-0.5">
                           {new Date(a.created_at).toLocaleString("vi-VN")}
@@ -651,7 +661,7 @@ export default function AdminDashboard() {
                           </>
                         )}
                         <button
-                          onClick={() => handleDeleteApplication(a.id)}
+                          onClick={() => handleDeleteRegistration(a.id)}
                           className={statusBtn("delete", "Xóa")}
                         >
                           Xóa
@@ -661,14 +671,14 @@ export default function AdminDashboard() {
                     <div className="mt-3 space-y-2 border-t border-velvet/50 pt-3">
                       <div>
                         <p className="font-body text-lilac/50 text-xs uppercase tracking-wide mb-0.5">
-                          Lý do ứng tuyển
+                          Khóa học
                         </p>
                         <p className="font-body text-mist text-sm whitespace-pre-line">{a.reason}</p>
                       </div>
                       {a.experience && (
                         <div>
                           <p className="font-body text-lilac/50 text-xs uppercase tracking-wide mb-0.5">
-                            Kinh nghiệm
+                            Lời nhắn
                           </p>
                           <p className="font-body text-lilac text-sm whitespace-pre-line">
                             {a.experience}

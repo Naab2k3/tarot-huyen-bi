@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { createBooking, getServices } from "../api/client";
-import type { Booking, Service } from "../api/types";
+import type { Booking, MeetingMethod, Service } from "../api/types";
 import BookingForm from "../components/BookingForm";
 import Calendar from "../components/Calendar";
 import ConfirmationScreen from "../components/ConfirmationScreen";
@@ -55,6 +55,7 @@ export default function BookingPage() {
   }, []);
 
   async function handleSubmit(data: {
+    meeting_method: MeetingMethod;
     customer_name: string;
     customer_phone: string;
     customer_email?: string;
@@ -87,6 +88,16 @@ export default function BookingPage() {
     setBooking(null);
     setError("");
   }
+
+  // Đoán hình thức xem từ tên dịch vụ (vd "Xem Offline 1 tiếng")
+  // để preselect đúng nút Online/Offline trong form.
+  const guessedMethod: MeetingMethod = useMemo(() => {
+    const name = selectedService?.name.toLowerCase() ?? "";
+    if (name.includes("offline") || name.includes("trực tiếp") || name.includes("tại tiệm")) {
+      return "offline";
+    }
+    return "online";
+  }, [selectedService]);
 
   function selectService(svc: Service) {
     setSelectedService(svc);
@@ -239,7 +250,7 @@ export default function BookingPage() {
                   Dịch vụ đã chọn
                 </p>
                 <div className="flex justify-between items-center gap-3">
-                  <div>
+                  <div className="min-w-0">
                     <h3 className="font-display text-base tracking-wider uppercase text-mist">
                       {selectedService.name}
                     </h3>
@@ -250,7 +261,7 @@ export default function BookingPage() {
                         : ""}
                     </p>
                   </div>
-                  <span className="font-display text-candle-gold font-semibold text-lg whitespace-nowrap">
+                  <span className="font-display text-candle-gold font-semibold text-lg whitespace-nowrap shrink-0">
                     {selectedService.price.toLocaleString("vi-VN")}₫
                   </span>
                 </div>
@@ -262,7 +273,12 @@ export default function BookingPage() {
                 </button>
               </div>
             )}
-            <BookingForm onSubmit={handleSubmit} loading={loading} />
+            <BookingForm
+              key={selectedService?.id ?? "none"}
+              initialMethod={guessedMethod}
+              onSubmit={handleSubmit}
+              loading={loading}
+            />
             <div className="text-center mt-4">
               <button
                 onClick={() => setStep(1)}
