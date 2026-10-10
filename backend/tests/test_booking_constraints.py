@@ -25,6 +25,7 @@ BOOKING = {
     "service_id": 1,
     "date": TOMORROW,
     "time": SLOT,
+    "meeting_method": "online",
     "customer_name": "Test Klien",
     "customer_phone": "0912345678",
 }

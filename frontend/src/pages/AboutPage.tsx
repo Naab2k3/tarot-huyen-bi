@@ -21,40 +21,32 @@ const VALUES = [
 ];
 
 const FEATURED_PRESS = {
-  outlet: "SaoStar",
-  date: "01/08/2025",
-  title: "Gặp gỡ Phan Than Hieu My: Từ cô gái tự lập đến nữ thần stream",
+  outlet: "Inhat Hà Nội",
+  date: "17/07/2025",
+  title: "Top 12 Địa Chỉ Bói Bài Tarot Hà Nội Nổi Tiếng Nhất — Chemie Tarot #1",
   excerpt:
-    "Câu chuyện từ cô gái tự lập vươn lên thành nữ thần stream được đông đảo khán giả yêu mến.",
-  url: "https://www.saostar.vn/sac-mau-cuoc-song/gap-go-phan-than-hieu-my-tu-co-gai-tu-lap-den-nu-than-stream-voi-202508011711237874.html",
-  monogram: "S",
-  logo: "/images/press/logo-saostar.svg",
+    "Chemie Tarot do Tarot Reader Hiểu My sáng lập được xếp hạng #1 địa chỉ bói bài Tarot Hà Nội chuẩn, chính xác và có tâm nhất.",
+  url: "https://hanoi.inhat.vn/boi-bai-tarot-ha-noi/",
+  monogram: "I",
+  logo: "/images/press/logo-inhat.svg",
 };
 
 const PRESS_LINKS = [
   {
-    outlet: "Kenh14",
+    outlet: "Dân Việt",
     label: "Bài viết",
-    title: "Bỏ sau lưng ánh hào quang livestream, creator đồng hành cùng sao, trao giá trị",
-    url: "https://kenh14.vn/bo-sau-lung-anh-hao-quang-livestream-creator-lua-chon-dong-hanh-cung-sao-trao-gia-tri-215260828183745057.chn",
-    monogram: "K",
-    logo: "/images/press/logo-kenh14.svg",
+    title: "Phan Thần Hiểu My: Từ Content Creator đến hành trình lan tỏa giá trị chữa lành",
+    url: "https://danviet.vn/phan-than-hieu-my-tu-content-creator-den-hanh-trinh-lan-toa-gia-tri-chua-lanh-d1452596.html",
+    monogram: "D",
+    logo: "/images/press/logo-danviet.svg",
   },
   {
-    outlet: "Pháp Luật Tài Chính & Đầu Tư",
-    label: "Bài viết",
-    title: "Góc nhìn mới về làm đẹp thông minh cùng Phan Than Hieu My",
-    url: "https://phapluattaichinhvadautu.vn/nhan-vat/goc-nhin-moi-ve-lam-dep-thong-minh-cung-phan-than-hieu-my/",
-    monogram: "P",
-    logo: "/images/press/logo-pltcdt.webp",
-  },
-  {
-    outlet: "Người Nổi Tiếng TV",
-    label: "Hồ sơ nhân vật",
-    title: "Phan Hiếu My",
-    url: "https://nguoinoitieng.tv/nghe-nghiep/kol/phan-hieu-my/bhtx/amp",
-    monogram: "N",
-    logo: "/images/press/logo-nguoinoitieng.webp",
+    outlet: "Toplist Hà Nội",
+    label: "Top 12 Rooftop",
+    title: "Top 12 Quán Cafe Rooftop Hà Nội Được Yêu Thích — Chemie Coffee nổi tiếng về Tarot, Boardgame",
+    url: "https://toplisthanoi.com/quan-cafe-rooftop-ha-noi/",
+    monogram: "T",
+    logo: "/images/press/logo-toplisthanoi.svg",
   },
 ];
 
@@ -140,18 +132,18 @@ export default function AboutPage() {
 
         {/* Stats */}
         <section className="mb-16">
-          <div className="grid grid-cols-3 gap-6 text-center bg-velvet/40 border border-velvet rounded-xl p-8">
+          <div className="grid grid-cols-3 gap-3 sm:gap-6 text-center bg-velvet/40 border border-velvet rounded-xl p-5 sm:p-8">
             <div>
-              <p className="font-display text-3xl text-candle-gold"><CountUp end={10} suffix="+" /></p>
-              <p className="font-body text-lilac/60 text-sm">năm kinh nghiệm</p>
+              <p className="font-display text-2xl sm:text-3xl text-candle-gold"><CountUp end={10} suffix="+" /></p>
+              <p className="font-body text-lilac/60 text-xs sm:text-sm">năm kinh nghiệm</p>
             </div>
             <div>
-              <p className="font-display text-3xl text-candle-gold"><CountUp end={500} suffix="+" /></p>
-              <p className="font-body text-lilac/60 text-sm">khách hàng</p>
+              <p className="font-display text-2xl sm:text-3xl text-candle-gold"><CountUp end={500} suffix="+" /></p>
+              <p className="font-body text-lilac/60 text-xs sm:text-sm">khách hàng</p>
             </div>
             <div>
-              <p className="font-display text-3xl text-candle-gold"><CountUp end={5} suffix="★" /></p>
-              <p className="font-body text-lilac/60 text-sm">đánh giá</p>
+              <p className="font-display text-2xl sm:text-3xl text-candle-gold"><CountUp end={5} suffix="★" /></p>
+              <p className="font-body text-lilac/60 text-xs sm:text-sm">đánh giá</p>
             </div>
           </div>
         </section>

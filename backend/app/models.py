@@ -27,6 +27,11 @@ class ApplicationStatus(str, enum.Enum):
     rejected = "rejected"
 
 
+class MeetingMethod(str, enum.Enum):
+    online = "online"
+    offline = "offline"
+
+
 class Service(Base):
     __tablename__ = "services"
 
@@ -76,6 +81,11 @@ class Booking(Base):
     status: Mapped[BookingStatus] = mapped_column(
         Enum(BookingStatus, name="booking_status"),
         default=BookingStatus.pending,
+        nullable=False,
+    )
+    meeting_method: Mapped[MeetingMethod] = mapped_column(
+        Enum(MeetingMethod, name="meeting_method"),
+        default=MeetingMethod.online,
         nullable=False,
     )
     note: Mapped[str | None] = mapped_column(Text, nullable=True)

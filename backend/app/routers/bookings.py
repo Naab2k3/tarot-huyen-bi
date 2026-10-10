@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.crud import create_booking, get_available_slots
 from app.database import get_db
-from app.models import Booking, BookingStatus, Service
+from app.models import Booking, BookingStatus, MeetingMethod, Service
 from app.schemas import BookingCreate, BookingOut
 
 router = APIRouter(prefix="/api/bookings", tags=["bookings"])
@@ -70,6 +70,7 @@ def create_new_booking(body: BookingCreate, db: Session = Depends(get_db)):
                 "customer_email": body.customer_email,
                 "appointment_date": appointment_date,
                 "appointment_time": appointment_time,
+                "meeting_method": MeetingMethod(body.meeting_method),
                 "note": body.note,
                 "status": BookingStatus.pending,
             },

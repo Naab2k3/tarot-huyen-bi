@@ -7,7 +7,6 @@ import CountUp from "../components/CountUp";
 import SparkleButton from "../components/SparkleButton";
 import Footer from "../components/Footer";
 import FeedbackLightbox from "../components/FeedbackLightbox";
-import IdolPolicyDialog from "../components/IdolPolicyDialog";
 
 import { getServices } from "../api/client";
 import type { Service } from "../api/types";
@@ -196,17 +195,17 @@ const WHY_US = [
 ];
 
 const SERVICE_CATEGORIES = [
-  { icon: "🃏", name: "Tarot", desc: "Khi lòng rối bời vì tình cảm, sự nghiệp hay một ngã rẽ — để 78 lá bài giúp bạn nghe rõ điều trái tim muốn", about: "Tarot là 78 lá bài rút theo năng lượng câu hỏi của bạn — soi rõ chuyện trước mắt. Hợp nhất khi lòng đang rối và cần một câu trả lời ngay.", link: "/booking" },
-  { icon: "🍃", name: "Tea Leaf", desc: "Như một tách trà ấm giữa ngày chênh vênh — dịu dàng hé lộ những gì sắp đến với bạn", about: "Tea Leaf đọc biểu tượng trong tách trà — nhẹ như lời thủ thỉ, hé lộ dòng chảy 3–12 tháng tới. Hợp khi bạn muốn nhìn xa để chuẩn bị lòng.", link: "/booking" },
-  { icon: "🎴", name: "Bài Oracle", desc: "Khi bạn cần bức tranh toàn cảnh — không chỉ hôm nay, mà những tháng tới sẽ đưa bạn về đâu", about: "Lenormand, Oracle, Grand Tableau 36 lá — trải toàn cảnh tình cảm, công việc, gia đình cùng lúc. Hợp khi bạn muốn thấy hết, không bỏ sót mảnh nào.", link: "/booking" },
-  { icon: "💫", name: "Combo", desc: "Dành cho lúc lòng mang quá nhiều điều nặng — đi sâu một lần, để được gỡ rối trọn vẹn", about: "Kết hợp nhiều bộ môn để đối chiếu, đào sâu trong một buổi — tiết kiệm hơn mà thấu hơn. Hợp khi lòng mang quá nhiều điều, muốn gỡ cho hết.", link: "/booking" },
+  { icon: "⏳", name: "Xem theo thời gian", desc: "1–2 tiếng dùng mọi loại bài để gỡ hết thắc mắc — online từ 500k, offline từ 800k", about: "Cận kề, lắng nghe tâm sự và cùng bạn giải quyết vấn đề trong 1–2 tiếng. Có cả online lẫn gặp trực tiếp.", link: "/services" },
+  { icon: "🃏", name: "Tarot", desc: "Từ 1 câu hỏi duy nhất tới full mọi vấn đề — chỉ từ 200k", about: "Trải bài cơ bản, chuyên sâu 1 chuyện, full không giới hạn câu hỏi. Hợp nhất khi lòng đang rối và cần câu trả lời ngay.", link: "/services" },
+  { icon: "🍃", name: "Tea Leaf", desc: "Lá trà thì thầm về 3 tháng tới cả năm — từ 250k", about: "Bài tuần, 6 tháng, full 12 tháng tài lộc tình duyên. Hợp khi bạn muốn nhìn xa để chuẩn bị lòng.", link: "/services" },
+  { icon: "🎴", name: "Bài khác", desc: "Haletu, Oracle từ 100k, Lenormand, The Lover, The Heart", about: "Mỗi bộ bài một thế mạnh: lời khuyên, vận mệnh, tình yêu 1–3 tháng tới. Vào bảng giá để chọn đúng bài.", link: "/services" },
+  { icon: "💫", name: "Combo", desc: "Đi sâu một lần bằng nhiều loại bài — từ 650k, HOT nhất 3tr", about: "Tarot + Trà + Lenormand + trị liệu tâm lý, có bảo hành xem lại. Hợp khi lòng mang quá nhiều điều.", link: "/services" },
+  { icon: "🔮", name: "Dịch vụ khác", desc: "Thần số học, bản đồ sao, tử vi đôi, đá phong thủy", about: "Những mảnh ghép giúp bạn hiểu mình hơn mỗi ngày — và cả khóa dạy xem Tarot nếu bạn muốn học.", link: "/services" },
 ];
 
 export default function HomePage() {
   const [services, setServices] = useState<Service[]>([]);
   const [lightboxItem, setLightboxItem] = useState<typeof FEEDBACKS[number] | null>(null);
-  const [posterOpen, setPosterOpen] = useState(false);
-  const [policyOpen, setPolicyOpen] = useState(false);
   const cardsRevealed = useRef(false);
 
   useEffect(() => {
@@ -214,57 +213,118 @@ export default function HomePage() {
   }, []);
 
   // Stagger entry for service cards
+  // NOTE: threshold phải là 0 — container cao hơn viewport trên mobile
+  // nên threshold > 0 (vd 0.2) có thể không bao giờ đạt được.
   useEffect(() => {
     const el = document.getElementById("service-cards");
     if (!el || cardsRevealed.current) return;
 
+    const reveal = () => {
+      if (cardsRevealed.current) return;
+      cardsRevealed.current = true;
+      const items = el.querySelectorAll(".service-card-item");
+      try {
+        anime({
+          targets: items,
+          opacity: [0, 1],
+          translateY: [30, 0],
+          delay: anime.stagger(120, { start: 200 }),
+          duration: 600,
+          easing: "easeOutCubic",
+          complete: () => {
+            (items as unknown as HTMLElement[]).forEach((it) => {
+              (it as HTMLElement).style.opacity = "1";
+              (it as HTMLElement).style.transform = "none";
+            });
+          },
+        });
+      } catch {
+        (items as unknown as HTMLElement[]).forEach((it) => {
+          (it as HTMLElement).style.opacity = "1";
+          (it as HTMLElement).style.transform = "none";
+        });
+      }
+    };
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !cardsRevealed.current) {
-          cardsRevealed.current = true;
-          const items = el.querySelectorAll(".service-card-item");
-          anime({
-            targets: items,
-            opacity: [0, 1],
-            translateY: [30, 0],
-            delay: anime.stagger(120, { start: 200 }),
-            duration: 600,
-            easing: "easeOutCubic",
-          });
+        if (entry.isIntersecting) {
+          reveal();
           observer.disconnect();
+          clearTimeout(fallback);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0, rootMargin: "0px 0px 100px 0px" }
     );
     observer.observe(el);
-    return () => observer.disconnect();
+    // Fallback: nếu observer không bao giờ fire (trình duyệt cũ / lỗi),
+    // vẫn hiện cards sau 2.5s thay vì kẹt ở opacity-0.
+    const fallback = setTimeout(() => {
+      reveal();
+      observer.disconnect();
+    }, 2500);
+    return () => {
+      observer.disconnect();
+      clearTimeout(fallback);
+    };
   }, []);
 
   // Stagger entry for feedback cards
+  // FIX mobile không hiển thị: trước đây dùng threshold 0.15 trên cả
+  // container #feedback-cards. Trên mobile grid 1 cột cao ~8500px,
+  // viewport ~700px nên tỉ lệ hiển thị tối đa chỉ ~8% < 15% → observer
+  // không bao giờ fire → tất cả .feedback-card kẹt ở opacity-0.
+  // Dùng threshold 0 (chỉ cần 1px lọt vào viewport là reveal) + fallback timer.
   useEffect(() => {
     const el = document.getElementById("feedback-cards");
     if (!el) return;
     let done = false;
+    const reveal = () => {
+      if (done) return;
+      done = true;
+      const items = el.querySelectorAll(".feedback-card");
+      try {
+        anime({
+          targets: items,
+          opacity: [0, 1],
+          translateY: [24, 0],
+          delay: anime.stagger(100, { start: 100 }),
+          duration: 600,
+          easing: "easeOutCubic",
+          complete: () => {
+            (items as unknown as HTMLElement[]).forEach((it) => {
+              (it as HTMLElement).style.opacity = "1";
+              (it as HTMLElement).style.transform = "none";
+            });
+          },
+        });
+      } catch {
+        (items as unknown as HTMLElement[]).forEach((it) => {
+          (it as HTMLElement).style.opacity = "1";
+          (it as HTMLElement).style.transform = "none";
+        });
+      }
+    };
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !done) {
-          done = true;
-          const items = el.querySelectorAll(".feedback-card");
-          anime({
-            targets: items,
-            opacity: [0, 1],
-            translateY: [24, 0],
-            delay: anime.stagger(100, { start: 100 }),
-            duration: 600,
-            easing: "easeOutCubic",
-          });
+        if (entry.isIntersecting) {
+          reveal();
           observer.disconnect();
+          clearTimeout(fallback);
         }
       },
-      { threshold: 0.15 }
+      { threshold: 0, rootMargin: "0px 0px 100px 0px" }
     );
     observer.observe(el);
-    return () => observer.disconnect();
+    // Fallback: đảm bảo không bao giờ kẹt ở opacity-0 trên mobile.
+    const fallback = setTimeout(() => {
+      reveal();
+      observer.disconnect();
+    }, 2500);
+    return () => {
+      observer.disconnect();
+      clearTimeout(fallback);
+    };
   }, []);
 
   return (
@@ -283,7 +343,7 @@ export default function HomePage() {
             sizes="(max-width: 768px) 192px, 240px"
             width={192}
             height={225}
-            alt="Healing With My"
+            alt="Tarot Tea Leaf"
             loading="eager"
             decoding="async"
             className="w-48 md:w-60 h-auto mx-auto mb-6 drop-shadow-[0_0_16px_rgba(212,168,67,0.3)]"
@@ -294,7 +354,7 @@ export default function HomePage() {
           </p>
 
           <h1 className="font-display text-4xl md:text-6xl lg:text-7xl text-mist mb-4 leading-tight">
-            Healing<br />With My
+            Tarot<br />Tea Leaf
           </h1>
 
           <p className="font-body text-lilac text-xl md:text-2xl italic mb-8 leading-relaxed">
@@ -328,70 +388,69 @@ export default function HomePage() {
       {/* ─── Stats ─── */}
       <Reveal className="py-16">
         <div className="max-w-3xl mx-auto px-4">
-          <div className="grid grid-cols-3 gap-8 text-center">
+          <div className="grid grid-cols-3 gap-3 sm:gap-8 text-center">
             <div>
               <p className="font-display text-3xl md:text-4xl text-candle-gold">
                 <CountUp end={500} suffix="+" />
               </p>
-              <p className="font-body text-lilac/90 text-base tracking-wide mt-1">Khách hàng</p>
+              <p className="font-body text-lilac/90 text-sm sm:text-base tracking-wide mt-1">Khách hàng</p>
             </div>
             <div>
               <p className="font-display text-3xl md:text-4xl text-candle-gold">
                 <CountUp end={5} suffix="★" />
               </p>
-              <p className="font-body text-lilac/90 text-base tracking-wide mt-1">Đánh giá</p>
+              <p className="font-body text-lilac/90 text-sm sm:text-base tracking-wide mt-1">Đánh giá</p>
             </div>
             <div>
               <p className="font-display text-3xl md:text-4xl text-candle-gold">
                 <CountUp end={10} suffix="+" />
               </p>
-              <p className="font-body text-lilac/90 text-base tracking-wide mt-1">Năm kinh nghiệm</p>
+              <p className="font-body text-lilac/90 text-sm sm:text-base tracking-wide mt-1">Năm kinh nghiệm</p>
             </div>
           </div>
         </div>
       </Reveal>
 
-      {/* ─── Tuyển dụng idol ─── */}
+      {/* ─── Đào tạo ─── */}
       <Reveal className="py-16 md:py-24" amount={0.2}>
         <div className="max-w-6xl mx-auto px-4">
-          {/* Text-first banner: the poster is unreadable when cropped, so the
-              salary story is told in native markup. Full poster stays one
-              tap away via "Xem poster gốc". */}
           <div className="relative overflow-hidden rounded-3xl border border-arcane/30 bg-gradient-to-br from-velvet/80 via-void to-arcane/20 shadow-2xl shadow-arcane/20">
             <div className="relative max-w-3xl mx-auto px-6 py-12 md:px-12 md:py-16 text-center">
               <span className="inline-block bg-candle-gold text-void font-display text-xs tracking-widest uppercase px-4 py-1.5 rounded-full shadow-lg mb-5">
-                Đang tuyển
+                Đào tạo
               </span>
               <h2 className="font-display text-3xl md:text-5xl text-mist mb-5 leading-tight">
-                Trở thành Idol<br /> xem bài
+                Học Tarot &amp; chữa lành
+                <br />
+                cùng My
               </h2>
               <p className="font-body text-lilac italic mb-7 leading-relaxed max-w-md mx-auto">
-                Bạn đam mê huyền học, yêu thích Tarot và Tea Leaf? Healing With My đang
-                tìm kiếm những gương mặt mới để cùng lan tỏa năng lượng đến cộng đồng.
+                Từ người mới hoàn toàn tới Reader chuyên nghiệp — và sâu hơn nữa là hành trình
+                tái sinh chính mình.
               </p>
 
-              {/* Salary at a glance — the decision-critical info, legible */}
+              {/* 3 khóa học tóm tắt */}
               <div className="flex flex-wrap items-stretch justify-center gap-2.5 md:gap-3 mb-8">
                 {[
-                  { top: "Thử việc", bottom: "6.000.000₫" },
-                  { top: "Chính thức", bottom: "8.000.000₫" },
-                  { top: "Theo hiệu suất", bottom: "tới 30.000.000₫" },
+                  { top: "Cơ bản Tarot", bottom: "5.000.000₫" },
+                  { top: "Nâng cao", bottom: "10.000.000₫" },
+                  { top: "Tái Sinh (ưu đãi)", bottom: "10.000.000₫" },
                 ].map((s) => (
                   <div
                     key={s.top}
                     className="rounded-xl border border-candle-gold/40 bg-candle-gold/10 px-5 py-3 min-w-[140px]"
                   >
                     <p className="font-body text-candle-gold text-xs tracking-widest uppercase">{s.top}</p>
-                    <p className="font-display text-lg md:text-xl text-mist">{s.bottom}</p>
+                    <p className="font-display text-2xl md:text-2xl font-bold text-candle-gold drop-shadow-[0_0_12px_rgba(212,168,67,0.35)]">{s.bottom}</p>
                   </div>
                 ))}
               </div>
 
               <ul className="space-y-3 mb-9 text-left max-w-sm mx-auto">
                 {[
-                  "Thu nhập hấp dẫn theo từng phiên xem bài",
-                  "Được đào tạo chuyên sâu miễn phí",
-                  "Làm việc tự do, linh hoạt thời gian",
+                  "Lộ trình rõ ràng từ cơ bản tới chuyên nghiệp",
+                  "Học đi đôi với thực hành và chữa lành bản thân",
+                  "Được My đồng hành và tư vấn lộ trình phù hợp",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 font-body text-lilac/90 text-sm">
                     <span className="text-candle-gold mt-0.5">✦</span>
@@ -406,22 +465,8 @@ export default function HomePage() {
                   href="/recruit"
                   className="w-full sm:w-auto px-10 py-4 rounded-xl font-display text-sm tracking-widest uppercase bg-candle-gold text-void hover:bg-candle-gold/85 transition-all shadow-lg shadow-candle-gold/25 btn-glow"
                 >
-                  Ứng tuyển ngay
+                  Xem các khóa học
                 </SparkleButton>
-                <button
-                  onClick={() => setPolicyOpen(true)}
-                  className="w-full sm:w-auto px-8 min-h-[52px] rounded-xl font-display text-sm tracking-widest uppercase border border-arcane/50 text-mist hover:border-candle-gold/60 active:scale-[0.98] transition-all"
-                >
-                  Xem chế độ lương
-                </button>
-              </div>
-              <div>
-                <button
-                  onClick={() => setPosterOpen(true)}
-                  className="mt-4 font-body text-lilac/90 hover:text-candle-gold text-sm underline underline-offset-4 decoration-arcane/30 transition-all min-h-[44px]"
-                >
-                  Xem poster gốc
-                </button>
               </div>
             </div>
           </div>
@@ -465,7 +510,7 @@ export default function HomePage() {
                   {cat.about}
                 </p>
                 <span className="inline-block mt-4 font-body text-candle-gold text-sm font-semibold tracking-wider uppercase opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
-                  Đặt lịch ngay →
+                  Xem bảng giá →
                 </span>
               </Link>
             ))}
@@ -536,15 +581,24 @@ export default function HomePage() {
                     <img
                       src={fb.src}
                       alt={`Feedback từ ${fb.customerName}`}
-                      loading="eager"
+                      loading={i < 4 ? "eager" : "lazy"}
                       decoding="async"
                       width={480}
                       height={600}
                       onError={(e) => {
                         const el = e.currentTarget;
-                        if (!el.dataset.fbkFallback && fb.full !== fb.src) {
+                        const step = el.dataset.fbkFallback || "0";
+                        if (step === "0" && fb.full !== fb.src) {
+                          // thumbs webp -> full webp
                           el.dataset.fbkFallback = "1";
                           el.src = fb.full;
+                        } else if (step <= "1") {
+                          // webp -> jpg (phòng bản build thiếu webp / máy cũ)
+                          el.dataset.fbkFallback = "2";
+                          el.src = fb.src.replace(/\.webp$/, ".jpg");
+                        } else {
+                          el.dataset.fbkFallback = "3";
+                          el.src = fb.full.replace(/\.webp$/, ".jpg");
                         }
                       }}
                       className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
@@ -588,15 +642,6 @@ export default function HomePage() {
           onClose={() => setLightboxItem(null)}
         />
       )}
-
-      {posterOpen && (
-        <FeedbackLightbox
-          item={{ type: "image", src: "/idols/healingidol.webp", stars: 5 }}
-          onClose={() => setPosterOpen(false)}
-        />
-      )}
-
-      {policyOpen && <IdolPolicyDialog onClose={() => setPolicyOpen(false)} />}
 
       {/* ─── CTA ─── */}
       <Reveal className="py-16 md:py-24" delay={150}>

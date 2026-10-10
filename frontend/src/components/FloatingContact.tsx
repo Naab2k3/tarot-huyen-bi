@@ -69,8 +69,16 @@ export default function FloatingContact() {
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Đóng liên hệ" : "Liên hệ nhanh"}
         aria-expanded={open}
-        className="w-14 h-14 rounded-full bg-candle-gold text-void flex items-center justify-center shadow-xl shadow-candle-gold/30 hover:bg-candle-gold/90 active:scale-95 transition-all"
+        className="relative w-14 h-14 rounded-full bg-candle-gold text-void flex items-center justify-center shadow-xl shadow-candle-gold/30 hover:bg-candle-gold/90 hover:shadow-candle-gold/50 active:scale-95 transition-all"
       >
+        {/* Vòng lan tỏa nhẹ khi đang đóng — tắt khi mở để khỏi rối mắt */}
+        {!open && (
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 rounded-full bg-candle-gold/40 motion-safe:animate-ping motion-safe:[animation-duration:2.2s] pointer-events-none"
+          />
+        )}
+        <span className="relative">
         {open ? (
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
@@ -80,6 +88,7 @@ export default function FloatingContact() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
           </svg>
         )}
+        </span>
       </button>
     </div>
   );

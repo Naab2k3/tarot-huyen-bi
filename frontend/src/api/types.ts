@@ -7,6 +7,8 @@ export interface Service {
   is_active: boolean;
 }
 
+export type MeetingMethod = "online" | "offline";
+
 export interface Booking {
   id: number;
   service_id: number;
@@ -16,6 +18,7 @@ export interface Booking {
   appointment_date: string;
   appointment_time: string;
   status: "pending" | "confirmed" | "cancelled";
+  meeting_method: MeetingMethod;
   note: string | null;
   created_at: string;
 }
@@ -24,6 +27,7 @@ export interface BookingCreatePayload {
   service_id: number;
   date: string;
   time: string;
+  meeting_method: MeetingMethod;
   customer_name: string;
   customer_phone: string;
   customer_email?: string | null;
