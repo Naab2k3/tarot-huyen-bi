@@ -7,6 +7,7 @@ import CountUp from "../components/CountUp";
 import SparkleButton from "../components/SparkleButton";
 import Footer from "../components/Footer";
 import FeedbackLightbox from "../components/FeedbackLightbox";
+import { Icon } from "../components/icons";
 
 import { getServices } from "../api/client";
 import type { Service } from "../api/types";
@@ -187,11 +188,11 @@ const FEEDBACKS = [
   },
 ];
 
-const WHY_US = [
-  { icon: "💜", title: "Được lắng nghe", desc: "Không phán xét, không vội vàng. Bạn có thể nói hết những điều giữ trong lòng bấy lâu" },
-  { icon: "🔮", title: "Nhìn rõ lòng mình", desc: "Không chỉ đoán tương lai — bạn ra về với hướng đi rõ ràng và lòng nhẹ hơn" },
-  { icon: "🔒", title: "Riêng tư tuyệt đối", desc: "Mọi tâm sự chỉ ở lại trong buổi xem đó. Nơi an toàn để bạn dám mở lòng" },
-  { icon: "🤝", title: "Đồng hành khi cần", desc: "Những lúc chênh vênh nhất, bạn không phải chờ một mình — phản hồi trong 24 giờ" },
+const FOR_WHO = [
+  { icon: "heart-crack", title: "Chuyện tình cảm rối ren", desc: "Crush mập mờ, người yêu xa cách, người cũ chưa quên — bạn cần một lời rõ ràng để biết nên giữ hay buông" },
+  { icon: "briefcase", title: "Đứng trước ngã rẽ", desc: "Nhảy việc hay ở lại? Thi cử, kinh doanh, tiền bạc — bạn cần một góc nhìn tỉnh táo trước khi quyết định" },
+  { icon: "moon", title: "Mông lung về chính mình", desc: "Không biết mình muốn gì, mệt mà chẳng rõ vì sao — bạn cần được lắng nghe để hiểu lại lòng mình" },
+  { icon: "home", title: "Mối quan hệ khó xử", desc: "Gia đình, bạn bè, đồng nghiệp — có điều khó nói với ai, bạn cần một nơi an toàn để trút ra" },
 ];
 
 const SERVICE_CATEGORIES = [
@@ -206,6 +207,7 @@ const SERVICE_CATEGORIES = [
 export default function HomePage() {
   const [services, setServices] = useState<Service[]>([]);
   const [lightboxItem, setLightboxItem] = useState<typeof FEEDBACKS[number] | null>(null);
+  const [showAllFeedback, setShowAllFeedback] = useState(false);
   const cardsRevealed = useRef(false);
 
   useEffect(() => {
@@ -411,6 +413,226 @@ export default function HomePage() {
         </div>
       </Reveal>
 
+      {/* ─── Video — Không gian của My ─── */}
+      <Reveal className="py-16 md:py-24" amount={0.15}>
+        <div className="max-w-3xl mx-auto px-4">
+          <p className="font-body text-candle-gold text-sm tracking-widest uppercase text-center mb-2">
+            ✦ Không gian của My ✦
+          </p>
+          <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-3 leading-tight">
+            Ghé thăm Chemie Coffee,<br />nơi giấc mơ bắt đầu
+          </h2>
+          <p className="font-body text-lilac/70 italic text-center mb-10 max-w-xl mx-auto">
+            Tổ hợp cà phê · boardgame 24/7 giữa lòng Hà Nội — nơi My từng gửi gắm cả thanh xuân, và nay là nơi bạn có thể gặp My trực tiếp.
+          </p>
+          <div className="relative overflow-hidden rounded-2xl border border-arcane/30 shadow-xl shadow-arcane/20">
+            <div className="aspect-video w-full">
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/4UwqrUl5wP8"
+                title="Chemie Coffee — Tổ hợp Cà Phê Boardgame 24/7 tại Hà Nội"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      </Reveal>
+
+      {/* ─── Section divider ─── */}
+      <div className="section-divider my-4" />
+
+      {/* ─── Services overview ─── */}
+      <Reveal className="py-16 md:py-24" delay={100}>
+        <div className="max-w-4xl mx-auto px-4">
+          <p className="font-body text-candle-gold text-sm tracking-widest uppercase text-center mb-2">
+            ✦ Bạn đang tìm câu trả lời cho điều gì? ✦
+          </p>
+          <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-3">
+            Tìm một nơi để lòng được nhẹ hơn
+          </h2>
+          <p className="font-body text-lilac/70 italic text-center mb-12 max-w-xl mx-auto">
+            Tình cảm, sự nghiệp hay những ngã rẽ không tên — luôn có một trải bài dành cho điều bạn đang mang trong lòng.
+          </p>
+
+          <div
+            id="service-cards"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-6"
+          >
+            {SERVICE_CATEGORIES.map((cat) => (
+              <Link
+                key={cat.name}
+                to={cat.link}
+                className="service-card-item group relative overflow-hidden bg-gradient-to-br from-velvet/70 via-velvet/40 to-arcane/15 border border-arcane/30 rounded-2xl p-6 md:p-7 hover:border-candle-gold/50 hover:-translate-y-1 hover:shadow-xl hover:shadow-candle-gold/15 transition-all duration-300"
+              >
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-candle-gold/70 to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
+                <span className="text-4xl block mb-4 w-16 h-16 flex items-center justify-center rounded-2xl bg-candle-gold/15 border border-candle-gold/30 shadow-lg shadow-candle-gold/10 group-hover:scale-110 group-hover:border-candle-gold/60 transition-all">{cat.icon}</span>
+                <h3 className="font-display text-xl tracking-wider text-mist mb-2 group-hover:text-candle-gold transition-colors">
+                  {cat.name}
+                </h3>
+                <p className="font-body text-lilac/85 text-base leading-relaxed">{cat.desc}</p>
+                <p className="font-body text-lilac/60 text-sm leading-relaxed mt-3 pt-3 border-t border-velvet/50">
+                  <span className="text-candle-gold/80 text-xs tracking-widest uppercase block mb-1">Loại bài này là gì?</span>
+                  {cat.about}
+                </p>
+                <span className="inline-block mt-4 font-body text-candle-gold text-sm font-semibold tracking-wider uppercase opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
+                  Xem bảng giá →
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <Link
+              to="/services"
+              className="font-body text-lilac hover:text-mist underline underline-offset-4 decoration-arcane/30 transition-all"
+            >
+              Xem tất cả dịch vụ →
+            </Link>
+          </div>
+        </div>
+      </Reveal>
+
+      {/* ─── Section divider ─── */}
+      <div className="section-divider my-4" />
+
+      {/* ─── Tại sao bạn ở đây? ─── */}
+      <Reveal className="py-16 md:py-24" delay={200}>
+        <div className="max-w-4xl mx-auto px-4">
+          <p className="font-body text-candle-gold text-sm tracking-widest uppercase text-center mb-2">
+            ✦ Có phải bạn đang ở đây vì... ✦
+          </p>
+          <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-3">
+            Tại sao bạn ở đây?
+          </h2>
+          <p className="font-body text-lilac/70 italic text-center mb-12 max-w-xl mx-auto">
+            Nếu một trong những dòng này giống bạn — thì bạn đã đến đúng nơi rồi.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+            {FOR_WHO.map((w) => (
+              <div key={w.title} className="bg-velvet/40 border border-velvet rounded-2xl p-5 md:p-6 hover:border-arcane/40 transition-all">
+                <span className="block mb-3 text-candle-gold"><Icon name={w.icon} className="w-8 h-8" /></span>
+                <h3 className="font-display text-base tracking-wider uppercase text-mist mb-1.5">{w.title}</h3>
+                <p className="font-body text-lilac/80 text-[15px] leading-relaxed">{w.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link
+              to="/booking"
+              className="font-body text-candle-gold hover:text-mist underline underline-offset-4 decoration-arcane/30 transition-all"
+            >
+              Kể My nghe chuyện của bạn →
+            </Link>
+          </div>
+        </div>
+      </Reveal>
+
+      {/* ─── Section divider ─── */}
+      <div className="section-divider my-4" />
+
+      {/* ─── Feedback ─── */}
+      <Reveal className="py-16 md:py-24" delay={100}>
+        <div className="max-w-5xl mx-auto px-4">
+          <p className="font-body text-candle-gold text-sm tracking-widest uppercase text-center mb-2">
+            ✦ Phản hồi từ khách hàng ✦
+          </p>
+          <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-12">
+            Khách hàng nói gì?
+          </h2>
+
+          <div id="feedback-cards" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
+            {FEEDBACKS.map((fb, i) => (
+              <button
+                key={i}
+                onClick={() => setLightboxItem(fb)}
+                className={`feedback-card opacity-0 text-left w-full group cursor-pointer ${
+                  !showAllFeedback && i >= 8 ? "hidden" : !showAllFeedback && i >= 4 ? "hidden sm:block" : ""
+                }`}
+                aria-label={`Xem phản hồi từ ${fb.customerName} - ${fb.service}`}
+              >
+                <div className="relative bg-velvet/30 border border-velvet/60 rounded-2xl overflow-hidden hover:border-arcane/40 hover:bg-velvet/50 transition-all duration-300 shadow-lg shadow-velvet/20 group-hover:shadow-xl group-hover:shadow-arcane/20">
+                  
+                  <div className="aspect-[4/5] w-full">
+                    <img
+                      src={fb.src}
+                      alt={`Feedback từ ${fb.customerName}`}
+                      loading={i < 4 ? "eager" : "lazy"}
+                      decoding="async"
+                      width={480}
+                      height={600}
+                      onError={(e) => {
+                        const el = e.currentTarget;
+                        const step = el.dataset.fbkFallback || "0";
+                        if (step === "0" && fb.full !== fb.src) {
+                          // thumbs webp -> full webp
+                          el.dataset.fbkFallback = "1";
+                          el.src = fb.full;
+                        } else if (step <= "1") {
+                          // webp -> jpg (phòng bản build thiếu webp / máy cũ)
+                          el.dataset.fbkFallback = "2";
+                          el.src = fb.src.replace(/\.webp$/, ".jpg");
+                        } else {
+                          el.dataset.fbkFallback = "3";
+                          el.src = fb.full.replace(/\.webp$/, ".jpg");
+                        }
+                      }}
+                      className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                    />
+                    <div className="absolute top-2 right-2 bg-black/40 rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <span className="text-white text-xs">🔍</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-gradient-to-t from-velvet/80 to-transparent border-t border-velvet/50">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-candle-gold text-xs font-medium truncate max-w-[60%]">
+                        {fb.customerName}
+                      </span>
+                      <span className="text-lilac/90 text-xs truncate max-w-[40%]">
+                        {fb.service}
+                      </span>
+                    </div>
+                    <p className="text-lilac/90 text-xs line-clamp-2 mb-1.5">
+                      {fb.comment}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <div className="text-candle-gold text-xs tracking-wider">
+                        {'★'.repeat(fb.stars)}
+                      </div>
+                      <span className="text-lilac/90 text-xs">
+                        {fb.date}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <button
+              onClick={() => setShowAllFeedback((v) => !v)}
+              className="px-8 py-3 rounded-xl font-body text-sm tracking-widest uppercase border border-velvet text-lilac hover:border-arcane/50 hover:text-mist transition-all min-h-[44px]"
+            >
+              {showAllFeedback ? "Thu gọn ↑" : "Đọc thêm phản hồi ↓"}
+            </button>
+          </div>
+        </div>
+      </Reveal>
+
+      {lightboxItem && (
+        <FeedbackLightbox
+          item={{ ...lightboxItem, src: lightboxItem.full }}
+          onClose={() => setLightboxItem(null)}
+        />
+      )}
+
+      {/* ─── Section divider ─── */}
+      <div className="section-divider my-4" />
+
       {/* ─── Đào tạo ─── */}
       <Reveal className="py-16 md:py-24" amount={0.2}>
         <div className="max-w-6xl mx-auto px-4">
@@ -475,173 +697,6 @@ export default function HomePage() {
 
       {/* ─── Section divider ─── */}
       <div className="section-divider my-4" />
-
-      {/* ─── Services overview ─── */}
-      <Reveal className="py-16 md:py-24" delay={100}>
-        <div className="max-w-4xl mx-auto px-4">
-          <p className="font-body text-candle-gold text-sm tracking-widest uppercase text-center mb-2">
-            ✦ Bạn đang tìm câu trả lời cho điều gì? ✦
-          </p>
-          <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-3">
-            Tìm một nơi để lòng được nhẹ hơn
-          </h2>
-          <p className="font-body text-lilac/70 italic text-center mb-12 max-w-xl mx-auto">
-            Tình cảm, sự nghiệp hay những ngã rẽ không tên — luôn có một trải bài dành cho điều bạn đang mang trong lòng.
-          </p>
-
-          <div
-            id="service-cards"
-            className="grid grid-cols-1 sm:grid-cols-2 gap-6"
-          >
-            {SERVICE_CATEGORIES.map((cat) => (
-              <Link
-                key={cat.name}
-                to={cat.link}
-                className="service-card-item group relative overflow-hidden bg-gradient-to-br from-velvet/70 via-velvet/40 to-arcane/15 border border-arcane/30 rounded-2xl p-6 md:p-7 hover:border-candle-gold/50 hover:-translate-y-1 hover:shadow-xl hover:shadow-candle-gold/15 transition-all duration-300"
-              >
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-candle-gold/70 to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
-                <span className="text-4xl block mb-4 w-16 h-16 flex items-center justify-center rounded-2xl bg-candle-gold/15 border border-candle-gold/30 shadow-lg shadow-candle-gold/10 group-hover:scale-110 transition-transform">{cat.icon}</span>
-                <h3 className="font-display text-xl tracking-wider text-mist mb-2 group-hover:text-candle-gold transition-colors">
-                  {cat.name}
-                </h3>
-                <p className="font-body text-lilac/85 text-base leading-relaxed">{cat.desc}</p>
-                <p className="font-body text-lilac/60 text-sm leading-relaxed mt-3 pt-3 border-t border-velvet/50">
-                  <span className="text-candle-gold/80 text-xs tracking-widest uppercase block mb-1">Loại bài này là gì?</span>
-                  {cat.about}
-                </p>
-                <span className="inline-block mt-4 font-body text-candle-gold text-sm font-semibold tracking-wider uppercase opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
-                  Xem bảng giá →
-                </span>
-              </Link>
-            ))}
-          </div>
-
-          <div className="text-center mt-8">
-            <Link
-              to="/services"
-              className="font-body text-lilac hover:text-mist underline underline-offset-4 decoration-arcane/30 transition-all"
-            >
-              Xem tất cả dịch vụ →
-            </Link>
-          </div>
-        </div>
-      </Reveal>
-
-      {/* ─── Section divider ─── */}
-      <div className="section-divider my-4" />
-
-      {/* ─── Why us ─── */}
-      <Reveal className="py-16 md:py-24" delay={200}>
-        <div className="max-w-4xl mx-auto px-4">
-          <p className="font-body text-candle-gold text-sm tracking-widest uppercase text-center mb-2">
-            ✦ Nơi bạn được là chính mình ✦
-          </p>
-          <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-3">
-            Vì sao nhiều người tìm đến My?
-          </h2>
-          <p className="font-body text-lilac/70 italic text-center mb-12 max-w-xl mx-auto">
-            Không phải để nghe phán xét đúng sai — mà để được hiểu, được gỡ rối và bước tiếp nhẹ nhàng hơn.
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {WHY_US.map((w) => (
-              <div key={w.title} className="text-center">
-                <span className="text-3xl block mb-3">{w.icon}</span>
-                <h3 className="font-display text-sm tracking-wider uppercase text-mist mb-1">{w.title}</h3>
-                <p className="font-body text-lilac/75 text-sm leading-relaxed">{w.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Reveal>
-
-      {/* ─── Section divider ─── */}
-      <div className="section-divider my-4" />
-
-      {/* ─── Feedback ─── */}
-      <Reveal className="py-16 md:py-24" delay={100}>
-        <div className="max-w-5xl mx-auto px-4">
-          <p className="font-body text-candle-gold text-sm tracking-widest uppercase text-center mb-2">
-            ✦ Phản hồi từ khách hàng ✦
-          </p>
-          <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-12">
-            Khách hàng nói gì?
-          </h2>
-
-          <div id="feedback-cards" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
-            {FEEDBACKS.map((fb, i) => (
-              <button
-                key={i}
-                onClick={() => setLightboxItem(fb)}
-                className="feedback-card opacity-0 text-left w-full group cursor-pointer"
-                aria-label={`Xem phản hồi từ ${fb.customerName} - ${fb.service}`}
-              >
-                <div className="relative bg-velvet/30 border border-velvet/60 rounded-2xl overflow-hidden hover:border-arcane/40 hover:bg-velvet/50 transition-all duration-300 shadow-lg shadow-velvet/20 group-hover:shadow-xl group-hover:shadow-arcane/20">
-                  
-                  <div className="aspect-[4/5] w-full">
-                    <img
-                      src={fb.src}
-                      alt={`Feedback từ ${fb.customerName}`}
-                      loading={i < 4 ? "eager" : "lazy"}
-                      decoding="async"
-                      width={480}
-                      height={600}
-                      onError={(e) => {
-                        const el = e.currentTarget;
-                        const step = el.dataset.fbkFallback || "0";
-                        if (step === "0" && fb.full !== fb.src) {
-                          // thumbs webp -> full webp
-                          el.dataset.fbkFallback = "1";
-                          el.src = fb.full;
-                        } else if (step <= "1") {
-                          // webp -> jpg (phòng bản build thiếu webp / máy cũ)
-                          el.dataset.fbkFallback = "2";
-                          el.src = fb.src.replace(/\.webp$/, ".jpg");
-                        } else {
-                          el.dataset.fbkFallback = "3";
-                          el.src = fb.full.replace(/\.webp$/, ".jpg");
-                        }
-                      }}
-                      className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
-                    />
-                    <div className="absolute top-2 right-2 bg-black/40 rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <span className="text-white text-xs">🔍</span>
-                    </div>
-                  </div>
-
-                  <div className="p-3 bg-gradient-to-t from-velvet/80 to-transparent border-t border-velvet/50">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-candle-gold text-xs font-medium truncate max-w-[60%]">
-                        {fb.customerName}
-                      </span>
-                      <span className="text-lilac/90 text-xs truncate max-w-[40%]">
-                        {fb.service}
-                      </span>
-                    </div>
-                    <p className="text-lilac/90 text-xs line-clamp-2 mb-1.5">
-                      {fb.comment}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <div className="text-candle-gold text-xs tracking-wider">
-                        {'★'.repeat(fb.stars)}
-                      </div>
-                      <span className="text-lilac/90 text-xs">
-                        {fb.date}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </Reveal>
-
-      {lightboxItem && (
-        <FeedbackLightbox
-          item={{ ...lightboxItem, src: lightboxItem.full }}
-          onClose={() => setLightboxItem(null)}
-        />
-      )}
 
       {/* ─── CTA ─── */}
       <Reveal className="py-16 md:py-24" delay={150}>
@@ -723,24 +778,19 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Video — Chemie Coffee, nơi giấc mơ bắt đầu */}
-          <div className="mt-8">
-            <p className="font-body text-candle-gold/80 text-xs tracking-widest uppercase text-center mb-3">
-              Xem thêm — Chemie Coffee, nơi giấc mơ bắt đầu
-            </p>
-            <div className="relative overflow-hidden rounded-2xl border border-arcane/30 shadow-xl shadow-arcane/20">
-              <div className="aspect-video w-full">
-                <iframe
-                  className="w-full h-full"
-                  src="https://www.youtube.com/embed/4UwqrUl5wP8"
-                  title="Chemie Coffee — Tổ hợp Cà Phê Boardgame 24/7 tại Hà Nội"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                  loading="lazy"
-                />
+          {/* Flex — My hôm nay */}
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {[
+              { icon: "trophy", top: "10+ năm", bottom: "kinh nghiệm Tarot · Tea Leaf" },
+              { icon: "heart", top: "500+", bottom: "khách hàng đã được lắng nghe" },
+              { icon: "news", top: "Báo chí", bottom: "Dân Việt · Inhat · Toplist đưa tin" },
+            ].map((f) => (
+              <div key={f.top} className="rounded-xl border border-candle-gold/30 bg-candle-gold/5 px-4 py-4 text-center">
+                <span className="block mb-1.5 text-candle-gold"><Icon name={f.icon} className="w-7 h-7 mx-auto" /></span>
+                <p className="font-display text-lg font-bold text-candle-gold">{f.top}</p>
+                <p className="font-body text-lilac/80 text-sm mt-0.5">{f.bottom}</p>
               </div>
-            </div>
+            ))}
           </div>
 
           <div className="text-center mt-8">

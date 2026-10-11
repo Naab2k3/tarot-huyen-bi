@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { createIdolApplication } from "../api/client";
 import SparkleButton from "../components/SparkleButton";
 import Reveal from "../components/Reveal";
+import { Icon } from "../components/icons";
 
 type Chapter = {
   title: string;
@@ -23,7 +24,7 @@ type Course = {
 const COURSES: Course[] = [
   {
     id: "co-ban",
-    icon: "🃏",
+    icon: "tarot",
     name: "Khóa Cơ bản Tarot",
     tagline: "Làm quen, kết nối và hiểu sâu 78 lá bài Tarot từ con số 0.",
     price: "5.000.000₫",
@@ -41,7 +42,7 @@ const COURSES: Course[] = [
   },
   {
     id: "nang-cao",
-    icon: "🔮",
+    icon: "crystal",
     name: "Khóa Nâng cao",
     tagline: "Đọc bài thành thạo và bước lên con đường Reader chuyên nghiệp.",
     price: "10.000.000₫",
@@ -53,7 +54,7 @@ const COURSES: Course[] = [
   },
   {
     id: "tai-sinh",
-    icon: "🌱",
+    icon: "sprout",
     name: "Khóa Tái Sinh",
     tagline: "Chữa lành, thấu hiểu bản thân và tái thiết lập cuộc sống bình an.",
     price: "10.000.000₫",
@@ -294,7 +295,7 @@ export default function RecruitPage() {
                 defaultOpen={idx === 0}
                 title={
                   <span className="flex items-center gap-3">
-                    <span className="text-2xl">{course.icon}</span>
+                    <span className="text-candle-gold"><Icon name={course.icon} className="w-6 h-6" /></span>
                     <span>
                       <span className="block">
                         {course.name}

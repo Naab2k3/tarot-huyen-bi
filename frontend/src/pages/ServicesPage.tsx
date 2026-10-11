@@ -148,7 +148,7 @@ export default function ServicesPage() {
             <section key={cat.name} className="relative overflow-hidden bg-gradient-to-br from-velvet/70 via-velvet/35 to-arcane/10 border border-arcane/30 rounded-2xl p-4 md:p-8 shadow-lg shadow-arcane/10 hover:border-candle-gold/50 hover:shadow-xl hover:shadow-candle-gold/15 transition-all duration-300 group">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-candle-gold/70 to-transparent" />
               <div className="flex items-start gap-3 md:gap-4 mb-5 md:mb-6">
-                <span className="text-3xl md:text-4xl w-14 h-14 md:w-16 md:h-16 shrink-0 flex items-center justify-center rounded-2xl bg-candle-gold/15 border border-candle-gold/30 shadow-lg shadow-candle-gold/10">{cat.icon}</span>
+                <span className="text-3xl md:text-4xl w-14 h-14 md:w-16 md:h-16 shrink-0 flex items-center justify-center rounded-2xl bg-candle-gold/15 border border-candle-gold/30 shadow-lg shadow-candle-gold/10 group-hover:border-candle-gold/60 transition-colors">{cat.icon}</span>
                 <div>
                   <h2 className="font-display text-xl md:text-2xl tracking-wider uppercase text-mist">{cat.name}</h2>
                   <p className="font-body text-lilac/80 text-base mt-1 leading-relaxed">{cat.desc}</p>
