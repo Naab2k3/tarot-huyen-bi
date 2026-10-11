@@ -86,7 +86,7 @@ export default function ContactPage() {
                   rel="noopener noreferrer"
                   className="inline-block font-body text-candle-gold text-sm mt-1 hover:underline underline-offset-4"
                 >
-                  zalo.me/0343993456 ↗
+                  zalo.me/0343993456
                 </a>
               </div>
             </div>
@@ -107,7 +107,7 @@ export default function ContactPage() {
                   rel="noopener noreferrer"
                   className="inline-block font-body text-candle-gold text-sm mt-1 hover:underline underline-offset-4"
                 >
-                  facebook.com/hieumy.tarot ↗
+                  facebook.com/hieumy.tarot
                 </a>
               </div>
             </div>
@@ -128,7 +128,7 @@ export default function ContactPage() {
                   rel="noopener noreferrer"
                   className="inline-block font-body text-candle-gold text-sm mt-1 hover:underline underline-offset-4"
                 >
-                  instagram.com/healingwithmyy ↗
+                  instagram.com/healingwithmyy
                 </a>
               </div>
             </div>

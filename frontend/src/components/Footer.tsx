@@ -127,9 +127,6 @@ export default function Footer() {
                         {s.handle}
                       </span>
                     </span>
-                    <span aria-hidden="true" className="shrink-0 font-body text-lilac/50 text-xs group-hover:text-candle-gold group-hover:translate-x-0.5 transition-all">
-                      ↗
-                    </span>
                   </a>
                 </li>
               ))}

@@ -8,6 +8,7 @@ import ConfirmationScreen from "../components/ConfirmationScreen";
 import MoonStepper from "../components/MoonStepper";
 import ServicePicker from "../components/ServicePicker";
 import TimeSlots from "../components/TimeSlots";
+import { Icon } from "../components/icons";
 
 const BRAND = {
   name: "Healing With My",
@@ -17,9 +18,9 @@ const BRAND = {
   years: "10+ năm kinh nghiệm",
   clients: "500+ khách hàng",
   values: [
-    { icon: "🌙", title: "Nói thật", desc: "Không chung chung, không hù dọa — chỉ sự thật dịu dàng để bạn vững lòng." },
-    { icon: "💜", title: "Lắng nghe", desc: "Cứ kể hết điều giữ trong lòng. Ở đây, bạn không bị đánh giá." },
-    { icon: "✨", title: "Nhẹ lòng", desc: "Ra về với hướng đi rõ ràng, lòng bình yên hơn lúc đến." },
+    { icon: "moon", title: "Nói thật", desc: "Không chung chung, không hù dọa — chỉ sự thật dịu dàng để bạn vững lòng." },
+    { icon: "heart", title: "Lắng nghe", desc: "Cứ kể hết điều giữ trong lòng. Ở đây, bạn không bị đánh giá." },
+    { icon: "sparkles", title: "Nhẹ lòng", desc: "Ra về với hướng đi rõ ràng, lòng bình yên hơn lúc đến." },
   ],
 };
 
@@ -154,7 +155,7 @@ export default function BookingPage() {
                   key={v.title}
                   className="bg-velvet/40 rounded-xl p-4 text-center border border-velvet/50"
                 >
-                  <span className="text-2xl block mb-2">{v.icon}</span>
+                  <span className="block mb-2 text-candle-gold"><Icon name={v.icon} className="w-7 h-7 mx-auto" /></span>
                   <h3 className="font-display text-sm tracking-wider uppercase text-mist mb-1">
                     {v.title}
                   </h3>

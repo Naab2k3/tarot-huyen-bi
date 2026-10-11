@@ -1,20 +1,21 @@
 import { Link } from "react-router-dom";
 import CountUp from "../components/CountUp";
 import SparkleButton from "../components/SparkleButton";
+import { Icon } from "../components/icons";
 
 const VALUES = [
   {
-    icon: "🌙",
+    icon: "moon",
     title: "Nói thật, không dọa",
     desc: "Bạn sẽ không nghe những lời chung chung hay hù dọa. Chỉ có sự thật dịu dàng — đủ rõ để bạn quyết định.",
   },
   {
-    icon: "💜",
+    icon: "heart",
     title: "Bạn được lắng nghe",
     desc: "Mỗi buổi xem là một cuộc trò chuyện không phán xét. Cứ kể hết — My ở đây để hiểu, không phải để đánh giá.",
   },
   {
-    icon: "✨",
+    icon: "sparkles",
     title: "Ra về nhẹ lòng hơn",
     desc: "Bạn sẽ rời đi với lòng rõ ràng và vững vàng hơn — đủ tự tin bước tiếp mà không cần dựa vào ai.",
   },
@@ -120,7 +121,7 @@ export default function AboutPage() {
                 key={v.title}
                 className="bg-velvet/40 border border-velvet rounded-xl p-6 flex items-start gap-4 hover:border-arcane/30 transition-colors"
               >
-                <span className="text-3xl shrink-0">{v.icon}</span>
+                <span className="shrink-0 text-candle-gold"><Icon name={v.icon} className="w-8 h-8" /></span>
                 <div>
                   <h3 className="font-display text-base tracking-wider uppercase text-mist mb-1">{v.title}</h3>
                   <p className="font-body text-lilac/70">{v.desc}</p>
