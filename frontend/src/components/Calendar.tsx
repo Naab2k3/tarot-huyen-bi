@@ -129,8 +129,8 @@ export default function Calendar({ selected, onSelect }: Props) {
                 ${past
                   ? "text-lilac/20 cursor-not-allowed"
                   : isSelected
-                    ? "bg-arcane text-mist shadow-md shadow-arcane/30 ring-1 ring-arcane/50"
-                    : "text-lilac hover:bg-velvet hover:text-mist hover:shadow-sm hover:shadow-candle-gold/10"
+                    ? "bg-candle-gold text-void shadow-lg shadow-candle-gold/40 ring-1 ring-candle-gold"
+                    : "text-lilac hover:bg-velvet hover:text-mist hover:ring-1 hover:ring-candle-gold/40"
                 }
                 focus-visible:outline-2 focus-visible:outline-candle-gold focus-visible:outline-offset-2
               `}

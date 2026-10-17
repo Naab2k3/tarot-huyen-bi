@@ -20,6 +20,11 @@ interface Rider {
   wob: number; // wobble phase
 }
 
+/* Hệ số thu gọn hiệu ứng hero: 0.5 = card nhỏ bằng một nửa (desktop) */
+const EFFECT_SCALE = 0.5;
+/* Mobile: màn hẹp, card ở cỡ 0.5 chỉ ~27px nhìn như hạt bụi → để to hơn chút */
+const MOBILE_SCALE = 0.66;
+
 /* deterministic rng so SSR/first-frame matches */
 function mulberry(seed: number) {
   let s = seed;
@@ -38,7 +43,7 @@ const smooth = (a: number, b: number, x: number) => {
 };
 
 export default function GalaxyTarotSystem({
-  count = 36,
+  count = 18,
   cardData,
 }: {
   count?: number;
@@ -56,7 +61,7 @@ export default function GalaxyTarotSystem({
   useEffect(() => {
     const deal = (pool: TarotCard[]) => {
       const mobile = window.innerWidth < 768;
-      const n = mobile ? Math.min(14, count) : count;
+      const n = mobile ? Math.min(7, count) : count;
       const arms = mobile ? 3 : 6;
       const shuffled = [...pool].sort(() => Math.random() - 0.5);
       const rng = mulberry(42);
@@ -205,12 +210,15 @@ export default function GalaxyTarotSystem({
       A.fy += ((reduced ? 0 : A.my * 10) - A.fy) * k;
       const baseH = Math.max(64, Math.min(Math.min(w, h) * 0.16, h * 0.22));
       // track-gap cap: a card can never be taller than 80% of the radial
-      // distance to its next same-arm neighbour → no stacking
-      const perArm = Math.max(1, Math.ceil(riders.length / arms));
-      const gapCap = ((rMax * 1.12 - birth) / perArm) * 0.8;
+      // distance to its next same-arm neighbour → no stacking.
+      // Tính theo số card BẢN GỐC (36 desktop · 14 mobile) để việc giảm số
+      // card không làm card to lên (nếu không, bớt card = trần nới ra).
+      const perArmOrig = mobile ? 5 : 6;
+      const gapCap = ((rMax * 1.12 - birth) / perArmOrig) * 0.8;
       // keep hero copy readable: exclusion ellipse over the centered text block
       const exX = Math.min(w * 0.4, 380);
       const exY = Math.min(h * 0.3, 300);
+      const sizeScale = mobile ? MOBILE_SCALE : EFFECT_SCALE;
 
       for (let i = 0; i < riders.length; i++) {
         const R = riders[i];
@@ -228,13 +236,25 @@ export default function GalaxyTarotSystem({
         if (!A.zooms || A.zooms.length !== riders.length) A.zooms = riders.map(() => 1);
         const zTarget = i === A.hover ? 1.6 : 1; // hovered card pops up
         A.zooms[i] += (zTarget - A.zooms[i]) * (1 - Math.exp(-10 * dt));
-        const cardH = Math.min(baseH * R.sizeJ * grow * shrink * A.zooms[i], gapCap * A.zooms[i]);
+        const cardH =
+          Math.min(baseH * R.sizeJ * grow * shrink * A.zooms[i], gapCap * A.zooms[i]) *
+          sizeScale;
         const cardW = cardH * (7 / 12);
         const alpha =
           smooth(0, 0.1, p) *
           (1 - smooth(0.88, 1, p)) *
           smooth(0.85, 1.2, Math.hypot((x - cx) / exX, (y - cy) / exY));
-        node.style.transform = `translate3d(${(x - cardW / 2).toFixed(1)}px,${(y - cardH / 2).toFixed(1)}px,0) rotate(${R.tilt.toFixed(2)}deg)`;
+        // Giữ lá bài nằm trọn trong khung: trên điện thoại màn hẹp nên hay bị
+        // cắt cụt ở mép trái/phải, nhìn rất luộm thuộm.
+        let px = x;
+        let py = y;
+        if (mobile) {
+          const mx = cardW / 2 + 6;
+          const my = cardH / 2 + 6;
+          px = Math.min(Math.max(px, mx), w - mx);
+          py = Math.min(Math.max(py, my), h - my);
+        }
+        node.style.transform = `translate3d(${(px - cardW / 2).toFixed(1)}px,${(py - cardH / 2).toFixed(1)}px,0) rotate(${R.tilt.toFixed(2)}deg)`;
         node.style.width = `${cardW.toFixed(1)}px`;
         node.style.height = `${cardH.toFixed(1)}px`;
         node.style.opacity = alpha.toFixed(3);

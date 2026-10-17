@@ -6,22 +6,12 @@ import BookingForm from "../components/BookingForm";
 import Calendar from "../components/Calendar";
 import ConfirmationScreen from "../components/ConfirmationScreen";
 import MoonStepper from "../components/MoonStepper";
-import ServicePicker from "../components/ServicePicker";
+import ServiceCatalog from "../components/ServiceCatalog";
 import TimeSlots from "../components/TimeSlots";
-import { Icon } from "../components/icons";
 
 const BRAND = {
   name: "Healing With My",
   tagline: "Có những điều chẳng biết tỏ cùng ai — ở đây, bạn được lắng nghe",
-  story:
-    "Nếu đêm nay lòng bạn nặng trĩu, hãy ngồi lại một chút. Mỗi lá bài ở đây không phải để phán xét bạn, mà để cùng bạn soi rõ điều trái tim thực sự muốn — rồi nhẹ nhàng bước tiếp.",
-  years: "10+ năm kinh nghiệm",
-  clients: "500+ khách hàng",
-  values: [
-    { icon: "moon", title: "Nói thật", desc: "Không chung chung, không hù dọa — chỉ sự thật dịu dàng để bạn vững lòng." },
-    { icon: "heart", title: "Lắng nghe", desc: "Cứ kể hết điều giữ trong lòng. Ở đây, bạn không bị đánh giá." },
-    { icon: "sparkles", title: "Nhẹ lòng", desc: "Ra về với hướng đi rõ ràng, lòng bình yên hơn lúc đến." },
-  ],
 };
 
 export default function BookingPage() {
@@ -124,51 +114,14 @@ export default function BookingPage() {
           </p>
         </div>
 
-        {/* ── Brand intro (only before booking starts) ── */}
+        {/* ── Trước khi chọn: 1 dòng dẫn ngắn (khối giới thiệu dài đã bỏ) ── */}
         {step === 0 && !selectedService && (
-          <section className="mb-6 md:mb-10 animate-fade-in">
-            {/* Stats */}
-            <div className="flex justify-center gap-6 mb-6 md:mb-8 text-center">
-              <div>
-                <p className="font-display text-2xl text-candle-gold">{BRAND.years.split("+")[0]}+</p>
-                <p className="font-body text-lilac/60 text-sm tracking-wide">năm kinh nghiệm</p>
-              </div>
-              <div className="w-px bg-velvet" />
-              <div>
-                <p className="font-display text-2xl text-candle-gold">{BRAND.clients.split("+")[0]}+</p>
-                <p className="font-body text-lilac/60 text-sm tracking-wide">khách hàng</p>
-              </div>
-            </div>
-
-            {/* Story — desktop only; on mobile it pushes the picker
-                below the fold. Full story lives on /about. */}
-            <div className="hidden md:block max-w-xl mx-auto text-center mb-8">
-              <p className="font-body text-lilac leading-relaxed italic">
-                {BRAND.story}
-              </p>
-            </div>
-
-            {/* Core values */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 max-w-xl mx-auto mb-6 md:mb-8">
-              {BRAND.values.map((v) => (
-                <div
-                  key={v.title}
-                  className="bg-velvet/40 rounded-xl p-4 text-center border border-velvet/50"
-                >
-                  <span className="block mb-2 text-candle-gold"><Icon name={v.icon} className="w-7 h-7 mx-auto" /></span>
-                  <h3 className="font-display text-sm tracking-wider uppercase text-mist mb-1">
-                    {v.title}
-                  </h3>
-                  <p className="font-body text-lilac/70 text-sm">{v.desc}</p>
-                </div>
-              ))}
-            </div>
-
-            <h2 className="font-display text-xl tracking-wider uppercase text-mist text-center">
-              Bạn đang mang điều gì trong lòng?
+          <section className="mb-4 text-center animate-fade-in">
+            <h2 className="font-display text-lg md:text-xl tracking-wider uppercase text-mist">
+              Chọn trải bài của bạn
             </h2>
-            <p className="font-body text-lilac/50 text-center text-sm italic mb-6">
-              Chọn một trải bài — để bắt đầu gỡ rối từng chút một
+            <p className="font-body text-lilac/70 italic text-sm mt-1">
+              Chạm một nhóm để mở, hoặc gõ vào ô tìm kiếm — chọn xong là sang bước chọn ngày giờ.
             </p>
           </section>
         )}
@@ -184,7 +137,8 @@ export default function BookingPage() {
             {error && !selectedService && (
               <p className="text-center font-body text-red-400 italic mb-4">{error}</p>
             )}
-            <ServicePicker
+            <ServiceCatalog
+              mode="pick"
               services={services}
               selectedId={selectedService?.id ?? null}
               onSelect={selectService}
@@ -246,7 +200,7 @@ export default function BookingPage() {
               <p className="text-center font-body text-red-400 italic mb-4">{error}</p>
             )}
             {selectedService && (
-              <div className="max-w-md mx-auto mb-6 bg-velvet/40 border border-candle-gold/30 rounded-xl p-4">
+              <div className="max-w-md mx-auto mb-6 glow-box bg-velvet/40 rounded-xl p-4">
                 <p className="font-body text-candle-gold/70 text-xs tracking-widest uppercase mb-2">
                   Dịch vụ đã chọn
                 </p>
