@@ -119,28 +119,49 @@ const COURSE_OPTIONS = COURSES.map((c) => ({
   label: `${c.name} — ${c.price}${c.oldPrice ? ` (ưu đãi từ ${c.oldPrice})` : ""}`,
 }));
 
+/** Ô nhập của form: viền vàng + quầng sáng khi focus, khớp hiệu ứng các thẻ chọn khóa. */
+const INPUT =
+  "w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-candle-gold focus:ring-2 focus:ring-candle-gold/40 transition-all";
+
+/**
+ * Mở/gập một mục.
+ *  - level="course": thẻ khóa học — quầng sáng vàng y như thẻ ở các trang khác.
+ *  - level="chapter": dòng nhỏ bên trong — sáng lên khi đưa chuột/chạm vào.
+ * `selected` = khách đã chọn khóa này (bấm thẻ giá hoặc nút đăng ký) → sáng nhất.
+ */
 function Accordion({
   title,
   children,
   defaultOpen = false,
+  level = "chapter",
+  selected = false,
 }: {
   title: ReactNode;
   children: ReactNode;
   defaultOpen?: boolean;
+  level?: "course" | "chapter";
+  selected?: boolean;
 }) {
   const [open, setOpen] = useState(defaultOpen);
+  const isCourse = level === "course";
   return (
-    <div className="border border-velvet/50 rounded-xl overflow-hidden bg-void/40">
+    <div
+      className={`overflow-hidden ${
+        isCourse
+          ? `tap-card rounded-2xl ${open ? "is-open" : ""} ${selected ? "is-selected" : ""}`
+          : `tap-row rounded-xl border border-velvet/50 bg-void/40 ${open ? "is-open" : ""}`
+      }`}
+    >
       <button
         type="button"
         onClick={() => setOpen(!open)}
         aria-expanded={open}
-        className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left min-h-[52px] hover:bg-velvet/30 active:bg-velvet/40 transition-colors"
+        className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left min-h-[52px] hover:bg-velvet/25 active:bg-velvet/35 transition-colors"
       >
         <span className="font-display text-sm md:text-base tracking-wider text-mist">{title}</span>
         <span
-          className={`shrink-0 text-candle-gold text-lg leading-none transition-transform duration-300 ${
-            open ? "rotate-45" : ""
+          className={`shrink-0 text-candle-gold text-lg leading-none transition-all duration-300 ${
+            open ? "rotate-45 drop-shadow-[0_0_10px_rgba(212,168,67,0.9)]" : ""
           }`}
           aria-hidden="true"
         >
@@ -246,24 +267,38 @@ export default function RecruitPage() {
                 tái sinh chính mình. Chọn khóa học phù hợp với bạn bên dưới.
               </p>
 
-              {/* Giá tóm tắt */}
+              {/* Giá tóm tắt — chạm là chọn khóa đó (thẻ sáng lên như đang chọn) */}
               <div className="flex flex-wrap items-stretch justify-center gap-2.5 md:gap-3 mb-8">
-                {COURSES.map((c) => (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => chooseCourse(c.name)}
-                    className="rounded-xl border border-candle-gold/40 bg-candle-gold/10 px-5 py-3 min-w-[140px] hover:bg-candle-gold/20 active:scale-[0.98] transition-all"
-                  >
-                    <p className="font-body text-candle-gold text-xs tracking-widest uppercase">
-                      {c.name.replace("Khóa ", "").replace("Khóa học ", "")}
-                    </p>
-                    {c.oldPrice && (
-                      <p className="font-body text-lilac/50 text-sm line-through">{c.oldPrice}</p>
-                    )}
-                    <p className="font-display text-2xl md:text-3xl font-bold text-candle-gold drop-shadow-[0_0_12px_rgba(212,168,67,0.35)]">{c.price}</p>
-                  </button>
-                ))}
+                {COURSES.map((c) => {
+                  const chosen = form.course === c.name;
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => chooseCourse(c.name)}
+                      aria-pressed={chosen}
+                      className={`tap-card tap-card--gold rounded-xl px-5 py-3 min-w-[140px] active:scale-[0.98] ${
+                        chosen ? "is-selected" : ""
+                      }`}
+                    >
+                      <p className="font-body text-candle-gold text-xs tracking-widest uppercase">
+                        {c.name.replace("Khóa ", "").replace("Khóa học ", "")}
+                      </p>
+                      {c.oldPrice && (
+                        <p className="font-body text-lilac/50 text-sm line-through">{c.oldPrice}</p>
+                      )}
+                      <p
+                        className={`font-display text-2xl md:text-3xl font-bold text-candle-gold ${
+                          chosen
+                            ? "drop-shadow-[0_0_14px_rgba(245,207,124,0.9)]"
+                            : "drop-shadow-[0_0_12px_rgba(212,168,67,0.35)]"
+                        }`}
+                      >
+                        {c.price}
+                      </p>
+                    </button>
+                  );
+                })}
               </div>
 
               <SparkleButton
@@ -292,6 +327,8 @@ export default function RecruitPage() {
             {COURSES.map((course, idx) => (
               <Accordion
                 key={course.id}
+                level="course"
+                selected={form.course === course.name}
                 defaultOpen={idx === 0}
                 title={
                   <span className="flex items-center gap-3">
@@ -380,7 +417,7 @@ export default function RecruitPage() {
                   required
                   value={form.full_name}
                   onChange={(e) => update("full_name", e.target.value)}
-                  className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane focus:ring-2 focus:ring-arcane transition-colors"
+                  className={INPUT}
                   placeholder="Nhập họ và tên"
                 />
               </div>
@@ -395,7 +432,7 @@ export default function RecruitPage() {
                     required
                     value={form.phone}
                     onChange={(e) => update("phone", e.target.value)}
-                    className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane focus:ring-2 focus:ring-arcane transition-colors"
+                    className={INPUT}
                     placeholder="Nhập số điện thoại"
                   />
                 </div>
@@ -405,7 +442,7 @@ export default function RecruitPage() {
                     type="email"
                     value={form.email}
                     onChange={(e) => update("email", e.target.value)}
-                    className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane focus:ring-2 focus:ring-arcane transition-colors"
+                    className={INPUT}
                     placeholder="Nhập địa chỉ email"
                   />
                 </div>
@@ -419,7 +456,11 @@ export default function RecruitPage() {
                   required
                   value={form.course}
                   onChange={(e) => update("course", e.target.value)}
-                  className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist focus:outline-none focus:border-arcane focus:ring-2 focus:ring-arcane transition-colors"
+                  className={`w-full bg-void border rounded-lg px-4 py-2.5 font-body text-mist focus:outline-none focus:border-candle-gold focus:ring-2 focus:ring-candle-gold/40 transition-all ${
+                    form.course
+                      ? "border-candle-gold shadow-[0_0_26px_-10px_rgba(245,207,124,0.95)]"
+                      : "border-velvet"
+                  }`}
                 >
                   <option value="" disabled>
                     Chọn khóa học bạn muốn đăng ký
@@ -440,7 +481,7 @@ export default function RecruitPage() {
                   value={form.message}
                   onChange={(e) => update("message", e.target.value)}
                   rows={3}
-                  className="w-full bg-void border border-velvet rounded-lg px-4 py-2.5 font-body text-mist placeholder-lilac/40 focus:outline-none focus:border-arcane focus:ring-2 focus:ring-arcane transition-colors resize-none"
+                  className={`${INPUT} resize-none`}
                   placeholder="Bạn muốn My tư vấn điều gì thêm?"
                 />
               </div>

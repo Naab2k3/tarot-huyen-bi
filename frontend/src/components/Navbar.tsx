@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import BrandLogo from "./BrandLogo";
 
 const NAV = [
   { path: "/", label: "Trang chủ" },
@@ -22,16 +23,7 @@ export default function Navbar() {
       <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <img
-            src="/logo/logo-128.webp"
-            srcSet="/logo/logo-128.webp 128w, /logo/logo-192.webp 192w"
-            sizes="48px"
-            width={128}
-            height={150}
-            alt="Healing With My"
-            decoding="async"
-            className="h-12 w-auto drop-shadow-[0_0_6px_rgba(212,168,67,0.35)]"
-          />
+          <BrandLogo size="bar" />
         </Link>
 
         {/* Desktop nav */}

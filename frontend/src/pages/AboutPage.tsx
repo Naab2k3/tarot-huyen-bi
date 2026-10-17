@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import BrandLogo from "../components/BrandLogo";
 import CountUp from "../components/CountUp";
 import SparkleButton from "../components/SparkleButton";
 import { Icon } from "../components/icons";
@@ -65,18 +66,9 @@ export default function AboutPage() {
 
         {/* Logo + Founder */}
         <div className="text-center mb-12">
-          <div className="mx-auto mb-6 flex justify-center">
-            <img
-              src="/logo/logo-192.webp"
-              srcSet="/logo/logo-192.webp 192w, /logo/logo-512.webp 512w"
-              sizes="(max-width: 768px) 192px, 224px"
-              width={192}
-              height={225}
-              loading="lazy"
-              decoding="async"
-              alt="Healing With My"
-              className="w-48 md:w-56 h-auto drop-shadow-[0_0_16px_rgba(212,168,67,0.3)]"
-            />
+          {/* Logo: dùng chung BrandLogo — cùng cỡ & cùng độ sáng với trang chủ */}
+          <div className="mb-6">
+            <BrandLogo />
           </div>
           <h2 className="font-display text-2xl text-mist mb-1">My</h2>
           <p className="font-body text-candle-gold text-sm tracking-wide uppercase mb-6">
@@ -163,12 +155,12 @@ export default function AboutPage() {
             href={FEATURED_PRESS.url}
             target="_blank"
             rel="noreferrer"
-            className="group relative block overflow-hidden rounded-2xl border border-candle-gold/30 bg-gradient-to-br from-velvet/80 via-void to-arcane/20 shadow-xl shadow-candle-gold/10 hover:border-candle-gold/60 hover:shadow-candle-gold/20 transition-all duration-300 mb-5"
+            className="group tap-card relative block overflow-hidden rounded-2xl bg-gradient-to-br from-velvet/80 via-void to-arcane/20 mb-5"
           >
             <div className="pointer-events-none absolute -top-20 -right-20 w-64 h-64 rounded-full bg-candle-gold/10 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-arcane/25 blur-3xl" />
             <div className="relative flex flex-col sm:flex-row items-stretch gap-5 p-6 md:p-7">
-              <div className="shrink-0 mx-auto sm:mx-0 w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-velvet border border-candle-gold/30 flex items-center justify-center shadow-lg shadow-candle-gold/10 group-hover:scale-105 transition-transform relative overflow-hidden">
+              <div className="glow-box shrink-0 mx-auto sm:mx-0 w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-velvet flex items-center justify-center group-hover:scale-105 transition-transform relative overflow-hidden">
                 <span className="font-display text-4xl md:text-5xl text-candle-gold">
                   {FEATURED_PRESS.monogram}
                 </span>
@@ -212,7 +204,7 @@ export default function AboutPage() {
                 href={p.url}
                 target="_blank"
                 rel="noreferrer"
-                className="group flex items-center gap-4 bg-velvet/40 border border-velvet rounded-xl p-4 hover:border-candle-gold/40 hover:bg-velvet/60 transition-all"
+                className="tap-row group flex items-center gap-4 bg-velvet/40 border border-velvet rounded-xl p-4"
               >
                 <div className="shrink-0 w-12 h-12 rounded-xl bg-velvet border border-velvet flex items-center justify-center relative overflow-hidden">
                   <span className="font-display text-xl text-candle-gold">{p.monogram}</span>

@@ -49,10 +49,8 @@ export default function BookingForm({ onSubmit, loading, initialMethod = "online
               role="radio"
               aria-checked={method === m}
               onClick={() => setMethod(m)}
-              className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border text-left transition-all min-h-[60px] ${
-                method === m
-                  ? "border-candle-gold bg-arcane/15 shadow-lg shadow-candle-gold/15"
-                  : "border-velvet/60 bg-velvet/40 hover:border-arcane/50"
+              className={`tap-card tap-card--gold flex items-center gap-2.5 px-4 py-3 rounded-xl text-left min-h-[60px] ${
+                method === m ? "is-selected" : ""
               } focus-visible:outline-2 focus-visible:outline-candle-gold focus-visible:outline-offset-2`}
             >
               <span className={method === m ? "text-candle-gold" : "text-lilac/60"}>

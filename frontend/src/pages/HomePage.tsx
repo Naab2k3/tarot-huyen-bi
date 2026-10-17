@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState, useCallback, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { Link } from "react-router-dom";
 import anime from "animejs";
 import Reveal from "../components/Reveal";
+import BrandLogo from "../components/BrandLogo";
+import ServiceJourney from "../components/ServiceJourney";
 import GalaxyTarotSystem from "../components/GalaxyTarotSystem";
 import CountUp from "../components/CountUp";
 import SparkleButton from "../components/SparkleButton";
@@ -195,80 +197,13 @@ const FOR_WHO = [
   { icon: "home", title: "Mối quan hệ khó xử", desc: "Gia đình, bạn bè, đồng nghiệp — có điều khó nói với ai, bạn cần một nơi an toàn để trút ra" },
 ];
 
-const SERVICE_CATEGORIES = [
-  { icon: "⏳", name: "Xem theo thời gian", desc: "1–2 tiếng dùng mọi loại bài để gỡ hết thắc mắc — online từ 500k, offline từ 800k", about: "Cận kề, lắng nghe tâm sự và cùng bạn giải quyết vấn đề trong 1–2 tiếng. Có cả online lẫn gặp trực tiếp.", link: "/services" },
-  { icon: "🃏", name: "Tarot", desc: "Từ 1 câu hỏi duy nhất tới full mọi vấn đề — chỉ từ 200k", about: "Trải bài cơ bản, chuyên sâu 1 chuyện, full không giới hạn câu hỏi. Hợp nhất khi lòng đang rối và cần câu trả lời ngay.", link: "/services" },
-  { icon: "🍃", name: "Tea Leaf", desc: "Lá trà thì thầm về 3 tháng tới cả năm — từ 250k", about: "Bài tuần, 6 tháng, full 12 tháng tài lộc tình duyên. Hợp khi bạn muốn nhìn xa để chuẩn bị lòng.", link: "/services" },
-  { icon: "🎴", name: "Bài khác", desc: "Haletu, Oracle từ 100k, Lenormand, The Lover, The Heart", about: "Mỗi bộ bài một thế mạnh: lời khuyên, vận mệnh, tình yêu 1–3 tháng tới. Vào bảng giá để chọn đúng bài.", link: "/services" },
-  { icon: "💫", name: "Combo", desc: "Đi sâu một lần bằng nhiều loại bài — từ 650k, HOT nhất 3tr", about: "Tarot + Trà + Lenormand + trị liệu tâm lý, có bảo hành xem lại. Hợp khi lòng mang quá nhiều điều.", link: "/services" },
-  { icon: "🔮", name: "Dịch vụ khác", desc: "Thần số học, bản đồ sao, tử vi đôi, đá phong thủy", about: "Những mảnh ghép giúp bạn hiểu mình hơn mỗi ngày — và cả khóa dạy xem Tarot nếu bạn muốn học.", link: "/services" },
-];
-
 export default function HomePage() {
   const [services, setServices] = useState<Service[]>([]);
   const [lightboxItem, setLightboxItem] = useState<typeof FEEDBACKS[number] | null>(null);
   const [showAllFeedback, setShowAllFeedback] = useState(false);
-  const cardsRevealed = useRef(false);
 
   useEffect(() => {
     getServices().then(setServices).catch((e) => console.warn("getServices failed:", e.message));
-  }, []);
-
-  // Stagger entry for service cards
-  // NOTE: threshold phải là 0 — container cao hơn viewport trên mobile
-  // nên threshold > 0 (vd 0.2) có thể không bao giờ đạt được.
-  useEffect(() => {
-    const el = document.getElementById("service-cards");
-    if (!el || cardsRevealed.current) return;
-
-    const reveal = () => {
-      if (cardsRevealed.current) return;
-      cardsRevealed.current = true;
-      const items = el.querySelectorAll(".service-card-item");
-      try {
-        anime({
-          targets: items,
-          opacity: [0, 1],
-          translateY: [30, 0],
-          delay: anime.stagger(120, { start: 200 }),
-          duration: 600,
-          easing: "easeOutCubic",
-          complete: () => {
-            (items as unknown as HTMLElement[]).forEach((it) => {
-              (it as HTMLElement).style.opacity = "1";
-              (it as HTMLElement).style.transform = "none";
-            });
-          },
-        });
-      } catch {
-        (items as unknown as HTMLElement[]).forEach((it) => {
-          (it as HTMLElement).style.opacity = "1";
-          (it as HTMLElement).style.transform = "none";
-        });
-      }
-    };
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          reveal();
-          observer.disconnect();
-          clearTimeout(fallback);
-        }
-      },
-      { threshold: 0, rootMargin: "0px 0px 100px 0px" }
-    );
-    observer.observe(el);
-    // Fallback: nếu observer không bao giờ fire (trình duyệt cũ / lỗi),
-    // vẫn hiện cards sau 2.5s thay vì kẹt ở opacity-0.
-    const fallback = setTimeout(() => {
-      reveal();
-      observer.disconnect();
-    }, 2500);
-    return () => {
-      observer.disconnect();
-      clearTimeout(fallback);
-    };
   }, []);
 
   // Stagger entry for feedback cards
@@ -334,33 +269,23 @@ export default function HomePage() {
       {/* ─── Hero ─── */}
       <section className="relative min-h-[100dvh] flex overflow-hidden pt-16">
         <Suspense fallback={null}>
-          <GalaxyTarotSystem count={36} cardData={tarotCardsData as any} />
+          <GalaxyTarotSystem count={18} cardData={tarotCardsData as any} />
         </Suspense>
+        {/* Phủ mờ nền tím để logo và chữ nổi hơn */}
+        <div aria-hidden className="absolute inset-0 z-[1] bg-void/45 pointer-events-none" />
 
         <div className="relative z-10 text-center px-4 max-w-2xl mx-auto m-auto py-10">
           {/* Brand logo */}
-          <img
-            src="/logo/logo-192.webp"
-            srcSet="/logo/logo-192.webp 192w, /logo/logo-512.webp 512w"
-            sizes="(max-width: 768px) 192px, 240px"
-            width={192}
-            height={225}
-            alt="Tarot Tea Leaf"
-            loading="eager"
-            decoding="async"
-            className="w-48 md:w-60 h-auto mx-auto mb-6 drop-shadow-[0_0_16px_rgba(212,168,67,0.3)]"
-          />
+          <div className="mb-6">
+            <BrandLogo />
+          </div>
 
           <p className="font-logo text-mist tracking-widest uppercase text-base md:text-lg mb-4 opacity-90">
             Reader · Healer · Coaching
           </p>
 
-          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl text-mist mb-4 leading-tight">
-            Tarot<br />Tea Leaf
-          </h1>
-
           <p className="font-body text-lilac text-xl md:text-2xl italic mb-8 leading-relaxed">
-            Có những điều chẳng biết tỏ cùng ai — hãy để Tarot, Tea Leaf lắng nghe và vỗ về bạn.
+            Có những điều chẳng biết tỏ cùng ai — hãy để Healing with My lắng nghe và vỗ về bạn.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -423,7 +348,7 @@ export default function HomePage() {
             Ghé thăm Chemie Coffee,<br />nơi giấc mơ bắt đầu
           </h2>
           <p className="font-body text-lilac/70 italic text-center mb-10 max-w-xl mx-auto">
-            Tổ hợp cà phê · boardgame 24/7 giữa lòng Hà Nội — nơi My từng gửi gắm cả thanh xuân, và nay là nơi bạn có thể gặp My trực tiếp.
+            Tổ hợp cà phê giữa lòng Hà Nội — nơi My từng gửi gắm cả thanh xuân, và nay là nơi bạn có thể gặp My trực tiếp.
           </p>
           <div className="relative overflow-hidden rounded-2xl border border-arcane/30 shadow-xl shadow-arcane/20">
             <div className="aspect-video w-full">
@@ -446,43 +371,16 @@ export default function HomePage() {
 
       {/* ─── Services overview ─── */}
       <Reveal className="py-16 md:py-24" delay={100}>
-        <div className="max-w-4xl mx-auto px-4">
-          <p className="font-body text-candle-gold text-sm tracking-widest uppercase text-center mb-2">
-            ✦ Bạn đang tìm câu trả lời cho điều gì? ✦
-          </p>
+        <div className="max-w-5xl mx-auto px-4">
           <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-3">
             Tìm một nơi để lòng được nhẹ hơn
           </h2>
           <p className="font-body text-lilac/70 italic text-center mb-12 max-w-xl mx-auto">
-            Tình cảm, sự nghiệp hay những ngã rẽ không tên — luôn có một trải bài dành cho điều bạn đang mang trong lòng.
+            Lật thẻ để chọn lối vào — rồi xem từng dịch vụ.
           </p>
 
-          <div
-            id="service-cards"
-            className="grid grid-cols-1 sm:grid-cols-2 gap-6"
-          >
-            {SERVICE_CATEGORIES.map((cat) => (
-              <Link
-                key={cat.name}
-                to={cat.link}
-                className="service-card-item group relative overflow-hidden bg-gradient-to-br from-velvet/70 via-velvet/40 to-arcane/15 border border-arcane/30 rounded-2xl p-6 md:p-7 hover:border-candle-gold/50 hover:-translate-y-1 hover:shadow-xl hover:shadow-candle-gold/15 transition-all duration-300"
-              >
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-candle-gold/70 to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
-                <span className="text-4xl block mb-4 w-16 h-16 flex items-center justify-center rounded-2xl bg-candle-gold/15 border border-candle-gold/30 shadow-lg shadow-candle-gold/10 group-hover:scale-110 group-hover:border-candle-gold/60 transition-all">{cat.icon}</span>
-                <h3 className="font-display text-xl tracking-wider text-mist mb-2 group-hover:text-candle-gold transition-colors">
-                  {cat.name}
-                </h3>
-                <p className="font-body text-lilac/85 text-base leading-relaxed">{cat.desc}</p>
-                <p className="font-body text-lilac/60 text-sm leading-relaxed mt-3 pt-3 border-t border-velvet/50">
-                  <span className="text-candle-gold/80 text-xs tracking-widest uppercase block mb-1">Loại bài này là gì?</span>
-                  {cat.about}
-                </p>
-                <span className="inline-block mt-4 font-body text-candle-gold text-sm font-semibold tracking-wider uppercase opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
-                  Xem bảng giá →
-                </span>
-              </Link>
-            ))}
-          </div>
+          {/* 3 ô lật thẻ → chọn lối vào → dịch vụ chi tiết */}
+          <ServiceJourney />
 
           <div className="text-center mt-8">
             <Link
@@ -633,71 +531,6 @@ export default function HomePage() {
       {/* ─── Section divider ─── */}
       <div className="section-divider my-4" />
 
-      {/* ─── Đào tạo ─── */}
-      <Reveal className="py-16 md:py-24" amount={0.2}>
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="relative overflow-hidden rounded-3xl border border-arcane/30 bg-gradient-to-br from-velvet/80 via-void to-arcane/20 shadow-2xl shadow-arcane/20">
-            <div className="relative max-w-3xl mx-auto px-6 py-12 md:px-12 md:py-16 text-center">
-              <span className="inline-block bg-candle-gold text-void font-display text-xs tracking-widest uppercase px-4 py-1.5 rounded-full shadow-lg mb-5">
-                Đào tạo
-              </span>
-              <h2 className="font-display text-3xl md:text-5xl text-mist mb-5 leading-tight">
-                Học Tarot &amp; chữa lành
-                <br />
-                cùng My
-              </h2>
-              <p className="font-body text-lilac italic mb-7 leading-relaxed max-w-md mx-auto">
-                Từ người mới hoàn toàn tới Reader chuyên nghiệp — và sâu hơn nữa là hành trình
-                tái sinh chính mình.
-              </p>
-
-              {/* 3 khóa học tóm tắt */}
-              <div className="flex flex-wrap items-stretch justify-center gap-2.5 md:gap-3 mb-8">
-                {[
-                  { top: "Cơ bản Tarot", bottom: "5.000.000₫" },
-                  { top: "Nâng cao", bottom: "10.000.000₫" },
-                  { top: "Tái Sinh (ưu đãi)", bottom: "10.000.000₫" },
-                ].map((s) => (
-                  <div
-                    key={s.top}
-                    className="rounded-xl border border-candle-gold/40 bg-candle-gold/10 px-5 py-3 min-w-[140px]"
-                  >
-                    <p className="font-body text-candle-gold text-xs tracking-widest uppercase">{s.top}</p>
-                    <p className="font-display text-2xl md:text-2xl font-bold text-candle-gold drop-shadow-[0_0_12px_rgba(212,168,67,0.35)]">{s.bottom}</p>
-                  </div>
-                ))}
-              </div>
-
-              <ul className="space-y-3 mb-9 text-left max-w-sm mx-auto">
-                {[
-                  "Lộ trình rõ ràng từ cơ bản tới chuyên nghiệp",
-                  "Học đi đôi với thực hành và chữa lành bản thân",
-                  "Được My đồng hành và tư vấn lộ trình phù hợp",
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-3 font-body text-lilac/90 text-sm">
-                    <span className="text-candle-gold mt-0.5">✦</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <SparkleButton
-                  as="link"
-                  href="/recruit"
-                  className="w-full sm:w-auto px-10 py-4 rounded-xl font-display text-sm tracking-widest uppercase bg-candle-gold text-void hover:bg-candle-gold/85 transition-all shadow-lg shadow-candle-gold/25 btn-glow"
-                >
-                  Xem các khóa học
-                </SparkleButton>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Reveal>
-
-      {/* ─── Section divider ─── */}
-      <div className="section-divider my-4" />
-
       {/* ─── CTA ─── */}
       <Reveal className="py-16 md:py-24" delay={150}>
         <div className="text-center px-4">
@@ -735,12 +568,9 @@ export default function HomePage() {
           <p className="font-body text-candle-gold text-sm tracking-widest uppercase text-center mb-2">
             ✦ Câu chuyện của My ✦
           </p>
-          <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-3 leading-tight">
+          <h2 className="font-display text-2xl md:text-4xl text-mist text-center mb-10 leading-tight">
             Cô gái từng vỡ vụn,<br />nay là nơi bình yên của hàng trăm người
           </h2>
-          <p className="font-body text-lilac/70 italic text-center mb-10 max-w-xl mx-auto">
-            Nếu bạn thấy mình trong những dòng này — thì buổi xem này là dành cho bạn.
-          </p>
 
           <div className="bg-velvet/40 border border-velvet rounded-2xl p-6 md:p-10 space-y-5 font-body text-lilac leading-relaxed">
             <p>
@@ -785,7 +615,7 @@ export default function HomePage() {
               { icon: "heart", top: "500+", bottom: "khách hàng đã được lắng nghe" },
               { icon: "news", top: "Báo chí", bottom: "Dân Việt · Inhat · Toplist đưa tin" },
             ].map((f) => (
-              <div key={f.top} className="rounded-xl border border-candle-gold/30 bg-candle-gold/5 px-4 py-4 text-center">
+              <div key={f.top} className="glow-box rounded-xl bg-candle-gold/5 px-4 py-4 text-center">
                 <span className="block mb-1.5 text-candle-gold"><Icon name={f.icon} className="w-7 h-7 mx-auto" /></span>
                 <p className="font-display text-lg font-bold text-candle-gold">{f.top}</p>
                 <p className="font-body text-lilac/80 text-sm mt-0.5">{f.bottom}</p>

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import BrandLogo from "./BrandLogo";
 
 const SOCIALS = [
   {
@@ -58,17 +59,7 @@ export default function Footer() {
           {/* Brand & description */}
           <div>
             <div className="flex items-center gap-2.5 mb-3">
-              <img
-                src="/logo/logo-128.webp"
-                srcSet="/logo/logo-128.webp 128w, /logo/logo-192.webp 192w"
-                sizes="48px"
-                width={128}
-                height={150}
-                loading="lazy"
-                decoding="async"
-                alt="Healing With My"
-                className="h-12 w-auto rounded-lg bg-void/30 drop-shadow-[0_0_8px_rgba(212,168,67,0.35)]"
-              />
+              <BrandLogo size="bar" loading="lazy" className="rounded-lg bg-void/30" />
               <div>
                 <p className="font-logo text-mist font-semibold tracking-wider text-lg leading-tight">Healing With My</p>
                 <p className="font-body text-lilac/80 text-xs tracking-widest uppercase mt-0.5">Reader · Healer · Coaching</p>

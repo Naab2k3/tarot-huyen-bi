@@ -53,7 +53,7 @@ def seed_services(db: Session) -> None:
         ),
         Service(
             name="Tarot full mọi vấn đề",
-            description="Trải bài full mọi vấn đề, không giới hạn câu hỏi — bạn đặt, Reader trả lời.",
+            description="Trải bài full mọi vấn đề, không gợi ý câu hỏi.",
             duration_minutes=60,
             price=300000,
         ),
@@ -90,13 +90,13 @@ def seed_services(db: Session) -> None:
         ),
         Service(
             name="Bài trà full 12 tháng",
-            description="Bài trà tổng quan cả năm.",
+            description="Bài trà full 12 tháng / 3 vấn đề (tổng quan cả năm).",
             duration_minutes=60,
             price=450000,
         ),
         Service(
             name="Tea Leaf 12 tháng full",
-            description="Tea Leaf 12 tháng: tài lộc, tiền bạc, hôn nhân, thành công, hạnh phúc, may mắn, học hành, công việc.",
+            description="Tea Leaf 12 tháng: tình cảm, tiền bạc, hôn nhân, thành công, hạnh phúc, may mắn, học hành, công việc.",
             duration_minutes=90,
             price=500000,
         ),
@@ -115,7 +115,7 @@ def seed_services(db: Session) -> None:
         ),
         Service(
             name="Lenormand vận mệnh",
-            description="Lenormand dự đoán vận mệnh, nhìn lại quá khứ — chuỗi 3–5 lá / 1 câu hỏi.",
+            description="Lenormand dự đoán vận mệnh, tiên đoán tương lai & nhìn lại quá khứ — chuỗi 3–5 lá / 1 câu hỏi.",
             duration_minutes=60,
             price=250000,
         ),
@@ -127,7 +127,7 @@ def seed_services(db: Session) -> None:
         ),
         Service(
             name="Lenormand tổng quan",
-            description="Trải tổng quan cho 1 đối tượng / 1 vấn đề trong khoảng thời gian xác định (giá 300–400k tùy độ sâu).",
+            description="Trải tổng quan 1 đối tượng / vụ việc cụ thể: 300.000 – 400.000 VNĐ tùy độ sâu.",
             duration_minutes=60,
             price=300000,
         ),
@@ -152,7 +152,7 @@ def seed_services(db: Session) -> None:
         # ── Combo ──
         Service(
             name="Combo Tarot + Tea Leaf 6 tháng",
-            description="Trải bài vip combo Tarot + Tea Leaf trong vòng 6 tháng (giới hạn thời gian).",
+            description="Trải bài vip combo Tarot + Tea Leaf trong vòng 6 tháng (không giới hạn thời gian).",
             duration_minutes=90,
             price=700000,
         ),
@@ -182,14 +182,14 @@ def seed_services(db: Session) -> None:
         ),
         Service(
             name="Combo HOT toàn diện",
-            description="Full mọi loại bài, không giới hạn thời gian, bảo hành xem lại + tư vấn tình cảm miễn phí 1 tháng.",
+            description="Full toàn bộ + theo dõi chữa lành tâm hồn: xem không giới hạn thời gian, bảo hành xem lại & tư vấn miễn phí trong 1 tháng.",
             duration_minutes=120,
             price=3000000,
         ),
         # ── Dịch vụ khác (đặt lịch được) ──
         Service(
             name="Thần số học",
-            description="Luận thần số học, gồm bản PDF 125 trang.",
+            description="Luận thần số học, tặng bản thần số học (PDF 125 trang).",
             duration_minutes=60,
             price=800000,
         ),
@@ -272,7 +272,15 @@ def seed_services(db: Session) -> None:
     if to_add:
         db.add_all(to_add)
 
+    seeded_desc = {m.name: m.description for m in marketing}
     for s in db.query(Service).all():
         if s.name in OLD_MARKETING_NAMES and s.name not in {m.name for m in marketing}:
             s.is_active = False
+        # Mô tả trong file này là bản chữ chính thức của bảng giá. Seed chỉ thêm
+        # mới, nên mỗi lần sửa chữ phải đồng bộ lại — không thì trang đặt lịch
+        # vẫn hiện mô tả cũ. Chỉ chạm mô tả của đúng các tên do seed tạo; giá và
+        # thời lượng vẫn để admin tự chỉnh trong trang Admin.
+        new_desc = seeded_desc.get(s.name)
+        if new_desc is not None and s.description != new_desc:
+            s.description = new_desc
     db.commit()
